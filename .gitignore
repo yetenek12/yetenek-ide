@@ -4,8 +4,9 @@ build-debug.log
 .DS_Store
 
 /extra_resources/windows/*
+!/extra_resources/windows/README.md
 /extra_resources/mac/*
-!/extra_resources/README.md
+!/extra_resources/mac/README.md
 
 /build/*
 !/build/README.md
