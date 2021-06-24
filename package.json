@@ -1,0 +1,46 @@
+{
+    "name": "yetenek-ide",
+    "main": "main.js",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "start": "electron ./main.js",
+        "rebuild-app": "./node_modules/.bin/electron-rebuild",
+        "build-app": "electron-builder",
+        "update-submodules": "git submodule update",
+        "build-tailwinds": "npx tailwindcss-cli@latest build -o ./src/tailwind.css"
+    },
+    "dependencies": {
+        "express": "^4.17.1",
+        "lodash": "^4.17.21",
+        "morgan": "^1.10.0",
+        "serialport": "^9.2.0",
+        "socket.io": "^4.1.2"
+    },
+    "devDependencies": {
+        "electron": "^12.0.0",
+        "electron-rebuild": "^2.3.5"
+    },
+    "build": {
+        "appId": "tr.com.ubit.yetenekide",
+        "productName": "YETENEK IDE",
+        "buildDependenciesFromSource": true,
+        "npmRebuild": false,
+        "directories": {
+            "output": "build"
+        },
+        "extraResources": [
+            {
+              "from": "./extra_resources/",
+              "to": "extra_resources",
+              "filter": [
+                "**/*"
+              ]
+            }
+        ],
+        "nsis": {
+            "allowToChangeInstallationDirectory": true,
+            "oneClick": false
+        }
+    }
+}

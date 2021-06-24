@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YETENEK IDE</title>
+
+    <!-- Materialize -->
+    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
+    <!-- <link rel="preconnect" href="https://fonts.gstatic.com"> -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"> -->
+
+    <!-- APP -->
+    <link rel="stylesheet" href="/tailwind.css">
+    <link rel="stylesheet" href="/index.css">
+
+    <!-- Blockly -->
+    <script src="/blockly/blockly_compressed.js"></script>
+    <script src="/blockly/blocks_compressed.js"></script>
+    <script src="/blockly/arduino_compressed.js"></script>
+    <script src="/blockly/msg/js/en.js"></script>
+
+</head>
+<body>
+    <nav class="flex items-center h-16 bg-blue-600 border-b-4 border-blue-800">
+        <!-- <a href="#" class="brand-logo">
+            <i class="material-icons">integration_instructions</i>
+            YETENEK IDE
+        </a> -->
+        <h1 class="text-2xl text-white ml-4 mr-8">YETENEK IDE</h1>
+
+        <button class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="newProject()">New</button>
+        <button class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="loadProject()">Load</button>
+        <button class="h-10 bg-green-800 hover:bg-green-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" disabled="disabled" onclick="">Save</button>
+        <span class="flex-grow"></span>
+
+        <!-- <label for="upload-port" class="h-full bg-blue-600 text-white p-4">Upload Port:</label> -->
+        <select id="upload-port" class="h-10 bg-blue-800 text-white pl-4 pr-4 rounded-md shadow-md border-2 border-r-0 border-gray-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; min-width: 10rem;">
+            <option value="auto">Auto</option>
+        </select>
+
+        <button 
+            class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-6 rounded-md shadow-md border-2 border-gray-100 border-l-0" 
+            style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;" onclick="upload()">Upload
+        </button>
+    </nav>
+
+
+    <main>
+        <xml id="toolbox" style="display: none">
+            <category name="Logic">
+              <block type="controls_if"></block>
+              <block type="logic_compare"></block>
+              <block type="logic_operation"></block>
+              <block type="logic_negate"></block>
+              <block type="logic_null"></block>
+            </category>
+            <category name="Control">
+              <block type="base_delay">
+                <value name="DELAY_TIME">
+                  <block type="math_number">
+                    <field name="NUM">1000</field>
+                  </block>
+                </value>
+              </block>
+              <block type="controls_for">
+                <value name="FROM">
+                  <block type="math_number">
+                    <field name="NUM">1</field>
+                  </block>
+                </value>
+                <value name="TO">
+                  <block type="math_number">
+                    <field name="NUM">10</field>
+                  </block>
+                </value>
+              </block>
+              <block type="controls_whileUntil"></block>
+            </category>
+            <category name="Math">
+              <block type="math_number"></block>
+              <block type="math_arithmetic"></block>
+              <block type="base_map">
+                <value name="DMAX">
+                  <block type="math_number">
+                    <field name="NUM">180</field>
+                  </block>
+                </value>
+              </block>
+            </category>
+            <category name="Text">
+              <block type="text"></block>
+            </category>
+            <category name="Variables" custom="VARIABLE"></category>
+            <category name="Functions" custom="PROCEDURE"></category>
+            <sep></sep>
+            <category name="Input/Output">
+              <block type="inout_highlow"></block>
+              <block type="inout_digital_write"></block>
+              <block type="inout_digital_read"></block>
+              <block type="inout_analog_write">
+                <value name="NUM">
+                  <block type="math_number">
+                    <field name="NUM">0</field>
+                  </block>
+                </value>
+              </block>
+              <block type="inout_analog_read"></block>
+              <block type="serial_print">
+                <value name="CONTENT">
+                  <block type="text">
+                    <field name="TEXT"></field>
+                  </block>
+                </value>
+              </block>
+              <block type="inout_tone">
+                <value name="NUM">
+                  <block type="math_number">
+                    <field name="NUM">440</field>
+                  </block>
+                </value>
+              </block>
+              <block type="inout_notone"></block>
+              <block type="inout_buildin_led"></block>
+            </category>
+            <category name="SensorKit Air"></category>
+            <category name="SensorKit Color"></category>
+            <category name="SensorKit Sound"></category>
+            <category name="SensorKit ToF"></category>
+
+            <category name="Servo">
+              <block type="servo_move">
+                <value name="DEGREE">
+                  <block type="math_number">
+                    <field name="NUM">0</field>
+                  </block>
+                </value>
+              </block>
+              <block type="servo_read_degrees"></block>
+            </category>
+            <!-- <category name="Grove Analog">
+              <block type="grove_rotary_angle"></block>
+              <block type="grove_temporature_sensor"></block>
+              <block type="grove_sound_sensor"></block>
+              <block type="grove_thumb_joystick"></block>
+            </category>
+            <category name="Grove">
+              <block type="grove_led"></block>
+              <block type="grove_button"></block>
+              <block type="grove_relay"></block>
+              <block type="grove_tilt_switch"></block>
+              <block type="grove_piezo_buzzer"></block>
+              <block type="grove_pir_motion_sensor"></block>
+              <block type="grove_line_finder"></block>
+              <block type="grove_rgb_led"></block>
+              <block type="grove_ultrasonic_ranger"></block>
+            </category>
+            <category name="Grove LCD">
+              <block type="grove_serial_lcd_print">
+                <value name="TEXT">
+                  <block type="text">
+                    <field name="TEXT"></field>
+                  </block>
+                </value>
+                <value name="TEXT2">
+                  <block type="text">
+                    <field name="TEXT"></field>
+                  </block>
+                </value>
+                <value name="DELAY_TIME">
+                  <block type="math_number">
+                    <field name="NUM">1000</field>
+                  </block>
+                </value>
+              </block>
+              <block type="grove_serial_lcd_power"></block>
+              <block type="grove_serial_lcd_effect"></block>
+            </category>
+            <category name="Grove Motor">
+              <block type="grove_motor_shield"></block>
+            </category> -->
+        </xml>
+        
+        <div class="" style="height: 100vh;">
+            <div id="split-a" class="split" style="height: 300px">
+                <div id="split-0">
+                    <div id="blocklyDiv">
+                        <div class="project-title">
+                            <p id="project-name" class="text-2xl ml-2 font-bold"></p>
+                            <div class="float-right">
+                                <button class="bg-blue-800 hover:bg-blue-900 text-white p-2 m-2 mr-0 rounded-md shadow-md">&lt;&sol;&gt; Text Mode</button>
+                                <!-- <button class="bg-blue-800 hover:bg-blue-900 text-white p-2 m-2 mr-0 rounded-md shadow-md">[•] Visual Mode</button> -->
+                            </div>
+                        </div>                
+                    </div>
+                </div>
+                <div id="split-1">
+                    <div id="codeDiv"><div id="editor"></div></div>
+                </div>
+            </div>
+
+            <div id="split-b">
+                <div id="serialDiv">
+
+                </div>
+                <!-- <button onclick="printCode()">Print Code</button> -->
+            </div>
+        </div>
+    </main>
+
+    <!-- --------------------------------------------------------------------------------------------------------------------- -->
+    <!-- SPLIT JS -->
+    <!-- --------------------------------------------------------------------------------------------------------------------- -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.2/split.min.js"></script>
+    <script>
+        Split(['#split-a', '#split-b'], {
+            direction: 'vertical',
+            minSize: 200,
+            // gutterSize: 15,
+            sizes: [70, 30],
+            onDrag: () => {
+                Blockly.svgResize(workspace);
+            }
+        })
+        Split(['#split-0', '#split-1'], {
+            minSize: 300,
+            // gutterSize: 15,
+            sizes: [70, 30],
+            onDrag: () => {
+                Blockly.svgResize(workspace);
+            }
+        })
+    </script>
+
+    <!-- --------------------------------------------------------------------------------------------------------------------- -->
+    <!-- Ace Editor -->
+    <!-- --------------------------------------------------------------------------------------------------------------------- -->
+    <script src="https://pagecdn.io/lib/ace/1.4.12/ace.min.js" crossorigin="anonymous" integrity="sha256-T5QdmsCQO5z8tBAXMrCZ4f3RX8wVdiA0Fu17FGnU1vU=" ></script>
+    <script>
+        ace.config.set("basePath", "https://pagecdn.io/lib/ace/1.4.12/");
+        window.editor = ace.edit("editor");
+        //editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/c_cpp");
+    </script>
+    
+    <!-- --------------------------------------------------------------------------------------------------------------------- -->
+    <!-- Sweet Alert -->
+    <!-- --------------------------------------------------------------------------------------------------------------------- -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // /blockly/core/blockly.js (362)
+        Blockly.prompt = function(message, defaultValue, callback){
+            // https://sweetalert2.github.io/recipe-gallery/login-form.html
+            Swal.fire({
+                title: message,
+                html: `<input type="text" id="variable-name-input" class="swal2-input" placeholder="Variable Name" value="${defaultValue}">`,
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                focusConfirm: false,
+                preConfirm: () => {
+                    const variableName = Swal.getPopup().querySelector('#variable-name-input').value
+                    return variableName
+                }
+            })
+            .then((result) => {
+                console.log(result.value)
+                callback(result.value)
+            })
+        }
+
+        // https://sweetalert2.github.io/
+        function promptError(error, title = 'Error'){
+            Swal.fire({
+                icon: 'error',
+                title: title,
+                text: error,
+                // footer: '<a href="">Why do I have this issue?</a>'
+            })
+        }
+    </script>
+
+    <!-- --------------------------------------------------------------------------------------------------------------------- -->
+    <!-- Socket IO -->
+    <!-- --------------------------------------------------------------------------------------------------------------------- -->
+    <script src="https://cdn.socket.io/4.1.1/socket.io.min.js" integrity="sha384-cdrFIqe3RasCMNE0jeFG9xJHog/tgOVC1E9Lzve8LQN1g5WUHo0Kvk1mawWjxX7a" crossorigin="anonymous"></script>
+    <script>
+        const socket = io();
+        
+        socket.on('connect', () => {
+            console.log(`Socket Connected: ${socket.id}`);
+        });
+
+        socket.on('disconnect', () => {
+            console.log('Socket Disconnected.'); // TODO: Refresh Page?
+        });
+
+        socket.on('term', (msg) => {
+            console.log(msg)
+            document.getElementById('serialDiv').innerHTML += `<br/>${msg}`
+        })
+
+        socket.on('change_project', (data) => {
+            if(data.status === 'ok'){
+                window.location.replace(window.location.origin + "/editor.html");
+            }
+
+            else if(data.error){
+                promptError(data.error, 'Load Project Error')
+            }
+        })
+
+        function upload(){
+            const portEl = document.getElementById('upload-port')
+            const port = portEl.options[portEl.selectedIndex].value
+            const code = Blockly.Arduino.workspaceToCode(workspace)
+
+            socket.emit('upload', {
+                port, code
+            })
+        }
+
+        function loadProject(){
+            socket.emit('change_project')
+        }
+
+        function newProject(){
+            window.location.replace(window.location.origin + "/create.html");
+        }
+
+        // save
+        function saveProject(){
+            
+        }
+
+        // ports
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById('upload-port').addEventListener('click', () => {
+                socket.emit('ports')
+            })
+        })
+
+        socket.on('ports', (data) => {
+            const portSelectEl = document.getElementById('upload-port')
+            portSelectEl.classList.add('bg-green-800')
+            const selectedPort = portSelectEl.options[portSelectEl.selectedIndex].value
+            portSelectEl.innerHTML = ''
+            const options = []
+            
+            const autoPortEl = document.createElement('option')
+            autoPortEl.innerHTML = 'Auto'
+            autoPortEl.value = 'auto'
+            autoPortEl.classList.add('text-xl')
+            if(selectedPort == autoPortEl.value) autoPortEl.selected = 'selected'
+            options.push(autoPortEl)
+
+            for(const port of data.ports){
+                const portEl = document.createElement('option')
+                portEl.innerHTML = port.path
+                portEl.value = port.path
+                portEl.classList.add('text-xl')
+                if(selectedPort == portEl.value) portEl.selected = 'selected'
+                options.push(portEl)
+            }
+
+            for(const el of options){
+                portSelectEl.appendChild(el)
+            }
+        })
+
+        // init
+        socket.on('init', (data) => {
+            // console.log(data)
+            document.getElementById('project-name').innerHTML = data.projectName
+        })
+        socket.emit('init')
+    </script>
+
+    <!-- --------------------------------------------------------------------------------------------------------------------- -->
+    <!-- APP -->
+    <!-- --------------------------------------------------------------------------------------------------------------------- -->
+    <script>
+        const workspace = Blockly.inject('blocklyDiv', {
+            toolbox: document.getElementById('toolbox'),
+            collapse: false,
+            zoom: {
+                controls: true,
+                // wheel: true,
+                startScale: 1.0,
+                maxScale: 3,
+                minScale: 0.3,
+                scaleSpeed: 1.2,
+                pinch: true
+            },
+            trashcan: true,
+            scrollbars: true,
+            grid: { spacing: 20, length: 3, colour: '#ccc', snap: true }
+        });
+
+        // var onresize = function(e) {
+        //     // Compute the absolute coordinates and dimensions of blocklyArea.
+        //     var element = blocklyArea;
+        //     var x = 0;
+        //     var y = 0;
+        //     do {
+        //         x += element.offsetLeft;
+        //         y += element.offsetTop;
+        //         element = element.offsetParent;
+        //     } while (element);
+
+        //     // Position blocklyDiv over blocklyArea.
+        //     blocklyDiv.style.left = x + 'px';
+        //     blocklyDiv.style.top = y + 'px';
+        //     blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
+        //     blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
+        //     Blockly.svgResize(workspace);
+        // };
+        // window.addEventListener('resize', onresize, false);
+        // onresize();
+        // Blockly.svgResize(workspace);
+
+        Blockly.Blocks['arduino_skeleton'] = {
+            init: function () {
+                this.appendStatementInput('SETUP').setCheck(null).appendField('setup');
+                this.appendStatementInput('LOOP').setCheck(null).appendField('loop');
+                this.setColour(290);
+                this.setTooltip('');
+                this.setHelpUrl('');
+            }
+        };
+
+        // const rootBlock = '<xml><block type="arduino_skeleton" deletable="false" movable="false"></block></xml>';
+        // Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(rootBlock), workspace);
+        // workspace.addChangeListener(Blockly.Events.disableOrphans);
+
+        // function printCode(){
+        //     var code = Blockly.Arduino.workspaceToCode(workspace);
+        //     console.log(code)
+        // }
+        // printCode()
+
+
+        function updateCodeView(){
+            //document.getElementById('editor').innerText = Blockly.Arduino.workspaceToCode(workspace);
+            window.editor.setValue('\n\n' + Blockly.Arduino.workspaceToCode(workspace));
+            window.editor.gotoLine(999);
+        }
+        updateCodeView();
+        workspace.addChangeListener(updateCodeView);
+
+        function updateSerialView(text, options = {clear: false}){
+            const serialView = document.getElementById('serialView')
+            if(options.clear) serialView.innerText = ''
+
+            serialView.innerText = serialView.innerText + text
+            // serialView.innerHTML = serialView.innerHTML + text
+        }
+
+        let isUploading = false;
+        async function uploadCode(){
+            if(isUploading) return false;
+
+            updateSerialView('Uploading...\n\n', {clear: true})
+
+            try{
+                const res = await fetch('http://localhost:8000/upload', {
+                    method: 'post'
+                })
+                const resData = await res.json()
+                if(resData.status !== 'ok'){
+                    isUploading = false;
+                    return false;
+                }
+
+                async function checkUploadProgress(){
+                    const res = await fetch('http://localhost:8000/upload-progress', {
+                        method: 'get'
+                    })
+                    const resData = await res.json()
+                    console.log(resData.buffer)
+
+                    if(!resData.finished){
+                        updateSerialView(resData.buffer)
+                        setTimeout(checkUploadProgress, 100)
+                    }
+                    else {
+                        updateSerialView(resData.buffer)
+                        console.log('Upload Finished.')
+                        isUploading = false;
+                        return true;
+                    }
+                }
+                setTimeout(checkUploadProgress, 100)
+            }
+            catch(err){
+                updateSerialView(err)
+            }
+            finally{
+                isUploading = false;
+            }
+        }
+    </script>
+
+    
+</body>
+</html>
