@@ -19,6 +19,7 @@
     },
     "devDependencies": {
         "electron": "^12.0.0",
+        "electron-builder": "^22.11.7",
         "electron-rebuild": "^2.3.5"
     },
     "build": {
@@ -31,11 +32,11 @@
         },
         "extraResources": [
             {
-              "from": "./extra_resources/",
-              "to": "extra_resources",
-              "filter": [
-                "**/*"
-              ]
+                "from": "./extra_resources/",
+                "to": "extra_resources",
+                "filter": [
+                    "**/*"
+                ]
             }
         ],
         "nsis": {
