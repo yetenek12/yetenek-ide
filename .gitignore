@@ -9,4 +9,3 @@ build-debug.log
 !/extra_resources/mac/README.md
 
 /build/*
-!/build/README.md
