@@ -25,7 +25,12 @@ global.projectPath = ''
 
 function getAppPath(){
     const appPath = electronApp.getAppPath();
-    
+    if(appPath.endsWith('.asar')){
+        return path.parse(appPath).dir
+    }
+    else{
+        return appPath
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -163,9 +168,10 @@ io.on("connection", (socket) => {
         // Pio Location
         let pioLocation = null
         if(process.platform === 'win32'){
-            pioLocation =  path.join(electronApp.getAppPath(), '/extra_resources/windows/.platformio/penv/Scripts/pio.exe')
+            pioLocation =  path.join(getAppPath(), '/extra_resources/windows/.platformio/penv/Scripts/pio.exe')
         }
         else if(process.platform === 'darwin'){
+            pioLocation =  path.join(getAppPath(), '/extra_resources/mac/.platformio/penv/Scripts/pio')
             console.warn('MAC OS IS NOT IMPLEMENTED !')
         }
 
@@ -331,7 +337,7 @@ io.on("connection", (socket) => {
         // Pio Location
         let pioLocation = null
         if(process.platform === 'win32'){
-            pioLocation =  path.join(electronApp.getAppPath(), '/extra_resources/windows/.platformio/penv/Scripts/pio.exe')
+            pioLocation =  path.join(getAppPath(), '/extra_resources/windows/.platformio/penv/Scripts/pio.exe')
         }
         else if(process.platform === 'darwin'){
             console.warn('MAC OS IS NOT IMPLEMENTED !')
