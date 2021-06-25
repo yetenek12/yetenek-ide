@@ -8,8 +8,8 @@
     git clone git@github.com:yetenek12/yetenek-ide.git
     cd yetenek-ide
 
-    git submodules init
-    git submodules update
+    git submodule init
+    git submodule update
 
     npm install
     npm install --only=dev
