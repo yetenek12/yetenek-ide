@@ -16,6 +16,14 @@
     npm install -g electron-builder
     
     npm run rebuild-app
+
+    # If you are on Windows:
+    # Copy .platformio folder to /extra_resources/windows/.platformio
+    # Make sure /extra_resources/mac/ folder is empty!
+
+    # If you are on Mac OS:
+    # Copy .platformio folder to /extra_resources/mac/.platformio
+    # Make sure /extra_resources/windows/ folder is empty!
 ```
 
 ## Run
@@ -42,9 +50,6 @@
 
 ```bash
     # Use a Windows machine
-    # SETUP: Copy .platformio folder to /extra_resources/windows/.platformio
-    # SETUP: Make sure /extra_resources/mac/ folder is empty!
-    #
     # Delete /build folder from the project before every build!
 
     npm run rebuild-app
@@ -55,9 +60,6 @@
 
 ```bash
     # Use a Mac OS machine
-    # SETUP: Copy .platformio folder to /extra_resources/mac/.platformio
-    # SETUP: Make sure /extra_resources/windows/ folder is empty!
-    #
     # Delete /build folder from the project before every build!
 
     npm run rebuild-app
