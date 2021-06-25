@@ -339,7 +339,7 @@ io.on("connection", (socket) => {
             pioLocation =  path.join(getAppPath(), '/extra_resources/windows/.platformio/penv/Scripts/pio.exe')
         }
         else if(process.platform === 'darwin'){
-            console.warn('MAC OS IS NOT IMPLEMENTED !')
+            pioLocation =  path.join(getAppPath(), '/extra_resources/mac/.platformio/penv/bin/pio')
         }
 
         let termCmd = ''
