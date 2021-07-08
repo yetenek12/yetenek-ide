@@ -64,6 +64,8 @@
 ```bash
     # Use a Mac OS machine
     # Delete /build folder from the project before every build!
+    #
+    # penv/bin/pio ve penv/bin/platformio dosyalarinin ilk satirindaki path'i duzenle
 
     npm run rebuild-app
     npm run build-app
