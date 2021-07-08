@@ -13,11 +13,16 @@ const { app: electronApp } = require('electron')
 
 // GLOBAL CONSTANTS
 global.PROJECT_SETTINGS = '/yetenekide.projectsettings'
+global.WORKSPACE_XML = '/workspace'
+global.MAIN_CPP = '/src/main.cpp'
 
 // GLOBAL STATE
 global.projectLoaded = false
 global.projectName = ''
 global.projectPath = ''
+global.xml = ''
+global.code = ''
+global.monitor = null
 
 // ----------------------------------------------------------------------------
 // Utils
@@ -30,6 +35,87 @@ function getAppPath(){
     }
     else{
         return appPath
+    }
+}
+
+function runPIO(socket, cmdArr, onClose, onStart){
+    let pioLocation = null
+    if(process.platform === 'win32'){
+        pioLocation =  path.join(getAppPath(), '/extra_resources/windows/.platformio/penv/Scripts/pio.exe')
+    }
+    else if(process.platform === 'darwin'){
+        pioLocation =  path.join(getAppPath(), '/extra_resources/mac/.platformio/penv/bin/pio')
+    }
+
+    const msg = `${pioLocation} ${cmdArr.join(' ')}`
+    console.log(msg)
+    socket.emit('term', msg)
+
+    const pio = spawn(pioLocation, cmdArr)
+    pio.stdout.on('data', data => {
+        const msg = data + ''
+        console.log(msg)
+        socket.emit('term', msg)
+    })
+    pio.stderr.on('data', data => {
+        const msg = data + ''
+        console.error(msg)
+        socket.emit('term', msg, 'error')
+    })
+    pio.on('error', (error) => {
+        const msg = `error: ${error.message}`
+        console.error(msg);
+        socket.emit('term', msg)
+
+        if(onClose) onClose(error)
+    });
+    pio.on('close', code => {
+        const msg = `child process exited with code ${code}`
+        console.log(msg);
+        socket.emit('term', msg, 'close')
+        socket.emit('term', '')
+        socket.emit('term', '')
+
+        if(onClose) onClose()
+    });
+
+    if(onStart) onStart(pio)
+}
+
+function runMonitor(socket, port){
+
+    // Kill existing
+    killMonitor(socket);
+
+    const msg = '-------- Starting Serial Monitor --------'
+    socket.emit('term', msg);
+    console.log(msg)
+
+    // -------- SERIAL MONITOR
+    const cmd = ['device', 'monitor']
+    if(port !== 'auto'){
+        cmd.push('--port')
+        cmd.push(port)
+    }
+
+    // --------
+    runPIO(socket, cmd, 
+    (err) => {
+        console.error('CLOSE ', err);
+    },
+    (proc) => {
+        global.monitor = proc
+    })
+}
+
+function killMonitor(socket){
+    if(global.monitor){
+        const msg = '-------- Closing Serial Monitor --------'
+        socket.emit('term', msg);
+        console.log(msg + " (SIGINT)")
+
+        global.monitor.kill('SIGINT');
+        global.monitor = null;
     }
 }
 
@@ -77,7 +163,9 @@ io.on("connection", (socket) => {
         socket.emit('init', {
             projectLoaded: global.projectLoaded,
             projectName: global.projectName,
-            projectPath: global.projectPath
+            projectPath: global.projectPath,
+            xml: global.xml,
+            code: global.code
         })
     })
 
@@ -165,34 +253,9 @@ io.on("connection", (socket) => {
         // https://joshtronic.com/2021/01/17/recursively-create-directories-with-nodejs/
         fs.mkdirSync(projectPath, { recursive: true })
 
-        // Pio Location
-        let pioLocation = null
-        if(process.platform === 'win32'){
-            pioLocation =  path.join(getAppPath(), '/extra_resources/windows/.platformio/penv/Scripts/pio.exe')
-        }
-        else if(process.platform === 'darwin'){
-            pioLocation =  path.join(getAppPath(), '/extra_resources/mac/.platformio/penv/bin/pio')
-        }
-
         // Create pio project
-        console.log(`${pioLocation} project init --project-dir ${projectPath}`)
-        const pio = spawn(pioLocation, ['project', 'init', '--project-dir', projectPath])
-        pio.stdout.on('data', data => {
-            // socket.emit('term', data + '')
-            console.log(data + '')
-        })
-        pio.stderr.on('data', data => {
-            // socket.emit('term', data + '')
-            console.error(data + '')
-        })
-        pio.on('error', (error) => {
-            console.error(`error: ${error.message}`);
-            // socket.emit('term', `error: ${error.message}`)
-        });
-        pio.on('close', code => {
-            console.log(`child process exited with code ${code}`);
-            socket.emit('term', `child process exited with code ${code}`)
-
+        const cmd = ['project', 'init', '--project-dir', projectPath]
+        runPIO(socket, cmd, () => {
             // --------------------------------------------------------------------------
             // Configure platformio.ini
             const pioIniPath = path.join(projectPath, '/platformio.ini')
@@ -206,7 +269,7 @@ io.on("connection", (socket) => {
             fs.writeFileSync(path.join(pioIniPath), pioIni)
 
             // Create main.cpp
-            const maincppPath = path.join(projectPath, '/src/main.cpp')
+            const maincppPath = path.join(projectPath, global.MAIN_CPP)
             let maincpp = ''
             maincpp += '#include <Arduino.h>\n\n'
             maincpp += 'void setup(){\n\n'
@@ -221,17 +284,24 @@ io.on("connection", (socket) => {
 
             const projectSettingsPath = path.join(projectPath, global.PROJECT_SETTINGS)
             const projectSettingsStr = JSON.stringify(projectSettings);
-            fs.writeFileSync(path.join(projectSettingsPath), projectSettingsStr)
+            fs.writeFileSync(projectSettingsPath, projectSettingsStr)
 
-            // PROJECT LOADED!
-            socket.emit('create_project', {
-                status: 'ok'
-            })
+            // Create XML
+            const workspaceStr = '<xml xmlns="https://developers.google.com/blockly/xml"><block type="base_start" deletable="false" movable="false"></block></xml>'
+            const workspacePath = path.join(projectPath, global.WORKSPACE_XML)
+            fs.writeFileSync(workspacePath, workspaceStr)
 
+            // PROJECT CREATED!
             global.projectLoaded = true
             global.projectName = projectName
             global.projectPath = projectPath
-        });
+            global.xml = workspaceStr
+            global.code = maincpp
+
+            socket.emit('create_project', {
+                status: 'ok'
+            })
+        })
     })
 
     // Change Project
@@ -255,6 +325,7 @@ io.on("connection", (socket) => {
                 if(validProject){
                     console.log(`\nLoading Project: ${f[0]}\n`)
 
+                    // Read Project Settings
                     let projectSettings = {}
                     try{
                         projectSettings = JSON.parse(fs.readFileSync(projectSettingsFilePath, 'utf8'))
@@ -270,6 +341,29 @@ io.on("connection", (socket) => {
                     global.projectName = projectSettings.projectName + ''
                     global.projectPath = f[0] + path.sep
 
+                    // Read XML
+                    try{
+                        global.xml = fs.readFileSync(path.join(f[0], global.WORKSPACE_XML), 'utf8')
+                    }
+                    catch(err){
+                        socket.emit('change_project', {
+                            error: 'Invalid Project File'
+                        })
+                        return;
+                    }
+
+                    // Read Code
+                    try{
+                        global.code = fs.readFileSync(path.join(f[0], global.MAIN_CPP), 'utf8')
+                    }
+                    catch(err){
+                        socket.emit('change_project', {
+                            error: 'Invalid Project File'
+                        })
+                        return;
+                    }
+
+                    // OK
                     socket.emit('change_project', {
                         status: 'ok'
                     })
@@ -316,6 +410,7 @@ io.on("connection", (socket) => {
     // Upload Code
     socket.on('upload', (data) => {
 
+        // --------
         if(global.uploading){
             console.log('Upload in progres. Please wait...')
             socket.emit('term', '')
@@ -323,8 +418,11 @@ io.on("connection", (socket) => {
             socket.emit('term', '')
             return
         }
-        global.uploading = true
 
+        // Disable monitor
+        killMonitor(socket)
+
+        // --------
         console.log()
         console.log('---------------- UPLOAD ----------------')
         console.log('PORT: ' + data.port)
@@ -333,24 +431,7 @@ io.on("connection", (socket) => {
         console.log('----------------------------------------')
         console.log()
 
-        // Pio Location
-        let pioLocation = null
-        if(process.platform === 'win32'){
-            pioLocation =  path.join(getAppPath(), '/extra_resources/windows/.platformio/penv/Scripts/pio.exe')
-        }
-        else if(process.platform === 'darwin'){
-            pioLocation =  path.join(getAppPath(), '/extra_resources/mac/.platformio/penv/bin/pio')
-        }
-
-        let termCmd = ''
-        if(data.port === 'auto'){
-            termCmd = `${pioLocation} --target upload --project-dir ${global.projectPath}\n`
-        }
-        else{
-            termCmd = `${pioLocation} --target upload --upload-port ${data.port} --project-dir ${global.projectPath}\n`
-        }
-
-        socket.emit('term', termCmd)
+        // --------
         const cmd = ['run', '--target', 'upload']
         if(data.port !== 'auto'){
             cmd.push('--upload-port')
@@ -359,26 +440,35 @@ io.on("connection", (socket) => {
         cmd.push('--project-dir')
         cmd.push(global.projectPath)
 
-        const pio = spawn(pioLocation, cmd)
-        pio.stdout.on('data', data => {
-            console.log(data + '')
-            socket.emit('term', data + '')
-        })
-        pio.stderr.on('data', data => {
-            console.error(data + '')
-            socket.emit('term', data + '')
-        })
-        pio.on('error', (error) => {
-            console.error(`error: ${error.message}`);
-            socket.emit('term', `error: ${error.message}`)
-        });
-        pio.on('close', code => {
-            console.log(`child process exited with code ${code}`);
-            socket.emit('term', `child process exited with code ${code}`)
-            socket.emit('term', '')
-            socket.emit('term', '')
+        // --------
+        global.uploading = true
+        runPIO(socket, cmd, () => {
             global.uploading = false
-        });
+            runMonitor(socket, data.port);
+        })
+    })
+
+    // Save Project
+    socket.on('save', (data) => {
+        console.log('Saving Project...')
+
+        // Save main.cpp
+        const maincppPath = path.join(projectPath, global.MAIN_CPP)
+        fs.writeFileSync(maincppPath, data.code)
+
+        // Save XML
+        const workspacePath = path.join(projectPath, global.WORKSPACE_XML)
+        fs.writeFileSync(workspacePath, data.xml)
+    })
+
+    // Serial Status
+    socket.on('serial_status', (data) => {
+        if(data.enable){
+            runMonitor(socket, data.port);
+        }
+        else{
+            killMonitor(socket);
+        }
     })
 });
 

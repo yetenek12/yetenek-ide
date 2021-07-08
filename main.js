@@ -18,6 +18,9 @@ function createWindow() {
     // win.loadFile('index.html');
     win.loadURL('http://localhost:8000/');
 
+    // https://stackoverflow.com/questions/39091964/remove-menubar-from-electron-app
+    win.setMenuBarVisibility(false)
+
     //
     // win.webContents().openDevTools();
 

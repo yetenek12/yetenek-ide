@@ -20,7 +20,7 @@
     <script src="/blockly/blockly_compressed.js"></script>
     <script src="/blockly/blocks_compressed.js"></script>
     <script src="/blockly/arduino_compressed.js"></script>
-    <script src="/blockly/msg/js/en.js"></script>
+    <script src="/blockly/msg/js/tr.js"></script>
 
 </head>
 <body>
@@ -31,72 +31,96 @@
         </a> -->
         <h1 class="text-2xl text-white ml-4 mr-8">YETENEK IDE</h1>
 
-        <button class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="newProject()">New</button>
-        <button class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="loadProject()">Load</button>
-        <button class="h-10 bg-green-800 hover:bg-green-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" disabled="disabled" onclick="">Save</button>
+        <button class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="newProject()">Yeni</button>
+        <button class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="loadProject()">Aç</button>
+        <button id="btn-save" class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="saveProject()">Kaydet</button>
+
+        <label class="inline-flex items-center text-white">
+            <input id="autosave" type="checkbox" class="form-checkbox h-6 w-6 text-green-600" checked>
+            <span class="ml-2">Otomatik Kaydet</span>
+        </label>
         <span class="flex-grow"></span>
 
         <!-- <label for="upload-port" class="h-full bg-blue-600 text-white p-4">Upload Port:</label> -->
         <select id="upload-port" class="h-10 bg-blue-800 text-white pl-4 pr-4 rounded-md shadow-md border-2 border-r-0 border-gray-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; min-width: 10rem;">
-            <option value="auto">Auto</option>
+            <option value="auto">Otomatik</option>
         </select>
 
         <button 
             class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-6 rounded-md shadow-md border-2 border-gray-100 border-l-0" 
-            style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;" onclick="upload()">Upload
+            style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;" onclick="upload()">Yükle
         </button>
     </nav>
 
+    <!-- <div style="position: absolute; right: 16px; bottom: 16px;">
+        <img src="/logo_built_on_dark_with_bg.png" alt="Built with Blockly" style="max-height: 4rem;">
+    </div> -->
 
     <main>
+
+        <!-------------------------------- TOOLBOX -------------------------------->
         <xml id="toolbox" style="display: none">
-            <category name="Logic">
-              <block type="controls_if"></block>
-              <block type="logic_compare"></block>
-              <block type="logic_operation"></block>
-              <block type="logic_negate"></block>
-              <block type="logic_null"></block>
+
+            <!-------------------------------- TOOLBOX LOGIC -------------------------------->
+            <category name="Mantık">
+                <block type="controls_if"></block>
+                <block type="logic_compare"></block>
+                <block type="logic_operation"></block>
+                <block type="logic_negate"></block>
+                <block type="logic_null"></block>
             </category>
-            <category name="Control">
-              <block type="base_delay">
+
+            <!-------------------------------- TOOLBOX CONTROL -------------------------------->
+            <category name="Kontrol">
+                <block type="base_delay">
                 <value name="DELAY_TIME">
-                  <block type="math_number">
+                    <block type="math_number">
                     <field name="NUM">1000</field>
-                  </block>
+                    </block>
                 </value>
-              </block>
-              <block type="controls_for">
+                </block>
+                <block type="controls_for">
                 <value name="FROM">
-                  <block type="math_number">
+                    <block type="math_number">
                     <field name="NUM">1</field>
-                  </block>
+                    </block>
                 </value>
                 <value name="TO">
-                  <block type="math_number">
+                    <block type="math_number">
                     <field name="NUM">10</field>
-                  </block>
+                    </block>
                 </value>
-              </block>
-              <block type="controls_whileUntil"></block>
+                </block>
+                <block type="controls_whileUntil"></block>
             </category>
-            <category name="Math">
-              <block type="math_number"></block>
-              <block type="math_arithmetic"></block>
-              <block type="base_map">
+
+            <!-------------------------------- TOOLBOX MATH -------------------------------->
+            <category name="Matematik">
+                <block type="math_number"></block>
+                <block type="math_arithmetic"></block>
+                <block type="base_map">
                 <value name="DMAX">
-                  <block type="math_number">
+                    <block type="math_number">
                     <field name="NUM">180</field>
-                  </block>
+                    </block>
                 </value>
-              </block>
+                </block>
             </category>
-            <category name="Text">
-              <block type="text"></block>
+
+            <!-------------------------------- TOOLBOX TEXT -------------------------------->
+            <category name="Yazı">
+                <block type="text"></block>
             </category>
-            <category name="Variables" custom="VARIABLE"></category>
-            <category name="Functions" custom="PROCEDURE"></category>
+
+            <!-------------------------------- TOOLBOX VARIABLES -------------------------------->
+            <category name="Değişkenler" custom="VARIABLE"></category>
+
+            <!-------------------------------- TOOLBOX FUNCTIONS -------------------------------->
+            <category name="Fonksiyonlar" custom="PROCEDURE"></category>
             <sep></sep>
-            <category name="Input/Output">
+
+            <!-------------------------------- TOOLBOX IO -------------------------------->
+            <category name="Okuma / Yazma">
               <block type="inout_highlow"></block>
               <block type="inout_digital_write"></block>
               <block type="inout_digital_read"></block>
@@ -125,6 +149,27 @@
               <block type="inout_notone"></block>
               <block type="inout_buildin_led"></block>
             </category>
+            <sep></sep>
+
+            <!-------------------------------- TOOLBOX YETENEK -------------------------------->
+            <category name="YETENEK">
+                <!-- <block type="base_start"></block> -->
+                <block type="base_loop"></block>
+                <block type="variables_type"></block>
+                
+                <block type="renk_1"></block>
+                <block type="renk_2"></block>
+                <block type="renk_3"></block>
+                <block type="renk_4"></block>
+
+                <block type="tof_1"></block>
+                <block type="tof_2"></block>
+
+                <block type="sound_1"></block>
+                <block type="sound_2"></block>
+                <block type="sound_3"></block>
+                <block type="sound_4"></block>
+            </category>
             <category name="SensorKit Air"></category>
             <category name="SensorKit Color"></category>
             <category name="SensorKit Sound"></category>
@@ -140,72 +185,39 @@
               </block>
               <block type="servo_read_degrees"></block>
             </category>
-            <!-- <category name="Grove Analog">
-              <block type="grove_rotary_angle"></block>
-              <block type="grove_temporature_sensor"></block>
-              <block type="grove_sound_sensor"></block>
-              <block type="grove_thumb_joystick"></block>
-            </category>
-            <category name="Grove">
-              <block type="grove_led"></block>
-              <block type="grove_button"></block>
-              <block type="grove_relay"></block>
-              <block type="grove_tilt_switch"></block>
-              <block type="grove_piezo_buzzer"></block>
-              <block type="grove_pir_motion_sensor"></block>
-              <block type="grove_line_finder"></block>
-              <block type="grove_rgb_led"></block>
-              <block type="grove_ultrasonic_ranger"></block>
-            </category>
-            <category name="Grove LCD">
-              <block type="grove_serial_lcd_print">
-                <value name="TEXT">
-                  <block type="text">
-                    <field name="TEXT"></field>
-                  </block>
-                </value>
-                <value name="TEXT2">
-                  <block type="text">
-                    <field name="TEXT"></field>
-                  </block>
-                </value>
-                <value name="DELAY_TIME">
-                  <block type="math_number">
-                    <field name="NUM">1000</field>
-                  </block>
-                </value>
-              </block>
-              <block type="grove_serial_lcd_power"></block>
-              <block type="grove_serial_lcd_effect"></block>
-            </category>
-            <category name="Grove Motor">
-              <block type="grove_motor_shield"></block>
-            </category> -->
         </xml>
         
         <div class="" style="height: 100vh;">
             <div id="split-a" class="split" style="height: 300px">
-                <div id="split-0">
-                    <div id="blocklyDiv">
-                        <div class="project-title">
-                            <p id="project-name" class="text-2xl ml-2 font-bold"></p>
-                            <div class="float-right">
-                                <button class="bg-blue-800 hover:bg-blue-900 text-white p-2 m-2 mr-0 rounded-md shadow-md">&lt;&sol;&gt; Text Mode</button>
-                                <!-- <button class="bg-blue-800 hover:bg-blue-900 text-white p-2 m-2 mr-0 rounded-md shadow-md">[•] Visual Mode</button> -->
-                            </div>
-                        </div>                
+                <div id="split-0" style="position: relative;">
+                    <div id="blocklyDiv_fade"></div>
+                    <div id="blocklyDiv"></div>
+                    <div id="mode-div">
+                        <button id="btn-mode" class="bg-blue-800 hover:bg-green-600 text-white p-2 rounded-full shadow-md mode-text" onclick="toggleMode()"></button>
+                        <!-- <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg> -->
+                        <!-- &lt;&sol;&gt; Text Mode -->
+
+                        <!-- [•] Visual Mode -->
+                        <!-- <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg> -->
                     </div>
                 </div>
-                <div id="split-1">
+                <div id="split-1" style="position: relative;">
+                    <div id="codeDiv_fade"></div>
                     <div id="codeDiv"><div id="editor"></div></div>
                 </div>
             </div>
 
-            <div id="split-b">
-                <div id="serialDiv">
+            <div id="split-b" style="position: relative;">
+                <div id="serialDiv"></div>
+                <div id="serial-buttons-div">
+                    <button id="btn-serial" class="bg-blue-800 hover:bg-blue-900 text-white p-2 rounded-full shadow-md mode-text" onclick="toggleSerial()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </button>
 
+                    <button id="btn-lock" class="bg-green-600 hover:bg-green-800 text-white p-2 rounded-full shadow-md mode-text ml-2" onclick="toggleScrollLock()">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </button>
                 </div>
-                <!-- <button onclick="printCode()">Print Code</button> -->
             </div>
         </div>
     </main>
@@ -243,6 +255,33 @@
         window.editor = ace.edit("editor");
         //editor.setTheme("ace/theme/monokai");
         editor.session.setMode("ace/mode/c_cpp");
+
+        function toggleMode(){
+            const btnMode = document.getElementById('btn-mode')
+            const isTextMode = btnMode.classList.contains('mode-text') ? true : false;
+
+            // Text Mode --> Visual Mode
+            if(isTextMode){
+                console.log('Switching to Visual Mode.');
+                btnMode.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>'
+                btnMode.classList.remove('mode-text')
+                window.editor.setReadOnly(true)
+                document.getElementById('blocklyDiv_fade').style.display = 'none';
+                document.getElementById('codeDiv_fade').style.display = 'block';
+            }
+
+            // Visual Mode --> Text Mode
+            else{
+                console.log('Switching to Text Mode.');
+                btnMode.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>'
+                btnMode.classList.add('mode-text')
+                window.editor.setReadOnly(false)
+                document.getElementById('blocklyDiv_fade').style.display = 'block';
+                document.getElementById('codeDiv_fade').style.display = 'none';
+            }
+        }
+
+        toggleMode();
     </script>
     
     <!-- --------------------------------------------------------------------------------------------------------------------- -->
@@ -255,7 +294,7 @@
             // https://sweetalert2.github.io/recipe-gallery/login-form.html
             Swal.fire({
                 title: message,
-                html: `<input type="text" id="variable-name-input" class="swal2-input" placeholder="Variable Name" value="${defaultValue}">`,
+                html: `<input type="text" id="variable-name-input" class="swal2-input" placeholder="Değişken İsmi" value="${defaultValue}">`,
                 confirmButtonText: 'OK',
                 cancelButtonText: 'Cancel',
                 focusConfirm: false,
@@ -296,9 +335,20 @@
             console.log('Socket Disconnected.'); // TODO: Refresh Page?
         });
 
-        socket.on('term', (msg) => {
+        socket.on('term', (msg, type) => {
             console.log(msg)
-            document.getElementById('serialDiv').innerHTML += `<br/>${msg}`
+            if(type){
+                if(type === 'error'){
+                    document.getElementById('serialDiv').innerHTML += `<span class="text-red-400">${msg}</span><br/>`
+                }
+            }
+            else{
+                document.getElementById('serialDiv').innerHTML += `${msg}<br/>`
+            }
+
+            if(scrollLock){
+                document.getElementById('serialDiv').scrollTop = Number.MAX_SAFE_INTEGER;
+            }
         })
 
         socket.on('change_project', (data) => {
@@ -314,7 +364,12 @@
         function upload(){
             const portEl = document.getElementById('upload-port')
             const port = portEl.options[portEl.selectedIndex].value
-            const code = Blockly.Arduino.workspaceToCode(workspace)
+            // const code = Blockly.Arduino.workspaceToCode(workspace)
+            const code = window.editor.getValue()
+
+            if(!serialActive){
+                toggleSerial();
+            }
 
             socket.emit('upload', {
                 port, code
@@ -327,11 +382,6 @@
 
         function newProject(){
             window.location.replace(window.location.origin + "/create.html");
-        }
-
-        // save
-        function saveProject(){
-            
         }
 
         // ports
@@ -349,7 +399,7 @@
             const options = []
             
             const autoPortEl = document.createElement('option')
-            autoPortEl.innerHTML = 'Auto'
+            autoPortEl.innerHTML = 'Otomatik'
             autoPortEl.value = 'auto'
             autoPortEl.classList.add('text-xl')
             if(selectedPort == autoPortEl.value) autoPortEl.selected = 'selected'
@@ -371,8 +421,13 @@
 
         // init
         socket.on('init', (data) => {
-            // console.log(data)
-            document.getElementById('project-name').innerHTML = data.projectName
+            console.log('init: ', data)
+            document.title = "YETENEK IDE - " + data.projectName
+
+            importWorkspace(data.xml, workspace);
+
+            // window.editor.setValue('\n\n' + data.code);
+            // window.editor.gotoLine(999);
         })
         socket.emit('init')
     </script>
@@ -381,6 +436,17 @@
     <!-- APP -->
     <!-- --------------------------------------------------------------------------------------------------------------------- -->
     <script>
+
+        // Blockly Types
+        // Number, String
+        
+        // Arduino Types
+        // int, float, String
+
+        // INIT WORKSPACE
+        let workspaceDirty = false;
+        let scrollLock = true;
+        let serialActive = false;
         const workspace = Blockly.inject('blocklyDiv', {
             toolbox: document.getElementById('toolbox'),
             collapse: false,
@@ -398,110 +464,101 @@
             grid: { spacing: 20, length: 3, colour: '#ccc', snap: true }
         });
 
-        // var onresize = function(e) {
-        //     // Compute the absolute coordinates and dimensions of blocklyArea.
-        //     var element = blocklyArea;
-        //     var x = 0;
-        //     var y = 0;
-        //     do {
-        //         x += element.offsetLeft;
-        //         y += element.offsetTop;
-        //         element = element.offsetParent;
-        //     } while (element);
-
-        //     // Position blocklyDiv over blocklyArea.
-        //     blocklyDiv.style.left = x + 'px';
-        //     blocklyDiv.style.top = y + 'px';
-        //     blocklyDiv.style.width = blocklyArea.offsetWidth + 'px';
-        //     blocklyDiv.style.height = blocklyArea.offsetHeight + 'px';
-        //     Blockly.svgResize(workspace);
-        // };
-        // window.addEventListener('resize', onresize, false);
-        // onresize();
-        // Blockly.svgResize(workspace);
-
-        Blockly.Blocks['arduino_skeleton'] = {
-            init: function () {
-                this.appendStatementInput('SETUP').setCheck(null).appendField('setup');
-                this.appendStatementInput('LOOP').setCheck(null).appendField('loop');
-                this.setColour(290);
-                this.setTooltip('');
-                this.setHelpUrl('');
-            }
-        };
-
-        // const rootBlock = '<xml><block type="arduino_skeleton" deletable="false" movable="false"></block></xml>';
-        // Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(rootBlock), workspace);
-        // workspace.addChangeListener(Blockly.Events.disableOrphans);
-
-        // function printCode(){
-        //     var code = Blockly.Arduino.workspaceToCode(workspace);
-        //     console.log(code)
-        // }
-        // printCode()
-
-
-        function updateCodeView(){
-            //document.getElementById('editor').innerText = Blockly.Arduino.workspaceToCode(workspace);
-            window.editor.setValue('\n\n' + Blockly.Arduino.workspaceToCode(workspace));
-            window.editor.gotoLine(999);
+        function importWorkspace(txt, workspace){
+            const workspaceDom = Blockly.Xml.textToDom(txt)
+            Blockly.Xml.domToWorkspace(workspaceDom, workspace)
+            updateCodeView();
         }
+
+        function exportWorkspace(workspace){
+            const workspaceDom = Blockly.Xml.workspaceToDom(workspace)
+            const workspaceTxt = Blockly.Xml.domToPrettyText(workspaceDom)
+            return workspaceTxt
+        }
+
+        setInterval(() => {
+            if(document.getElementById('autosave').checked && workspaceDirty){
+                workspaceDirty = false;
+                saveProject();
+            }
+        }, 5000)
+
+        function saveProject(){
+            console.log('Saving Project...')
+            socket.emit('save', {
+                // code: Blockly.Arduino.workspaceToCode(workspace),
+                code: window.editor.getValue(),
+                xml: exportWorkspace(workspace)
+            })
+
+            const btnSave = document.getElementById('btn-save')
+            btnSave.classList.add('bg-blue-800', 'hover:bg-blue-900')
+            btnSave.classList.remove('bg-green-600', 'hover:bg-green-600')
+        }
+
+        // const rootBlock = '<xml><block type="base_start" deletable="false" movable="false"></block></xml>';
+        // Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(rootBlock), workspace);
+        workspace.addChangeListener(Blockly.Events.disableOrphans);
+
+        // UPDATE EDITOR
+        function updateCodeView(){
+            workspaceDirty = true;
+            window.editor.setValue(Blockly.Arduino.workspaceToCode(workspace));
+            window.editor.gotoLine(999);
+
+            if(!document.getElementById('autosave').checked){
+                const btnSave = document.getElementById('btn-save')
+                btnSave.classList.remove('bg-blue-800', 'hover:bg-blue-900')
+                btnSave.classList.add('bg-green-600', 'hover:bg-green-600')
+            }
+        }
+
         updateCodeView();
         workspace.addChangeListener(updateCodeView);
 
-        function updateSerialView(text, options = {clear: false}){
-            const serialView = document.getElementById('serialView')
-            if(options.clear) serialView.innerText = ''
+        // SCROLL LOCK
+        function toggleScrollLock(){
+            const btnLock = document.getElementById('btn-lock')
 
-            serialView.innerText = serialView.innerText + text
-            // serialView.innerHTML = serialView.innerHTML + text
+            // Disable scroll lock
+            if(scrollLock){
+                btnLock.classList.remove('bg-green-600', 'hover:bg-green-800')
+                btnLock.classList.add('bg-blue-800', 'hover:bg-blue-900')
+            }
+
+            // Enable scroll lock
+            else{
+                btnLock.classList.remove('bg-blue-800', 'hover:bg-blue-900')
+                btnLock.classList.add('bg-green-600', 'hover:bg-green-800')
+            }
+
+            scrollLock = !scrollLock;
         }
 
-        let isUploading = false;
-        async function uploadCode(){
-            if(isUploading) return false;
+        // SERIAL TOGGLE
+        function toggleSerial(){
+            const btnSerial = document.getElementById('btn-serial')
 
-            updateSerialView('Uploading...\n\n', {clear: true})
+            // Disable serial
+            if(serialActive){
+                btnSerial.classList.remove('bg-green-600', 'hover:bg-green-800')
+                btnSerial.classList.add('bg-blue-800', 'hover:bg-blue-900')
 
-            try{
-                const res = await fetch('http://localhost:8000/upload', {
-                    method: 'post'
-                })
-                const resData = await res.json()
-                if(resData.status !== 'ok'){
-                    isUploading = false;
-                    return false;
-                }
-
-                async function checkUploadProgress(){
-                    const res = await fetch('http://localhost:8000/upload-progress', {
-                        method: 'get'
-                    })
-                    const resData = await res.json()
-                    console.log(resData.buffer)
-
-                    if(!resData.finished){
-                        updateSerialView(resData.buffer)
-                        setTimeout(checkUploadProgress, 100)
-                    }
-                    else {
-                        updateSerialView(resData.buffer)
-                        console.log('Upload Finished.')
-                        isUploading = false;
-                        return true;
-                    }
-                }
-                setTimeout(checkUploadProgress, 100)
+                socket.emit('serial_status', {enable: false})
             }
-            catch(err){
-                updateSerialView(err)
+
+            // Enable serial
+            else{
+                btnSerial.classList.remove('bg-blue-800', 'hover:bg-blue-900')
+                btnSerial.classList.add('bg-green-600', 'hover:bg-green-800')
+
+                const portEl = document.getElementById('upload-port')
+                const port = portEl.options[portEl.selectedIndex].value
+                socket.emit('serial_status', {enable: true, port})
             }
-            finally{
-                isUploading = false;
-            }
+
+            serialActive = !serialActive
         }
     </script>
-
-    
 </body>
 </html>

@@ -35,6 +35,9 @@
     # You must have Python 3 installed and added to your path!
 
     cd blockly
+
+    npm install
+    npm install --only=dev
     npm run build
 ```
 

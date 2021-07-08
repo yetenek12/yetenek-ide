@@ -1,4 +1,7 @@
 module.exports = {
+    plugins: [
+        require('@tailwindcss/custom-forms')
+    ],
     theme: {
         screens: {
             'sm': '640px',
