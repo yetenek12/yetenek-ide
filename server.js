@@ -204,8 +204,8 @@ io.on("connection", (socket) => {
         if(data.showDialog){
             const f = dialog.showOpenDialogSync(global.win,{
                 properties: ['openDirectory'],
-                message: 'Create Project',
-                buttonLabel: 'Select'
+                message: 'Proje Oluştur',
+                buttonLabel: 'Seç'
             })
     
             // array of paths OR undefined
@@ -259,7 +259,7 @@ io.on("connection", (socket) => {
         const projectPath = data.projectPath
 
         if(projectName.length === 0){
-            projectName = 'New Project'
+            projectName = 'Yeni Proje'
         }
         
         // https://coderrocketfuel.com/article/check-if-a-directory-exists-in-node-js
@@ -268,7 +268,7 @@ io.on("connection", (socket) => {
             console.log("Directory exists.")
 
             socket.emit('create_project', {
-                error: 'Directory exists.'
+                error: 'Bu klasör zaten var.'
             })
             return;
         }
@@ -335,8 +335,8 @@ io.on("connection", (socket) => {
     socket.on('change_project', () => {
         const f = dialog.showOpenDialogSync(global.win,{
             properties: ['openDirectory'],
-            message: 'Change Project',
-            buttonLabel: 'Select Project'
+            message: 'Projeyi Aç',
+            buttonLabel: 'Aç'
         })
 
         if(f && f[0]){

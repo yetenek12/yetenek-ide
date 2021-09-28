@@ -23,10 +23,10 @@
 
     <div class="flex justify-center items-center h-screen bg-gray-50" style="background-image: url('texture_01.png'); background-repeat: repeat; background-size: 10vw, 10vw;">
         <div class="flex justify-center items-center w-72 h-72 m-8 rounded-lg bg-gray-200 border-blue-800 border-8 border-dashed cursor-pointer hover:bg-blue-200 hover:text-blue-800 font-bold" onclick="createProject();">
-            <p class="text-6xl m-8">NEW PROJECT</p>
+            <p class="text-6xl m-8">YENİ PROJE</p>
         </div>
         <div class="flex justify-center items-center w-72 h-72 m-8 rounded-lg bg-gray-200 border-gray-800 border-8 border-dashed cursor-pointer hover:bg-blue-200" onclick="loadProject();">
-            <p class="text-5xl m-8">LOAD PROJECT</p>
+            <p class="text-5xl m-8">PROJE AÇ</p>
         </div>
     </div>
 
@@ -71,7 +71,7 @@
             }
 
             else if(data.error){
-                promptError(data.error, 'Load Project Error')
+                promptError(data.error, 'Projeyi açarken hata oluştu.')
             }
         })
     </script>

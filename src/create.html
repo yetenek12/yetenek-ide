@@ -31,9 +31,9 @@
 
         <div class="bg-gray-50 w-3/5 rounded-lg shadow-lg">
             <div class="flex">
-                <h1 class="font-bold text-2xl m-4">+ Create New Project</h1>
+                <h1 class="font-bold text-2xl m-4">+ Yeni Proje Oluştur</h1>
                 <span class="flex-grow"></span>
-                <button class="mr-6 text-gray-800 text-lg" onclick="back()">&lt; Back</button>
+                <button class="mr-6 text-gray-800 text-lg" onclick="back()">&lt; Geri</button>
             </div>
             <hr>
 
@@ -43,11 +43,14 @@
 
             <div class="m-2 ml-4 mr-4 flex items-center">
                 <p id="project-path" class="w-full text-lg"></p>
-                <button id="select-btn" class="bg-gray-600 hover:bg-gray-800 p-2 m-2 text-white rounded-md shadow-md text-2xl">Select</button>
+                <button id="select-btn" class="bg-gray-600 hover:bg-gray-800 p-2 m-2 text-white rounded-md shadow-md text-2xl">Seç</button>
             </div>
 
-            <p id="message" class="m-4 text-blue-800 font-bold text-2xl"></p>
-            <button id="create-btn" class="bg-blue-600 hover:bg-blue-800 p-2 m-4 text-white rounded-md shadow-md text-2xl">Create Project</button>
+            <div>
+                <p id="message" class="m-4 text-blue-800 font-bold text-2xl"></p>
+                <div id="loading" style="display: none; float: left; margin-left: 8px;" class="lds-ring"><div></div><div></div><div></div><div></div></div>    
+            </div>
+            <button id="create-btn" class="bg-blue-600 hover:bg-blue-800 p-2 m-4 text-white rounded-md shadow-md text-2xl">Proje Oluştur</button>
         </div>
     </div>
 
@@ -82,6 +85,11 @@
                 msgEl.classList.add('text-red-800')
                 msgEl.classList.remove('text-blue-800')
                 msgEl.innerHTML = data.error
+
+                const loadingEl = document.getElementById('loading')
+                loadingEl.style.display = 'none'
+                const createBtn = document.getElementById('create-btn')
+                createBtn.style.display = 'inline'
 
                 document.getElementById('project-name').disabled = false
                 document.getElementById('select-btn').disabled = false
@@ -137,7 +145,12 @@
                 const msgEl = document.getElementById('message')
                 msgEl.classList.remove('text-red-800')
                 msgEl.classList.add('text-blue-800')
-                msgEl.innerHTML = "Creating New Project..."
+                msgEl.innerHTML = "Yeni Proje Oluşturuluyor..."
+
+                const loadingEl = document.getElementById('loading')
+                loadingEl.style.display = 'inline'
+                const createBtn = document.getElementById('create-btn')
+                createBtn.style.display = 'none'
 
                 socket.emit('create_project', getFormValues())
             })
