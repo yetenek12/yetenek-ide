@@ -35,9 +35,8 @@ const ps = new Shell({
 // ----------------------------------------------------------------------------
 if(process.platform === 'win32'){
     try{
-        fs.accessSync(projectPath)
+        fs.accessSync("C:\\.platformio")
         console.log("C:\\.platformio exists.")
-        return;
     }
     catch(err){
         console.log("Creating symlink for C:\\.platformio")
