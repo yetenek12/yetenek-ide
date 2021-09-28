@@ -1,6 +1,10 @@
 # YETENEK IDE
 
-🎱 NodeJS Version: **12**
+🎱 NodeJS Version: **12**  
+
+## Download
+
+[Releases](https://github.com/yetenek12/yetenek-ide/releases)
 
 ## Setup
 
@@ -54,6 +58,7 @@
 ```bash
     # Use a Windows machine
     # Delete /build folder from the project before every build!
+    # Default Install Location: "C:\Users\__USERNAME__\AppData\Local\Programs\YETENEK IDE"
 
     npm run rebuild-app
     npm run build-app

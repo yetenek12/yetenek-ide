@@ -14,6 +14,7 @@
         "express": "^4.17.1",
         "lodash": "^4.17.21",
         "morgan": "^1.10.0",
+        "node-powershell": "^4.0.0",
         "serialport": "^9.2.0",
         "socket.io": "^4.1.2"
     },

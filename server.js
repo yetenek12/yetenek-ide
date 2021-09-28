@@ -9,6 +9,7 @@ const fs = require('fs')
 const path = require('path')
 const _ = require('lodash')
 const SerialPort = require('serialport')
+const Shell = require('node-powershell')
 const { app: electronApp } = require('electron')
 
 // GLOBAL CONSTANTS
@@ -23,6 +24,33 @@ global.projectPath = ''
 global.xml = ''
 global.code = ''
 global.monitor = null
+
+const ps = new Shell({
+    executionPolicy: 'Bypass',
+    noProfile: true
+});
+
+// ----------------------------------------------------------------------------
+// Startup Check (Windows)
+// ----------------------------------------------------------------------------
+if(process.platform === 'win32'){
+    try{
+        fs.accessSync(projectPath)
+        console.log("C:\\.platformio exists.")
+        return;
+    }
+    catch(err){
+        console.log("Creating symlink for C:\\.platformio")
+        ps.addCommand(`Start-Process -WindowStyle hidden cmd -Verb RunAs -ArgumentList '/c mklink /d "C:\\.platformio" "${getAppPath() + '/extra_resources/windows/.platformio'}"'`);
+        ps.invoke()
+        .then(output => {
+            console.log(output);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }
+}
 
 // ----------------------------------------------------------------------------
 // Utils
