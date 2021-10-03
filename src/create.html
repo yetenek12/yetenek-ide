@@ -118,15 +118,23 @@
 
         document.addEventListener("DOMContentLoaded", () => {
 
+            document.getElementById("project-name").focus()
+
             // init
             socket.emit('create_form_update', {
                 projectName: '',
                 projectPath: ''
             })
 
-            // project name updated
+            // project name updated            
             document.getElementById("project-name").addEventListener('input', (e) => {
                 socket.emit('create_form_update', getFormValues())
+            })
+            document.getElementById("project-name").addEventListener('keyup', (e) => {
+                if(e.code == 'Enter'){
+                    e.preventDefault()
+                    createProject()
+                }
             })
 
             // click project path select btn
@@ -139,6 +147,10 @@
 
             // click create button
             document.getElementById("create-btn").addEventListener('click', (e) => {
+                createProject()
+            })
+
+            function createProject(){
                 document.getElementById('project-name').disabled = true
                 document.getElementById('select-btn').disabled = true
 
@@ -153,7 +165,7 @@
                 createBtn.style.display = 'none'
 
                 socket.emit('create_project', getFormValues())
-            })
+            }
         })
     </script>
 </body>

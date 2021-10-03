@@ -33,22 +33,31 @@ const ps = new Shell({
 // ----------------------------------------------------------------------------
 // Startup Check (Windows)
 // ----------------------------------------------------------------------------
-if(process.platform === 'win32'){
-    try{
-        fs.accessSync("C:\\.platformio")
-        console.log("C:\\.platformio exists.")
-    }
-    catch(err){
-        console.log("Creating symlink for C:\\.platformio")
-        ps.addCommand(`Start-Process -WindowStyle hidden cmd -Verb RunAs -ArgumentList '/c mklink /d "C:\\.platformio" "${getAppPath() + '/extra_resources/windows/.platformio'}"'`);
-        ps.invoke()
-        .then(output => {
-            console.log(output);
-        })
-        .catch(err => {
-            console.log(err);
-        });
-    }
+function createSymlink(){
+    return new Promise((resolve, reject) => {
+        if(process.platform === 'win32'){
+            try{
+                fs.accessSync("C:\\.platformio")
+                console.log("C:\\.platformio exists.")
+                resolve()
+            }
+            catch(err){
+                console.log("Creating symlink for C:\\.platformio")
+                const cmd = `Start-Process -WindowStyle hidden cmd -Verb RunAs -ArgumentList '/c mklink /d "C:\\.platformio" "${path.join(getAppPath(), '/extra_resources/windows/.platformio')}"'`
+                console.log(cmd)
+                ps.addCommand(cmd);
+                ps.invoke()
+                .then(output => {
+                    console.log(output);
+                    resolve()
+                })
+                .catch(err => {
+                    console.log(err);
+                    reject()
+                });
+            }
+        }
+    });
 }
 
 // ----------------------------------------------------------------------------
@@ -276,136 +285,154 @@ io.on("connection", (socket) => {
             console.log("Directory does not exist.")
         }
 
-        // Create directory
-        // https://joshtronic.com/2021/01/17/recursively-create-directories-with-nodejs/
-        fs.mkdirSync(projectPath, { recursive: true })
+        // create symlink (Elevate Privileges) (windows)
+        createSymlink()
+        .then(() => {
+            // Create directory
+            // https://joshtronic.com/2021/01/17/recursively-create-directories-with-nodejs/
+            fs.mkdirSync(projectPath, { recursive: true })
 
-        // Create pio project
-        const cmd = ['project', 'init', '--project-dir', projectPath]
-        runPIO(socket, cmd, () => {
-            // --------------------------------------------------------------------------
-            // Configure platformio.ini
-            const pioIniPath = path.join(projectPath, '/platformio.ini')
-            let pioIni = fs.readFileSync(pioIniPath, 'utf8')
-            pioIni += '\n'
-            pioIni += '[env:esp-wrover-kit]\n'
-            pioIni += 'platform = espressif32\n'
-            pioIni += 'board = esp-wrover-kit\n'
-            pioIni += 'framework = arduino\n'
-            pioIni += '\n'
-            fs.writeFileSync(path.join(pioIniPath), pioIni)
+            // Create pio project
+            const cmd = ['project', 'init', '--project-dir', projectPath]
+            runPIO(socket, cmd, () => {
+                // --------------------------------------------------------------------------
+                // Configure platformio.ini
+                const pioIniPath = path.join(projectPath, '/platformio.ini')
+                let pioIni = fs.readFileSync(pioIniPath, 'utf8')
+                pioIni += '\n'
+                pioIni += '[env:esp-wrover-kit]\n'
+                pioIni += 'platform = espressif32\n'
+                pioIni += 'board = esp-wrover-kit\n'
+                pioIni += 'framework = arduino\n'
+                pioIni += '\n'
+                fs.writeFileSync(path.join(pioIniPath), pioIni)
 
-            // Create main.cpp
-            const maincppPath = path.join(projectPath, global.MAIN_CPP)
-            let maincpp = ''
-            maincpp += '#include <Arduino.h>\n\n'
-            maincpp += 'void setup(){\n\n'
-            maincpp += '}\n\n'
-            maincpp += 'void loop(){\n\n'
-            maincpp += '}\n\n'
-            fs.writeFileSync(maincppPath, maincpp)
+                // Create main.cpp
+                const maincppPath = path.join(projectPath, global.MAIN_CPP)
+                let maincpp = ''
+                maincpp += '#include <Arduino.h>\n\n'
+                maincpp += 'void setup(){\n\n'
+                maincpp += '}\n\n'
+                maincpp += 'void loop(){\n\n'
+                maincpp += '}\n\n'
+                fs.writeFileSync(maincppPath, maincpp)
 
-            // Create Project Settings
-            const projectSettings = {}
-            projectSettings.projectName = projectName
+                // Create Project Settings
+                const projectSettings = {}
+                projectSettings.projectName = projectName
 
-            const projectSettingsPath = path.join(projectPath, global.PROJECT_SETTINGS)
-            const projectSettingsStr = JSON.stringify(projectSettings);
-            fs.writeFileSync(projectSettingsPath, projectSettingsStr)
+                const projectSettingsPath = path.join(projectPath, global.PROJECT_SETTINGS)
+                const projectSettingsStr = JSON.stringify(projectSettings);
+                fs.writeFileSync(projectSettingsPath, projectSettingsStr)
 
-            // Create XML
-            const workspaceStr = '<xml xmlns="https://developers.google.com/blockly/xml"><block type="base_start" deletable="false" movable="false"></block></xml>'
-            const workspacePath = path.join(projectPath, global.WORKSPACE_XML)
-            fs.writeFileSync(workspacePath, workspaceStr)
+                // Create XML
+                const workspaceStr = '<xml xmlns="https://developers.google.com/blockly/xml"><block type="base_start" deletable="false" movable="false"></block></xml>'
+                const workspacePath = path.join(projectPath, global.WORKSPACE_XML)
+                fs.writeFileSync(workspacePath, workspaceStr)
 
-            // PROJECT CREATED!
-            global.projectLoaded = true
-            global.projectName = projectName
-            global.projectPath = projectPath
-            global.xml = workspaceStr
-            global.code = maincpp
+                // PROJECT CREATED!
+                global.projectLoaded = true
+                global.projectName = projectName
+                global.projectPath = projectPath
+                global.xml = workspaceStr
+                global.code = maincpp
 
+                socket.emit('create_project', {
+                    status: 'ok'
+                })
+            })
+        })
+        .catch(() => {
+            console.error('Elevation Error!')
             socket.emit('create_project', {
-                status: 'ok'
+                error: 'İşlem Reddedildi.'
             })
         })
     })
 
     // Change Project
     socket.on('change_project', () => {
-        const f = dialog.showOpenDialogSync(global.win,{
-            properties: ['openDirectory'],
-            message: 'Projeyi Aç',
-            buttonLabel: 'Aç'
+
+        // create symlink (Elevate Privileges) (windows)
+        createSymlink()
+        .then(() => {
+            const f = dialog.showOpenDialogSync(global.win,{
+                properties: ['openDirectory'],
+                message: 'Projeyi Aç',
+                buttonLabel: 'Aç'
+            })
+    
+            if(f && f[0]){
+    
+                 // https://coderrocketfuel.com/article/check-if-a-directory-exists-in-node-js
+                try{
+                    fs.accessSync(f[0])
+                    
+                    const projectSettingsFilePath = path.join(f[0], global.PROJECT_SETTINGS)
+                    const pioIniFilePath = path.join(f[0], '/platformio.ini')
+    
+                    const validProject = fs.existsSync(projectSettingsFilePath) && fs.existsSync(pioIniFilePath)
+                    if(validProject){
+                        console.log(`\nLoading Project: ${f[0]}\n`)
+    
+                        // Read Project Settings
+                        let projectSettings = {}
+                        try{
+                            projectSettings = JSON.parse(fs.readFileSync(projectSettingsFilePath, 'utf8'))
+                        }
+                        catch(err){
+                            socket.emit('change_project', {
+                                error: 'Invalid Project File'
+                            })
+                            return;
+                        }
+    
+                        global.projectLoaded = true
+                        global.projectName = projectSettings.projectName + ''
+                        global.projectPath = f[0] + path.sep
+    
+                        // Read XML
+                        try{
+                            global.xml = fs.readFileSync(path.join(f[0], global.WORKSPACE_XML), 'utf8')
+                        }
+                        catch(err){
+                            socket.emit('change_project', {
+                                error: 'Invalid Project File'
+                            })
+                            return;
+                        }
+    
+                        // Read Code
+                        try{
+                            global.code = fs.readFileSync(path.join(f[0], global.MAIN_CPP), 'utf8')
+                        }
+                        catch(err){
+                            socket.emit('change_project', {
+                                error: 'Invalid Project File'
+                            })
+                            return;
+                        }
+    
+                        // OK
+                        socket.emit('change_project', {
+                            status: 'ok'
+                        })
+                    }
+                    else{
+                        console.log(`${f[0]} is not a YETENEK IDE Project Folder.`)
+                        socket.emit('change_project', {
+                            error: `${f[0]} YETENEK IDE Proje Klasörü değil.`
+                        })
+                    }
+                }
+                catch(err){
+                    console.log("Directory does not exist.")
+                }
+            }
         })
-
-        if(f && f[0]){
-
-             // https://coderrocketfuel.com/article/check-if-a-directory-exists-in-node-js
-            try{
-                fs.accessSync(f[0])
-                
-                const projectSettingsFilePath = path.join(f[0], global.PROJECT_SETTINGS)
-                const pioIniFilePath = path.join(f[0], '/platformio.ini')
-
-                const validProject = fs.existsSync(projectSettingsFilePath) && fs.existsSync(pioIniFilePath)
-                if(validProject){
-                    console.log(`\nLoading Project: ${f[0]}\n`)
-
-                    // Read Project Settings
-                    let projectSettings = {}
-                    try{
-                        projectSettings = JSON.parse(fs.readFileSync(projectSettingsFilePath, 'utf8'))
-                    }
-                    catch(err){
-                        socket.emit('change_project', {
-                            error: 'Invalid Project File'
-                        })
-                        return;
-                    }
-
-                    global.projectLoaded = true
-                    global.projectName = projectSettings.projectName + ''
-                    global.projectPath = f[0] + path.sep
-
-                    // Read XML
-                    try{
-                        global.xml = fs.readFileSync(path.join(f[0], global.WORKSPACE_XML), 'utf8')
-                    }
-                    catch(err){
-                        socket.emit('change_project', {
-                            error: 'Invalid Project File'
-                        })
-                        return;
-                    }
-
-                    // Read Code
-                    try{
-                        global.code = fs.readFileSync(path.join(f[0], global.MAIN_CPP), 'utf8')
-                    }
-                    catch(err){
-                        socket.emit('change_project', {
-                            error: 'Invalid Project File'
-                        })
-                        return;
-                    }
-
-                    // OK
-                    socket.emit('change_project', {
-                        status: 'ok'
-                    })
-                }
-                else{
-                    console.log(`${f[0]} is not a YETENEK IDE Project Folder.`)
-                    socket.emit('change_project', {
-                        error: `${f[0]} is not a YETENEK IDE Project Folder.`
-                    })
-                }
-            }
-            catch(err){
-                console.log("Directory does not exist.")
-            }
-        }
+        .catch(() => {
+            console.error('Elevation Error!')
+        })
     })
 
     // Port List
