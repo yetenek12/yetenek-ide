@@ -23,14 +23,6 @@ function createWindow() {
 
     //
     // win.webContents().openDevTools();
-
-    // https://stackoverflow.com/questions/49250638/serialport-npm-list-of-available-com-ports
-    // https://stackoverflow.com/questions/46384591/node-was-compiled-against-a-different-node-js-version-using-node-module-versio
-    // npm run rebuild
-    // const serialPort = require('serialport')
-    // serialPort.list().then(function (data) {
-    //     console.log(data);  
-    // });
 }
 
 app.whenReady().then(createWindow);
