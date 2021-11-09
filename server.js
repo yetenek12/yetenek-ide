@@ -25,10 +25,10 @@ global.xml = ''
 global.code = ''
 global.monitor = null
 
-const ps = new Shell({
-    executionPolicy: 'Bypass',
-    noProfile: true
-});
+// const ps = new Shell({
+//     executionPolicy: 'Bypass',
+//     noProfile: true
+// });
 
 // ----------------------------------------------------------------------------
 // Startup Check (Windows)
@@ -56,6 +56,9 @@ function createSymlink(){
                     reject()
                 });
             }
+        }
+        else{
+            resolve()
         }
     });
 }
