@@ -14,6 +14,7 @@
 
     git submodule init
     git submodule update
+    git submodule update --init --recursive
 
     npm install
     npm install --only=dev
@@ -23,10 +24,12 @@
 
     # If you are on Windows:
     # Copy .platformio folder to /extra_resources/windows/.platformio
+    # Copy yetenek12-library submodule into /extra_resources/windows/.platformio/platforms/packages/framework-arduinoespressif32/libraries
     # Make sure /extra_resources/mac/ folder is empty!
 
     # If you are on Mac OS:
     # Copy .platformio folder to /extra_resources/mac/.platformio
+    # Copy yetenek12-library submodule into /extra_resources/windows/.platformio/platforms/packages/framework-arduinoespressif32/libraries
     # Make sure /extra_resources/windows/ folder is empty!
 ```
 
