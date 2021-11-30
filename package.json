@@ -1,7 +1,7 @@
 {
     "name": "yetenek-ide",
     "main": "main.js",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "private": true,
     "scripts": {
         "start": "electron ./main.js",
