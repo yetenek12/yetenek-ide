@@ -501,7 +501,7 @@ io.on("connection", (socket) => {
         global.uploading = true
         runPIO(socket, cmd, () => {
             global.uploading = false
-            runMonitor(socket, data.port);
+            // runMonitor(socket, data.port); // TODO fix me
         })
     })
 
