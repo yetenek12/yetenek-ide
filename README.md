@@ -75,6 +75,7 @@
     #
     # penv/bin/pio ve penv/bin/platformio dosyalarinin ilk satirindaki path'i duzenle
 
+    npm i -g electron-builder
     npm run rebuild-app
     npm run build-app
 ```
