@@ -13,7 +13,6 @@
     cd yetenek-ide
 
     git submodule init
-    git submodule update
     git submodule update --init --recursive
 
     npm install
@@ -73,9 +72,17 @@
     # Use a Mac OS machine
     # Delete /build folder from the project before every build!
     #
-    # penv/bin/pio ve penv/bin/platformio dosyalarinin ilk satirindaki path'i duzenle
+    # For include Platform IO;
+    # -> Install PlatformIO local computer
+    # -> Copy .platformio folder to yetenek-ide/extra_resources/mac
+    # -> Change first line in extra_resources/mac/.platformio/penv/bin/pio and platformio to
+    
+    #!/bin/sh
+    "exec" "`dirname $0`/python" "$0" "$@"
 
-    npm i -g electron-builder
+    [Issue: https://stackoverflow.com/a/33225909]
+
+    npm i -g electron-builder # If it is not installed
     npm run rebuild-app
     npm run build-app
 ```
