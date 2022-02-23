@@ -6,6 +6,7 @@ const socketIO = require("socket.io")
 const morgan = require('morgan')
 const { spawn } = require("child_process");
 const fs = require('fs')
+const fse = require('fs-extra');
 const path = require('path')
 const _ = require('lodash')
 const SerialPort = require('serialport')
@@ -25,10 +26,7 @@ global.xml = ''
 global.code = ''
 global.monitor = null
 
-// const ps = new Shell({
-//     executionPolicy: 'Bypass',
-//     noProfile: true
-// });
+
 
 // ----------------------------------------------------------------------------
 // Startup Check (Windows)
@@ -36,14 +34,35 @@ global.monitor = null
 function createSymlink(){
     return new Promise((resolve, reject) => {
         if(process.platform === 'win32'){
+            const ps = new Shell({
+                executionPolicy: 'Bypass',
+                noProfile: true
+            });
+
             try{
                 fs.accessSync("C:\\.platformio")
                 console.log("C:\\.platformio exists.")
-                resolve()
+
+                const stats = fs.lstatSync('C:\\.platformio')
+                if(stats.isSymbolicLink()){
+                    const linkTarget = fs.readlinkSync('C:\\.platformio')
+
+                    try{
+                        fs.accessSync(linkTarget)
+                        return resolve()
+                    }
+                    catch(err){}
+
+                    fs.unlinkSync('C:\\.platformio');
+                    console.log('successfully deleted C:\\.platformio');
+                    throw new Error('Recreate symlink')
+                }
+
+                return resolve()
             }
             catch(err){
                 console.log("Creating symlink for C:\\.platformio")
-                const cmd = `Start-Process -WindowStyle hidden cmd -Verb RunAs -ArgumentList '/c mklink /d "C:\\.platformio" "${path.join(getAppPath(), '/extra_resources/windows/.platformio')}"'`
+                const cmd = `Start-Process -WindowStyle hidden cmd -Verb RunAs -ArgumentList '/c mklink /d "C:\\.platformio" "${path.join(getAppPath(), '/extra_resources/.platformio')}"'`
                 console.log(cmd)
                 ps.addCommand(cmd);
                 ps.invoke()
@@ -80,10 +99,10 @@ function getAppPath(){
 function runPIO(socket, cmdArr, onClose, onStart){
     let pioLocation = null
     if(process.platform === 'win32'){
-        pioLocation =  path.join(getAppPath(), '/extra_resources/windows/.platformio/penv/Scripts/pio.exe')
+        pioLocation =  path.join(getAppPath(), '/extra_resources/.platformio/penv/Scripts/pio.exe')
     }
     else if(process.platform === 'darwin'){
-        pioLocation =  path.join(getAppPath(), '/extra_resources/mac/.platformio/penv/bin/pio')
+        pioLocation =  path.join(getAppPath(), '/extra_resources/.platformio/penv/bin/pio')
     }
 
     const msg = `${pioLocation} ${cmdArr.join(' ')}`
@@ -298,6 +317,18 @@ io.on("connection", (socket) => {
             // Create pio project
             const cmd = ['project', 'init', '--project-dir', projectPath]
             runPIO(socket, cmd, () => {
+                // --------------------------------------------------------------------------
+                // https://stackoverflow.com/questions/13786160/copy-folder-recursively-in-node-js
+                // https://www.npmjs.com/package/fs-extra
+                // Copy yetenek12-library to the project
+                try{
+                    fse.copySync(path.join(getAppPath(), '/extra_resources/yetenek12-library'), path.join(projectPath, '/lib/yetenek12-library'))
+                    console.log("yetenek12-library copied.");
+                }
+                catch(err){
+                    console.error('Copy yetenek12-library error: ' + err); 
+                }
+
                 // --------------------------------------------------------------------------
                 // Configure platformio.ini
                 const pioIniPath = path.join(projectPath, '/platformio.ini')
