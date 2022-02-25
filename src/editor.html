@@ -50,6 +50,10 @@
             class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-6 rounded-md shadow-md border-2 border-gray-100 border-l-0" 
             style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;" onclick="upload()">Yükle
         </button>
+        <button 
+            class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-6 rounded-md shadow-md border-2 border-gray-100" 
+            onclick="compile()">Derle
+        </button>
     </nav>
 
     <!-- <div style="position: absolute; right: 16px; bottom: 16px;">
@@ -404,6 +408,18 @@
 
             socket.emit('upload', {
                 port, code
+            })
+        }
+
+        function compile(){
+            const code = window.editor.getValue()
+
+            if(!serialActive){
+                toggleSerial();
+            }
+
+            socket.emit('compile', {
+                code
             })
         }
 

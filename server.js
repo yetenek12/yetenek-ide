@@ -536,6 +536,46 @@ io.on("connection", (socket) => {
         })
     })
 
+    // Compile Code
+    socket.on('compile', (data) => {
+
+        // --------
+        if(global.uploading){
+            console.log('Compile in progres. Please wait...')
+            socket.emit('term', '')
+            socket.emit('term', 'Compile in progres. Please wait...')
+            socket.emit('term', '')
+            return
+        }
+
+        // Disable monitor
+        killMonitor(socket)
+
+        // --------
+        console.log()
+        console.log('---------------- COMPILE ----------------')
+        console.log()
+        console.log(data.code)
+        console.log('----------------------------------------')
+        console.log()
+
+        // --------
+        const cmd = ['run']
+        // if(data.port !== 'auto'){
+        //     cmd.push('--upload-port')
+        //     cmd.push(data.port)
+        // }
+        cmd.push('--project-dir')
+        cmd.push(global.projectPath)
+
+        // --------
+        global.uploading = true
+        runPIO(socket, cmd, () => {
+            global.uploading = false
+            // runMonitor(socket, data.port); // TODO fix me
+        })
+    })
+
     // Save Project
     socket.on('save', (data) => {
         console.log('Saving Project...')
