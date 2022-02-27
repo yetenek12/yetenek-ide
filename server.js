@@ -140,7 +140,7 @@ function runPIO(socket, cmdArr, onClose, onStart){
     if(onStart) onStart(pio)
 }
 
-function runMonitor(socket, port){
+function runMonitor(socket, port, baud){
 
     // Kill existing
     killMonitor(socket);
@@ -151,9 +151,14 @@ function runMonitor(socket, port){
 
     // -------- SERIAL MONITOR
     const cmd = ['device', 'monitor']
-    if(port !== 'auto'){
+    if(port && port !== 'auto'){
         cmd.push('--port')
         cmd.push(port)
+    }
+
+    if(baud && baud !== 'auto'){
+        cmd.push('--baud')
+        cmd.push(baud)
     }
 
     // --------
@@ -592,7 +597,7 @@ io.on("connection", (socket) => {
     // Serial Status
     socket.on('serial_status', (data) => {
         if(data.enable){
-            runMonitor(socket, data.port);
+            runMonitor(socket, data.port, data.baud);
         }
         else{
             killMonitor(socket);

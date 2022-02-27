@@ -42,10 +42,25 @@
         <span class="flex-grow"></span>
 
         <!-- <label for="upload-port" class="h-full bg-blue-600 text-white p-4">Upload Port:</label> -->
-        <select id="baud-rate" class="h-10 bg-blue-800 text-white pl-4 pr-4 rounded-md shadow-md border-2 border-r-0 border-gray-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; min-width: 10rem;">
-            <option value="baud_300">300</option>
-            <option value="baud_600">600</option>
-            <option value="baud_1200">1200</option>
+        <span class="text-white font-bold bg-blue-800 h-10 pt-2 pr-2 pl-2 border-2 border-r-0 rounded-md" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">BAUD</span>
+        <select id="baud-rate" value="9600" class="h-10 bg-blue-800 text-white pl-2 pr-2 mr-8 rounded-md shadow-md border-2 border-gray-100" style="min-width: 4rem;">
+            <option selected value="auto">Otomatik</option>
+            <option value="300">300</option>
+            <option value="600">600</option>
+            <option value="1200">1200</option>
+            <option value="1800">1800</option>
+            <option value="2400">2400</option>
+            <option value="3600">3600</option>
+            <option value="4800">4800</option>
+            <option value="7200">7200</option>
+            <option value="9600">9600</option>
+            <option value="14400">14400</option>
+            <option value="19200">19200</option>
+            <option value="28800">28800</option>
+            <option value="38400">38400</option>
+            <option value="57600">57600</option>
+            <option value="115200">115200</option>
+            <option value="230400">230400</option>
         </select>
 
         <select id="upload-port" class="h-10 bg-blue-800 text-white pl-4 pr-4 rounded-md shadow-md border-2 border-r-0 border-gray-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; min-width: 10rem;">
@@ -616,7 +631,11 @@
 
                 const portEl = document.getElementById('upload-port')
                 const port = portEl.options[portEl.selectedIndex].value
-                socket.emit('serial_status', {enable: true, port})
+
+                const baudEl = document.getElementById('baud-rate')
+                const baud = baudEl.options[baudEl.selectedIndex].value
+
+                socket.emit('serial_status', {enable: true, port, baud})
             }
 
             serialActive = !serialActive
