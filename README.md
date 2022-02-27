@@ -11,6 +11,7 @@
 ```bash
     git clone --recursive git@github.com:yetenek12/yetenek-ide.git
     npm install --also=dev
+    npm run rebuild-app
 ```
 
 ## Run
