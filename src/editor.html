@@ -42,6 +42,12 @@
         <span class="flex-grow"></span>
 
         <!-- <label for="upload-port" class="h-full bg-blue-600 text-white p-4">Upload Port:</label> -->
+        <select id="baud-rate" class="h-10 bg-blue-800 text-white pl-4 pr-4 rounded-md shadow-md border-2 border-r-0 border-gray-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; min-width: 10rem;">
+            <option value="baud_300">300</option>
+            <option value="baud_600">600</option>
+            <option value="baud_1200">1200</option>
+        </select>
+
         <select id="upload-port" class="h-10 bg-blue-800 text-white pl-4 pr-4 rounded-md shadow-md border-2 border-r-0 border-gray-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; min-width: 10rem;">
             <option value="auto">Otomatik</option>
         </select>
@@ -237,7 +243,7 @@
                     </div>
                 </div>
                 <div id="split-1" style="position: relative;">
-                    <div id="codeDiv_fade"></div>
+                    <div id="codeDiv_fade" onclick="clickEditorFade()"></div>
                     <div id="codeDiv"><div id="editor"></div></div>
                 </div>
             </div>
@@ -290,6 +296,15 @@
         window.editor = ace.edit("editor");
         //editor.setTheme("ace/theme/monokai");
         editor.session.setMode("ace/mode/c_cpp");
+
+        function clickEditorFade(){
+            console.log("click editor fade")
+            const ico = '<svg class="w-16 h-16 mr-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>'
+            Swal.fire({
+                html: `<div class="flex items-center">${ico} Kod yazma özelliğini aktifleştirmek için küp butonu kullanın.</div>`,
+                confirmButtonText: 'Tamam'
+            })
+        }
 
         function toggleMode(){
             const btnMode = document.getElementById('btn-mode')
