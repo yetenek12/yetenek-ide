@@ -9,7 +9,7 @@ const fs = require('fs')
 const fse = require('fs-extra');
 const path = require('path')
 const _ = require('lodash')
-const SerialPort = require('serialport')
+const { SerialPort } = require('serialport')
 const Shell = require('node-powershell')
 const { app: electronApp } = require('electron')
 
@@ -152,8 +152,6 @@ function runPIO(socket, cmdArr, onClose, onStart){
 //     productId: '7523'
 // }
 function runMonitor2(socket, port, baud){
-    const { SerialPort } = require('serialport')
-
     // Kill existing
     killMonitor2(socket);
 
