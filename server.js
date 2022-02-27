@@ -174,6 +174,14 @@ function runMonitor2(socket, port, baud){
             baud = parseInt(baud, 10)
         }
 
+        if(!port){
+            const msg = `Serial monitor not found. Please connect the device.`
+            console.error(msg)
+            socket.emit('term', msg, 'error');
+            console.error(msg)
+            return
+        }
+
         const monitor = new SerialPort({ path: port, baudRate: baud })
         global.monitor = monitor
 
