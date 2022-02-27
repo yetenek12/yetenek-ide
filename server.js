@@ -9,7 +9,7 @@ const fs = require('fs')
 const fse = require('fs-extra');
 const path = require('path')
 const _ = require('lodash')
-const SerialPort = require('serialport')
+const { SerialPort } = require('serialport')
 const Shell = require('node-powershell')
 const { app: electronApp } = require('electron')
 
