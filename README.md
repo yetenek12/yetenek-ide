@@ -48,10 +48,11 @@
 ```bash
     # Use a Mac OS machine
     # Clear /build folder!
-    # Clear /extra_resources folder!
-    # Copy /yetenek-ide-pio-mac folder into /extra_resources as /.platformio
-    # Copy /yetenek12-library folder into /extra_resources as /yetenek12-library
-
+    chmod +x build.sh
+    ./build.sh
+    
+    # Disable Code Signing
+    export CSC_IDENTITY_AUTO_DISCOVERY=false
     npm run rebuild-app
     npm run build-app
 ```
