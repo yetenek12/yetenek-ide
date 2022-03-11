@@ -13,7 +13,8 @@
 
 ## Setup
 
-⚠️ Dont forget to include `.platformio` and `yetenek12-library` in `/extra_resources`. or run `build.bat` after first download (on Windows)
+⚠️ Dont forget to include `.platformio` and `yetenek12-library` in `/extra_resources` (If you dont, IDE will crash when creating or loading projects. 💣)  
+> On Windows, you can run `build.bat` after first download.
 
 ```bash
     git clone --recursive git@github.com:yetenek12/yetenek-ide.git
@@ -25,6 +26,26 @@
 
 ```bash
     npm run start
+```
+
+## Contribute
+
+Create a new branch from `dev`, make changes and then, create a [Pull Request.](https://github.com/yetenek12/yetenek-ide/pulls)  
+Ex:  
+```bash
+    git switch dev
+    git pull
+    git switch -c dev-myname-my-feature
+    # COMMIT CHANGES
+    # ...
+    git push --set-upstream origin dev-myname-my-feature
+    # COMMIT MORE CHANGES
+    #...
+    git push
+
+    # --------
+    # LIST BRANCHES
+    git branch -vav
 ```
 
 ## Building Blockly (ONLY IF YOU MADE CHANGES INSIDE `/blockly`! ⚠️)
