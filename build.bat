@@ -11,6 +11,9 @@ echo Clearing extra_resources directory...
 del /s /f /q extra_resources\*.*
 for /f %%f in ('dir /ad /b extra_resources\') do rd /s /q extra_resources\%%f
 
+rem if exist .\extra_resources\ echo "extra_resources exists"
+if not exist .\extra_resources\ echo "Creating extra_resources directory." && mkdir .\extra_resources\
+
 echo Copying yetenek-ide-pio-windows into extra_resources directory...
 xcopy ".\yetenek-ide-pio-windows\" ".\extra_resources\.platformio\" /e /i /y /c /q
 
