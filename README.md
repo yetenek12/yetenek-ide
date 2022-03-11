@@ -1,12 +1,19 @@
 # YETENEK IDE
 
-🎱 NodeJS Version: **12**
+🎱 NodeJS Version: **16.14.0 (LTS)**
+
+```bash
+    nvm install 16.14.0
+    nvm use 16.14.0
+```
 
 ## Download
 
 [Releases](https://github.com/yetenek12/yetenek-ide/releases)
 
 ## Setup
+
+⚠️ Dont forget to include `.platformio` and `yetenek12-library` in `/extra_resources`. or run `build.bat` after first download (on Windows)
 
 ```bash
     git clone --recursive git@github.com:yetenek12/yetenek-ide.git
@@ -20,7 +27,7 @@
     npm run start
 ```
 
-## Building Blockly
+## Building Blockly (ONLY IF YOU MADE CHANGES INSIDE `/blockly`! ⚠️)
 
 - Don't forget to commit submodule if you make any changes.
 - Arduino Blocks: **/blockly/blocks**
