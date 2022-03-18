@@ -487,17 +487,19 @@ io.on("connection", (socket) => {
         //         productId: '7523'
         //     }
         // ]
-        SerialPort.list()
-        .then((ports) => {
-            // console.log('SERIAL PORTS:')
-            // console.log(ports)
-            socket.emit('ports', {
-                ports
+        if(SerialPort){
+            SerialPort.list()
+            .then((ports) => {
+                // console.log('SERIAL PORTS:')
+                // console.log(ports)
+                socket.emit('ports', {
+                    ports
+                })
             })
-        })
-        .catch((err) => {
-            console.error(err)
-        })
+            .catch((err) => {
+                console.error(err)
+            })
+        }
     })
     
     // Upload Code
