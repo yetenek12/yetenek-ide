@@ -1,7 +1,7 @@
 {
     "name": "yetenek-ide",
     "main": "main.js",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "private": true,
     "scripts": {
         "start": "electron ./main.js",
@@ -28,7 +28,7 @@
     },
     "build": {
         "appId": "tr.com.ubit.yetenekide",
-        "productName": "YETENEK IDE",
+        "productName": "YETENEK",
         "buildDependenciesFromSource": true,
         "npmRebuild": false,
         "directories": {
