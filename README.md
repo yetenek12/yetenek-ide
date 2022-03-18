@@ -76,12 +76,10 @@ Ex:
 
 ```bash
     # Use a Mac OS machine
-    # Clear /build folder!
-    chmod +x build.sh
     ./build.sh
-    
-    # Disable Code Signing
-    export CSC_IDENTITY_AUTO_DISCOVERY=false
-    npm run rebuild-app
-    npm run build-app
 ```
+
+## Known Issues
+
+- Because of Python, there should be no spaces in the location where the program is installed. (Only for Mac)
+To fix: https://stackoverflow.com/questions/20095351/shebang-use-interpreter-relative-to-the-script-path/33225909#33225909
