@@ -150,6 +150,94 @@ function runPIO(socket, cmdArr, onClose, onStart){
     if(onStart) onStart(pio)
 }
 
+// -------- ARDUINO UNO (WINDOWS) --------
+// {
+//     path: 'COM4',
+//     manufacturer: 'wch.cn',
+//     serialNumber: '5&58ce05&0&1',
+//     pnpId: 'USB\\VID_1A86&PID_7523\\5&58CE05&0&1',
+//     locationId: 'Port_#0001.Hub_#0002',
+//     friendlyName: 'USB-SERIAL CH340 (COM4)',
+//     vendorId: '1A86',
+//     productId: '7523'
+// }
+function runMonitor2(socket, port, baud){
+    // Kill existing
+    killMonitor2(socket);
+
+    const msg = '-------- Starting Serial Monitor --------'
+    socket.emit('term', msg);
+    console.log(msg)
+
+    SerialPort.list()
+    .then(serials=> serials.length > 0 ? serials[0].path : null)
+    .then(defaultPort => {
+        if(!port || port === 'auto'){
+            port = defaultPort;
+        }
+        if(!baud || baud === 'auto'){
+            baud = 9600
+        }
+        else {
+            baud = parseInt(baud, 10)
+        }
+
+        if(!port){
+            const msg = `Serial monitor not found. Please connect the device.`
+            console.error(msg)
+            socket.emit('term', msg, 'error');
+            console.error(msg)
+            return
+        }
+
+        const monitor = new SerialPort({ path: port, baudRate: baud })
+        global.monitor = monitor
+
+        monitor.on('error', (e) => {
+            const msg = `Serial Monitor Error: ${e}`
+            console.error(msg)
+            socket.emit('term', msg, 'error');
+
+            console.error('Serial Monitor Error: ', e)
+        })
+        monitor.on('open', () => {
+            const msg = `Serial Monitor is now open. (${port}) (Baud: ${baud})`
+            console.log(msg)
+            socket.emit('term', msg);
+            // monitor.close()
+        })
+        monitor.on('close', () => {
+            const msg = `Serial Monitor closed: ${port}`
+            console.log(msg)
+            socket.emit('term', msg);
+        })
+        monitor.on('readable', () => {
+            const data = monitor.read()
+            console.log('Data: ', data)
+            socket.emit('term', data)
+        })
+
+        // console.log(monitor)
+        // monitor.close()
+    })
+    .catch(err => console.error(err))
+    // const monitor = new SerialPort({ path: '/dev/port', baudRate: 9600 })
+}
+
+function killMonitor2(socket){
+    if(global.monitor){
+        const msg = '-------- Closing Serial Monitor --------'
+        socket.emit('term', msg);
+        console.log(msg)
+
+        global.monitor.close((err) => {
+            if(err) console.error('Serialport close error: ', err)
+            else console.log('Serialport closed.')
+        })
+        global.monitor = null;
+    }
+}
+
 function runMonitor(socket, port, baud){
 
     // Kill existing
@@ -539,7 +627,8 @@ io.on("connection", (socket) => {
         }
 
         // Disable monitor
-        killMonitor(socket)
+        // killMonitor(socket)
+        killMonitor2(socket)
 
         // --------
         console.log()
@@ -563,7 +652,6 @@ io.on("connection", (socket) => {
         global.uploading = true
         runPIO(socket, cmd, () => {
             global.uploading = false
-            // runMonitor(socket, data.port); // TODO fix me
         })
     })
 
@@ -580,7 +668,8 @@ io.on("connection", (socket) => {
         }
 
         // Disable monitor
-        killMonitor(socket)
+        // killMonitor(socket)
+        killMonitor2(socket)
 
         // --------
         console.log()
@@ -603,7 +692,6 @@ io.on("connection", (socket) => {
         global.uploading = true
         runPIO(socket, cmd, () => {
             global.uploading = false
-            // runMonitor(socket, data.port); // TODO fix me
         })
     })
 
@@ -623,10 +711,12 @@ io.on("connection", (socket) => {
     // Serial Status
     socket.on('serial_status', (data) => {
         if(data.enable){
-            runMonitor(socket, data.port, data.baud);
+            // runMonitor(socket, data.port, data.baud);
+            runMonitor2(socket, data.port, data.baud);
         }
         else{
-            killMonitor(socket);
+            // killMonitor(socket);
+            killMonitor2(socket);
         }
     })
 });
