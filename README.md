@@ -1,12 +1,20 @@
 # YETENEK IDE
 
-🎱 NodeJS Version: **12**
+🎱 NodeJS Version: **16.14.0 (LTS)**
+
+```bash
+    nvm install 16.14.0
+    nvm use 16.14.0
+```
 
 ## Download
 
 [Releases](https://github.com/yetenek12/yetenek-ide/releases)
 
 ## Setup
+
+⚠️ Dont forget to include `.platformio` and `yetenek12-library` in `/extra_resources` (If you dont, IDE will crash when creating or loading projects. 💣)  
+> On Windows, you can run `build.bat` after first download.
 
 ```bash
     git clone --recursive git@github.com:yetenek12/yetenek-ide.git
@@ -20,7 +28,27 @@
     npm run start
 ```
 
-## Building Blockly
+## Contribute
+
+Create a new branch from `dev`, make changes and then, create a [Pull Request.](https://github.com/yetenek12/yetenek-ide/pulls)  
+Ex:  
+```bash
+    git switch dev
+    git pull
+    git switch -c dev-myname-my-feature
+    # COMMIT CHANGES
+    # ...
+    git push --set-upstream origin dev-myname-my-feature
+    # COMMIT MORE CHANGES
+    #...
+    git push
+
+    # --------
+    # LIST BRANCHES
+    git branch -vav
+```
+
+## Building Blockly (ONLY IF YOU MADE CHANGES INSIDE `/blockly`! ⚠️)
 
 - Don't forget to commit submodule if you make any changes.
 - Arduino Blocks: **/blockly/blocks**
@@ -48,12 +76,10 @@
 
 ```bash
     # Use a Mac OS machine
-    # Clear /build folder!
-    chmod +x build.sh
     ./build.sh
-    
-    # Disable Code Signing
-    export CSC_IDENTITY_AUTO_DISCOVERY=false
-    npm run rebuild-app
-    npm run build-app
 ```
+
+## Known Issues
+
+- Because of Python, there should be no spaces in the location where the program is installed. (Only for Mac)
+To fix: https://stackoverflow.com/questions/20095351/shebang-use-interpreter-relative-to-the-script-path/33225909#33225909

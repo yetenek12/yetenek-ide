@@ -109,6 +109,7 @@ function runPIO(socket, cmdArr, onClose, onStart){
     console.log(msg)
     socket.emit('term', msg)
 
+    let err = null
     const pio = spawn(pioLocation, cmdArr)
     pio.stdout.on('data', data => {
         const msg = data + ''
@@ -125,7 +126,8 @@ function runPIO(socket, cmdArr, onClose, onStart){
         console.error(msg);
         socket.emit('term', msg)
 
-        if(onClose) onClose(error)
+        err = error
+        // if(onClose) onClose(error)
     });
     pio.on('close', code => {
         const msg = `child process exited with code ${code}`
@@ -134,7 +136,15 @@ function runPIO(socket, cmdArr, onClose, onStart){
         socket.emit('term', '')
         socket.emit('term', '')
 
-        if(onClose) onClose()
+        if(onClose) {
+            if(code === 0){
+                onClose()
+            }
+            else{
+                if(err) onClose(err)
+                else onClose(new Error(msg))
+            }
+        }
     });
 
     if(onStart) onStart(pio)
@@ -409,7 +419,21 @@ io.on("connection", (socket) => {
 
             // Create pio project
             const cmd = ['project', 'init', '--project-dir', projectPath]
-            runPIO(socket, cmd, () => {
+            runPIO(socket, cmd, (err) => {
+                console.log(err)
+                if(err){
+                    console.error('CREATE Project Error: ', err)
+                    socket.emit('create_project', {
+                        error: 'Create project failed.\n' + err.toString() + err.stack
+                    })
+                    return;
+                }
+                else{
+                    console.log('NO ERROR')
+                }
+
+                console.log('WTF')
+
                 // --------------------------------------------------------------------------
                 // https://stackoverflow.com/questions/13786160/copy-folder-recursively-in-node-js
                 // https://www.npmjs.com/package/fs-extra
@@ -575,17 +599,19 @@ io.on("connection", (socket) => {
         //         productId: '7523'
         //     }
         // ]
-        SerialPort.list()
-        .then((ports) => {
-            // console.log('SERIAL PORTS:')
-            // console.log(ports)
-            socket.emit('ports', {
-                ports
+        if(SerialPort){
+            SerialPort.list()
+            .then((ports) => {
+                // console.log('SERIAL PORTS:')
+                // console.log(ports)
+                socket.emit('ports', {
+                    ports
+                })
             })
-        })
-        .catch((err) => {
-            console.error(err)
-        })
+            .catch((err) => {
+                console.error(err)
+            })
+        }
     })
     
     // Upload Code
