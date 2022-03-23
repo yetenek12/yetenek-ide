@@ -321,7 +321,15 @@ io.on("connection", (socket) => {
 
             // Create pio project
             const cmd = ['project', 'init', '--project-dir', projectPath]
-            runPIO(socket, cmd, () => {
+            runPIO(socket, cmd, (err) => {
+                if(err){
+                    console.error('CREATE Project Error: ', err)
+                    socket.emit('create_project', {
+                        error: 'Create project failed.'
+                    })
+                    return;
+                }
+
                 // --------------------------------------------------------------------------
                 // https://stackoverflow.com/questions/13786160/copy-folder-recursively-in-node-js
                 // https://www.npmjs.com/package/fs-extra
