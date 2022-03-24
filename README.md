@@ -46,6 +46,10 @@ Ex:
     # --------
     # LIST BRANCHES
     git branch -vav
+
+    # https://stackoverflow.com/questions/10906554/how-do-i-revert-my-changes-to-a-git-submodule
+    # RESET SUBMODULE CHANGES
+    git restore . --recurse-submodules
 ```
 
 ## Building Blockly (ONLY IF YOU MADE CHANGES INSIDE `/blockly`! ⚠️)
