@@ -1,645 +1,653 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YETENEK IDE</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>YETENEK IDE</title>
 
-    <!-- Materialize -->
-    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
-    <!-- <link rel="preconnect" href="https://fonts.gstatic.com"> -->
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"> -->
+	<!-- Materialize -->
+	<!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
+	<!-- <link rel="preconnect" href="https://fonts.gstatic.com"> -->
+	<!-- <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"> -->
 
-    <!-- APP -->
-    <link rel="stylesheet" href="/tailwind.css">
-    <link rel="stylesheet" href="/index.css">
+	<!-- APP -->
+	<link rel="stylesheet" href="/tailwind.css">
+	<link rel="stylesheet" href="/index.css">
 
-    <!-- Blockly -->
-    <script src="/blockly/blockly_compressed.js"></script>
-    <script src="/blockly/blocks_compressed.js"></script>
-    <script src="/blockly/arduino_compressed.js"></script>
-    <script src="/blockly/msg/js/tr.js"></script>
+	<!-- Blockly -->
+	<script src="/blockly/blockly_compressed.js"></script>
+	<script src="/blockly/blocks_compressed.js"></script>
+	<script src="/blockly/arduino_compressed.js"></script>
+	<script src="/blockly/msg/js/tr.js"></script>
 
 </head>
 <body>
-    <nav class="flex items-center h-16 bg-blue-600 border-b-4 border-blue-800">
-        <!-- <a href="#" class="brand-logo">
-            <i class="material-icons">integration_instructions</i>
-            YETENEK IDE
-        </a> -->
-        <h1 class="text-2xl text-white ml-4 mr-8">YETENEK IDE</h1>
-
-        <button class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="newProject()">Yeni</button>
-        <button class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="loadProject()">Aç</button>
-        <button id="btn-save" class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="saveProject()">Kaydet</button>
-
-        <label class="inline-flex items-center text-white">
-            <input id="autosave" type="checkbox" class="form-checkbox h-6 w-6 text-green-600" checked>
-            <span class="ml-2">Otomatik Kaydet</span>
-        </label>
-        <span class="flex-grow"></span>
-
-        <!-- <label for="upload-port" class="h-full bg-blue-600 text-white p-4">Upload Port:</label> -->
-        <span class="text-white font-bold bg-blue-800 h-10 pt-2 pr-2 pl-2 border-2 border-r-0 rounded-md" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">BAUD</span>
-        <select id="baud-rate" value="9600" class="h-10 bg-blue-800 text-white pl-2 pr-2 mr-8 rounded-md shadow-md border-2 border-gray-100" style="min-width: 4rem;">
-            <option selected value="auto">Otomatik</option>
-            <option value="300">300</option>
-            <option value="600">600</option>
-            <option value="1200">1200</option>
-            <option value="1800">1800</option>
-            <option value="2400">2400</option>
-            <option value="3600">3600</option>
-            <option value="4800">4800</option>
-            <option value="7200">7200</option>
-            <option value="9600">9600</option>
-            <option value="14400">14400</option>
-            <option value="19200">19200</option>
-            <option value="28800">28800</option>
-            <option value="38400">38400</option>
-            <option value="57600">57600</option>
-            <option value="115200">115200</option>
-            <option value="230400">230400</option>
-        </select>
-
-        <select id="upload-port" class="h-10 bg-blue-800 text-white pl-4 pr-4 rounded-md shadow-md border-2 border-r-0 border-gray-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; min-width: 10rem;">
-            <option value="auto">Otomatik</option>
-        </select>
-
-        <button 
-            class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-6 rounded-md shadow-md border-2 border-gray-100 border-l-0" 
-            style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;" onclick="upload()">Yükle
-        </button>
-        <button 
-            class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-6 rounded-md shadow-md border-2 border-gray-100" 
-            onclick="compile()">Derle
-        </button>
-    </nav>
-
-    <!-- <div style="position: absolute; right: 16px; bottom: 16px;">
-        <img src="/logo_built_on_dark_with_bg.png" alt="Built with Blockly" style="max-height: 4rem;">
-    </div> -->
-
-    <main>
-
-        <!-------------------------------- TOOLBOX -------------------------------->
-        <xml id="toolbox" style="display: none">
-
-            <!-------------------------------- TOOLBOX LOGIC -------------------------------->
-            <category name="Mantık">
-                <block type="controls_if"></block>
-                <block type="logic_compare"></block>
-                <block type="logic_operation"></block>
-                <block type="logic_negate"></block>
-                <block type="logic_null"></block>
-            </category>
-
-            <!-------------------------------- TOOLBOX CONTROL -------------------------------->
-            <category name="Kontrol">
-                <block type="base_delay">
-                <value name="DELAY_TIME">
-                    <block type="math_number">
-                    <field name="NUM">1000</field>
-                    </block>
-                </value>
-                </block>
-                <block type="controls_for">
-                <value name="FROM">
-                    <block type="math_number">
-                    <field name="NUM">1</field>
-                    </block>
-                </value>
-                <value name="TO">
-                    <block type="math_number">
-                    <field name="NUM">10</field>
-                    </block>
-                </value>
-                </block>
-                <block type="controls_whileUntil"></block>
-            </category>
-
-            <!-------------------------------- TOOLBOX MATH -------------------------------->
-            <category name="Matematik">
-                <block type="math_number"></block>
-                <block type="math_arithmetic"></block>
-                <block type="base_map">
-                <value name="DMAX">
-                    <block type="math_number">
-                    <field name="NUM">180</field>
-                    </block>
-                </value>
-                </block>
-            </category>
-
-            <!-------------------------------- TOOLBOX TEXT -------------------------------->
-            <category name="Yazı">
-                <block type="text"></block>
-            </category>
-
-            <!-------------------------------- TOOLBOX VARIABLES -------------------------------->
-            <category name="Değişkenler" custom="VARIABLE"></category>
-
-            <!-------------------------------- TOOLBOX FUNCTIONS -------------------------------->
-            <category name="Fonksiyonlar" custom="PROCEDURE"></category>
-            <sep></sep>
-
-            <!-------------------------------- TOOLBOX IO -------------------------------->
-            <category name="Okuma / Yazma">
-              <block type="inout_highlow"></block>
-              <block type="inout_digital_write"></block>
-              <block type="inout_digital_read"></block>
-              <block type="inout_analog_write">
-                <value name="NUM">
-                  <block type="math_number">
-                    <field name="NUM">0</field>
-                  </block>
-                </value>
-              </block>
-              <block type="inout_analog_read"></block>
-              <block type="serial_print">
-                <value name="CONTENT">
-                  <block type="text">
-                    <field name="TEXT"></field>
-                  </block>
-                </value>
-              </block>
-              <block type="inout_tone">
-                <value name="NUM">
-                  <block type="math_number">
-                    <field name="NUM">440</field>
-                  </block>
-                </value>
-              </block>
-              <block type="inout_notone"></block>
-              <block type="inout_buildin_led"></block>
-            </category>
-            <sep></sep>
-
-            <!-------------------------------- TOOLBOX YETENEK -------------------------------->
-            <category name="YETENEK">
-                <!-- <block type="base_start"></block> -->
-                <block type="base_loop"></block>
-                <block type="variables_type"></block>
-                <block type="y12_init"></block>
-                <!-- <block type="buzzer_on_off"></block> -->
-            </category>
-
-            <!-------------------------------- TOOLBOX IO BOARD -------------------------------->
-            <category name="IO BOARD">
-                <block type="y12_get_digital_io"></block>
-                <block type="y12_set_digital_io"></block>
-                <block type="y12_get_adc"></block>
-                <block type="y12_get_adc_voltage"></block>
-            </category>
-
-            <!-------------------------------- TOOLBOX AIR MIC SGP -------------------------------->
-            <category name="AIR MIC SGP">
-                <block type="y12_get_air_temperature"></block>
-                <block type="y12_get_air_humidity"></block>
-                <block type="y12_get_air_pressure"></block>
-                <block type="y12_get_altitude"></block>
-                
-                <block type="y12_get_mic_db"></block>
-                <block type="y12_get_mic_hz"></block>
-                <block type="y12_get_co2"></block>
-                <block type="y12_get_tvoc"></block>
-                <block type="y12_get_H2"></block>
-                <block type="y12_get_ethanol"></block>
-            </category>
-
-             <!-------------------------------- TOOLBOX TOF RGB UV -------------------------------->
-             <category name="TOF RGB UV">
-                <block type="y12_get_distance"></block>
-                <block type="y12_get_uva"></block>
-                <block type="y12_get_uvb"></block>
-                <block type="y12_get_uv_index"></block>
-                <block type="y12_get_color_red"></block>
-                <block type="y12_get_color_green"></block>
-                <block type="y12_get_color_blue"></block>
-                <block type="y12_get_color_temp"></block>
-                <block type="y12_get_color_lux"></block>
-                <block type="y12_get_ir"></block>
-            </category>
-
-            <!-- 
-                <category name="SensorKit Air"></category>
-            <category name="SensorKit Color"></category>
-            <category name="SensorKit Sound"></category>
-            <category name="SensorKit ToF"></category>
-             -->
-
-            <!-- 
-                <category name="Servo">
-              <block type="servo_move">
-                <value name="DEGREE">
-                  <block type="math_number">
-                    <field name="NUM">0</field>
-                  </block>
-                </value>
-              </block>
-              <block type="servo_read_degrees"></block>
-            </category>
-         -->
-        </xml>
-        
-        <div class="" style="height: 100vh;">
-            <div id="split-a" class="split" style="height: 300px">
-                <div id="split-0" style="position: relative;">
-                    <div id="blocklyDiv_fade"></div>
-                    <div id="blocklyDiv"></div>
-                    <div id="mode-div">
-                        <button id="btn-mode" class="bg-blue-800 hover:bg-green-600 text-white p-2 rounded-full shadow-md mode-text" onclick="toggleMode()"></button>
-                        <!-- <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg> -->
-                        <!-- &lt;&sol;&gt; Text Mode -->
-
-                        <!-- [•] Visual Mode -->
-                        <!-- <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg> -->
-                    </div>
-                </div>
-                <div id="split-1" style="position: relative;">
-                    <div id="codeDiv_fade" onclick="clickEditorFade()"></div>
-                    <div id="codeDiv"><div id="editor"></div></div>
-                </div>
-            </div>
-
-            <div id="split-b" style="position: relative;">
-                <div id="serialDiv"></div>
-                <div id="serial-buttons-div">
-                    <button id="btn-serial" class="bg-blue-800 hover:bg-blue-900 text-white p-2 rounded-full shadow-md mode-text" onclick="toggleSerial()">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    </button>
-
-                    <button id="btn-lock" class="bg-green-600 hover:bg-green-800 text-white p-2 rounded-full shadow-md mode-text ml-2" onclick="toggleScrollLock()">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <!-- SPLIT JS -->
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.2/split.min.js"></script>
-    <script>
-        Split(['#split-a', '#split-b'], {
-            direction: 'vertical',
-            minSize: 200,
-            // gutterSize: 15,
-            sizes: [70, 30],
-            onDrag: () => {
-                Blockly.svgResize(workspace);
-            }
-        })
-        Split(['#split-0', '#split-1'], {
-            minSize: 300,
-            // gutterSize: 15,
-            sizes: [70, 30],
-            onDrag: () => {
-                Blockly.svgResize(workspace);
-            }
-        })
-    </script>
-
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <!-- Ace Editor -->
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <script src="https://pagecdn.io/lib/ace/1.4.12/ace.min.js" crossorigin="anonymous" integrity="sha256-T5QdmsCQO5z8tBAXMrCZ4f3RX8wVdiA0Fu17FGnU1vU=" ></script>
-    <script>
-        ace.config.set("basePath", "https://pagecdn.io/lib/ace/1.4.12/");
-        window.editor = ace.edit("editor");
-        //editor.setTheme("ace/theme/monokai");
-        editor.session.setMode("ace/mode/c_cpp");
-
-        function clickEditorFade(){
-            console.log("click editor fade")
-            const ico = '<svg class="w-16 h-16 mr-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>'
-            Swal.fire({
-                html: `<div class="flex items-center">${ico} Kod yazma özelliğini aktifleştirmek için küp butonu kullanın.</div>`,
-                confirmButtonText: 'Tamam'
-            })
-        }
-
-        function toggleMode(){
-            const btnMode = document.getElementById('btn-mode')
-            const isTextMode = btnMode.classList.contains('mode-text') ? true : false;
-
-            // Text Mode --> Visual Mode
-            if(isTextMode){
-                console.log('Switching to Visual Mode.');
-                btnMode.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>'
-                btnMode.classList.remove('mode-text')
-                window.editor.setReadOnly(true)
-                document.getElementById('blocklyDiv_fade').style.display = 'none';
-                document.getElementById('codeDiv_fade').style.display = 'block';
-            }
-
-            // Visual Mode --> Text Mode
-            else{
-                console.log('Switching to Text Mode.');
-                btnMode.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>'
-                btnMode.classList.add('mode-text')
-                window.editor.setReadOnly(false)
-                document.getElementById('blocklyDiv_fade').style.display = 'block';
-                document.getElementById('codeDiv_fade').style.display = 'none';
-            }
-        }
-
-        toggleMode();
-    </script>
-    
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <!-- Sweet Alert -->
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        // /blockly/core/blockly.js (362)
-        Blockly.prompt = function(message, defaultValue, callback){
-            // https://sweetalert2.github.io/recipe-gallery/login-form.html
-            Swal.fire({
-                title: message,
-                html: `<input type="text" id="variable-name-input" class="swal2-input" placeholder="Değişken İsmi" value="${defaultValue}">`,
-                confirmButtonText: 'OK',
-                cancelButtonText: 'Cancel',
-                focusConfirm: false,
-                preConfirm: () => {
-                    const variableName = Swal.getPopup().querySelector('#variable-name-input').value
-                    return variableName
-                }
-            })
-            .then((result) => {
-                console.log(result.value)
-                callback(result.value)
-            })
-        }
-
-        // https://sweetalert2.github.io/
-        function promptError(error, title = 'Error'){
-            Swal.fire({
-                icon: 'error',
-                title: title,
-                text: error,
-                // footer: '<a href="">Why do I have this issue?</a>'
-            })
-        }
-    </script>
-
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <!-- Socket IO -->
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <script src="https://cdn.socket.io/4.1.1/socket.io.min.js" integrity="sha384-cdrFIqe3RasCMNE0jeFG9xJHog/tgOVC1E9Lzve8LQN1g5WUHo0Kvk1mawWjxX7a" crossorigin="anonymous"></script>
-    <script>
-        const socket = io();
-        
-        socket.on('connect', () => {
-            console.log(`Socket Connected: ${socket.id}`);
-        });
-
-        socket.on('disconnect', () => {
-            console.log('Socket Disconnected.'); // TODO: Refresh Page?
-        });
-
-        socket.on('term', (msg, type) => {
-            console.log(msg)
-            if(type){
-                if(type === 'error'){
-                    document.getElementById('serialDiv').innerHTML += `<span class="text-red-400">${msg}</span><br/>`
-                }
-            }
-            else{
-                document.getElementById('serialDiv').innerHTML += `${msg}<br/>`
-            }
-
-            if(scrollLock){
-                document.getElementById('serialDiv').scrollTop = Number.MAX_SAFE_INTEGER;
-            }
-        })
-
-        socket.on('change_project', (data) => {
-            if(data.status === 'ok'){
-                window.location.replace(window.location.origin + "/editor.html");
-            }
-
-            else if(data.error){
-                promptError(data.error, 'Load Project Error')
-            }
-        })
-
-        function upload(){
-            const portEl = document.getElementById('upload-port')
-            const port = portEl.options[portEl.selectedIndex].value
-            // const code = Blockly.Arduino.workspaceToCode(workspace)
-            const code = window.editor.getValue()
-
-            if(!serialActive){
-                toggleSerial();
-            }
-
-            socket.emit('upload', {
-                port, code
-            })
-        }
-
-        function compile(){
-            const code = window.editor.getValue()
-
-            if(!serialActive){
-                toggleSerial();
-            }
-
-            socket.emit('compile', {
-                code
-            })
-        }
-
-        function loadProject(){
-            socket.emit('change_project')
-        }
-
-        function newProject(){
-            window.location.replace(window.location.origin + "/create.html");
-        }
-
-        // ports
-        document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById('upload-port').addEventListener('click', () => {
-                socket.emit('ports')
-            })
-        })
-
-        socket.on('ports', (data) => {
-            const portSelectEl = document.getElementById('upload-port')
-            portSelectEl.classList.add('bg-green-800')
-            const selectedPort = portSelectEl.options[portSelectEl.selectedIndex].value
-            portSelectEl.innerHTML = ''
-            const options = []
-            
-            const autoPortEl = document.createElement('option')
-            autoPortEl.innerHTML = 'Otomatik'
-            autoPortEl.value = 'auto'
-            autoPortEl.classList.add('text-xl')
-            if(selectedPort == autoPortEl.value) autoPortEl.selected = 'selected'
-            options.push(autoPortEl)
-
-            for(const port of data.ports){
-                const portEl = document.createElement('option')
-                portEl.innerHTML = port.path
-                portEl.value = port.path
-                portEl.classList.add('text-xl')
-                if(selectedPort == portEl.value) portEl.selected = 'selected'
-                options.push(portEl)
-            }
-
-            for(const el of options){
-                portSelectEl.appendChild(el)
-            }
-        })
-
-        // init
-        socket.on('init', (data) => {
-            console.log('init: ', data)
-            document.title = "YETENEK IDE - " + data.projectName
-
-            importWorkspace(data.xml, workspace);
-
-            // window.editor.setValue('\n\n' + data.code);
-            // window.editor.gotoLine(999);
-        })
-        socket.emit('init')
-    </script>
-
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <!-- APP -->
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <script>
-
-        // Blockly Types
-        // Number, String
-        
-        // Arduino Types
-        // int, float, String
-
-        // INIT WORKSPACE
-        let workspaceDirty = false;
-        let scrollLock = true;
-        let serialActive = false;
-        const workspace = Blockly.inject('blocklyDiv', {
-            toolbox: document.getElementById('toolbox'),
-            collapse: false,
-            zoom: {
-                controls: true,
-                // wheel: true,
-                startScale: 1.0,
-                maxScale: 3,
-                minScale: 0.3,
-                scaleSpeed: 1.2,
-                pinch: true
-            },
-            trashcan: true,
-            scrollbars: true,
-            grid: { spacing: 20, length: 3, colour: '#ccc', snap: true }
-        });
-
-        function importWorkspace(txt, workspace){
-            const workspaceDom = Blockly.Xml.textToDom(txt)
-            Blockly.Xml.domToWorkspace(workspaceDom, workspace)
-            updateCodeView();
-        }
-
-        function exportWorkspace(workspace){
-            const workspaceDom = Blockly.Xml.workspaceToDom(workspace)
-            const workspaceTxt = Blockly.Xml.domToPrettyText(workspaceDom)
-            return workspaceTxt
-        }
-
-        setInterval(() => {
-            if(document.getElementById('autosave').checked && workspaceDirty){
-                workspaceDirty = false;
-                saveProject();
-            }
-        }, 5000)
-
-        function saveProject(){
-            console.log('Saving Project...')
-            socket.emit('save', {
-                // code: Blockly.Arduino.workspaceToCode(workspace),
-                code: window.editor.getValue(),
-                xml: exportWorkspace(workspace)
-            })
-
-            const btnSave = document.getElementById('btn-save')
-            btnSave.classList.add('bg-blue-800', 'hover:bg-blue-900')
-            btnSave.classList.remove('bg-green-600', 'hover:bg-green-600')
-        }
-
-        // const rootBlock = '<xml><block type="base_start" deletable="false" movable="false"></block></xml>';
-        // Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(rootBlock), workspace);
-        workspace.addChangeListener(Blockly.Events.disableOrphans);
-
-        // UPDATE EDITOR
-        function updateCodeView(){
-            workspaceDirty = true;
-            window.editor.setValue(Blockly.Arduino.workspaceToCode(workspace));
-            window.editor.gotoLine(999);
-
-            if(!document.getElementById('autosave').checked){
-                const btnSave = document.getElementById('btn-save')
-                btnSave.classList.remove('bg-blue-800', 'hover:bg-blue-900')
-                btnSave.classList.add('bg-green-600', 'hover:bg-green-600')
-            }
-        }
-
-        updateCodeView();
-        workspace.addChangeListener(updateCodeView);
-
-        // SCROLL LOCK
-        function toggleScrollLock(){
-            const btnLock = document.getElementById('btn-lock')
-
-            // Disable scroll lock
-            if(scrollLock){
-                btnLock.classList.remove('bg-green-600', 'hover:bg-green-800')
-                btnLock.classList.add('bg-blue-800', 'hover:bg-blue-900')
-            }
-
-            // Enable scroll lock
-            else{
-                btnLock.classList.remove('bg-blue-800', 'hover:bg-blue-900')
-                btnLock.classList.add('bg-green-600', 'hover:bg-green-800')
-            }
-
-            scrollLock = !scrollLock;
-        }
-
-        // SERIAL TOGGLE
-        function toggleSerial(){
-            const btnSerial = document.getElementById('btn-serial')
-
-            // Disable serial
-            if(serialActive){
-                btnSerial.classList.remove('bg-green-600', 'hover:bg-green-800')
-                btnSerial.classList.add('bg-blue-800', 'hover:bg-blue-900')
-
-                socket.emit('serial_status', {enable: false})
-            }
-
-            // Enable serial
-            else{
-                btnSerial.classList.remove('bg-blue-800', 'hover:bg-blue-900')
-                btnSerial.classList.add('bg-green-600', 'hover:bg-green-800')
-
-                const portEl = document.getElementById('upload-port')
-                const port = portEl.options[portEl.selectedIndex].value
-
-                const baudEl = document.getElementById('baud-rate')
-                const baud = baudEl.options[baudEl.selectedIndex].value
-
-                socket.emit('serial_status', {enable: true, port, baud})
-            }
-
-            serialActive = !serialActive
-        }
-    </script>
+	<nav class="flex items-center h-16 bg-blue-600 border-b-4 border-blue-800">
+		<!-- <a href="#" class="brand-logo">
+			<i class="material-icons">integration_instructions</i>
+			YETENEK IDE
+		</a> -->
+		<h1 class="text-2xl text-white ml-4 mr-8">YETENEK IDE</h1>
+
+		<button class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="newProject()">Yeni</button>
+		<button class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="loadProject()">Aç</button>
+		<button id="btn-save" class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="saveProject()">Kaydet</button>
+
+		<label class="inline-flex items-center text-white">
+			<input id="autosave" type="checkbox" class="form-checkbox h-6 w-6 text-green-600" checked>
+			<span class="ml-2">Otomatik Kaydet</span>
+		</label>
+		<span class="flex-grow"></span>
+
+		<!-- <label for="upload-port" class="h-full bg-blue-600 text-white p-4">Upload Port:</label> -->
+		<span class="text-white font-bold bg-blue-800 h-10 pt-2 pr-2 pl-2 border-2 border-r-0 rounded-md" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">BAUD</span>
+		<select id="baud-rate" value="9600" class="h-10 bg-blue-800 text-white pl-2 pr-2 mr-8 rounded-md shadow-md border-2 border-gray-100" style="min-width: 4rem;">
+			<option selected value="auto">Otomatik</option>
+			<option value="300">300</option>
+			<option value="600">600</option>
+			<option value="1200">1200</option>
+			<option value="1800">1800</option>
+			<option value="2400">2400</option>
+			<option value="3600">3600</option>
+			<option value="4800">4800</option>
+			<option value="7200">7200</option>
+			<option value="9600">9600</option>
+			<option value="14400">14400</option>
+			<option value="19200">19200</option>
+			<option value="28800">28800</option>
+			<option value="38400">38400</option>
+			<option value="57600">57600</option>
+			<option value="115200">115200</option>
+			<option value="230400">230400</option>
+		</select>
+
+		<select id="upload-port" class="h-10 bg-blue-800 text-white pl-4 pr-4 rounded-md shadow-md border-2 border-r-0 border-gray-100" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px; min-width: 10rem;">
+			<option value="auto">Otomatik</option>
+		</select>
+
+		<button 
+			class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-6 rounded-md shadow-md border-2 border-gray-100 border-l-0" 
+			style="border-top-left-radius: 0px; border-bottom-left-radius: 0px;" onclick="upload()">Yükle
+		</button>
+		<button 
+			class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-6 rounded-md shadow-md border-2 border-gray-100" 
+			onclick="compile()">Derle
+		</button>
+	</nav>
+
+	<!-- <div style="position: absolute; right: 16px; bottom: 16px;">
+		<img src="/logo_built_on_dark_with_bg.png" alt="Built with Blockly" style="max-height: 4rem;">
+	</div> -->
+
+	<main>
+
+		<!-------------------------------- TOOLBOX -------------------------------->
+		<xml id="toolbox" style="display: none">
+
+			<!-------------------------------- TOOLBOX LOGIC -------------------------------->
+			<category name="Mantık">
+				<block type="controls_if"></block>
+				<block type="logic_compare"></block>
+				<block type="logic_operation"></block>
+				<block type="logic_negate"></block>
+				<block type="logic_null"></block>
+			</category>
+
+			<!-------------------------------- TOOLBOX CONTROL -------------------------------->
+			<category name="Kontrol">
+				<block type="base_delay">
+				<value name="DELAY_TIME">
+					<block type="math_number">
+					<field name="NUM">1000</field>
+					</block>
+				</value>
+				</block>
+				<block type="controls_for">
+				<value name="FROM">
+					<block type="math_number">
+					<field name="NUM">1</field>
+					</block>
+				</value>
+				<value name="TO">
+					<block type="math_number">
+					<field name="NUM">10</field>
+					</block>
+				</value>
+				</block>
+				<block type="controls_whileUntil"></block>
+			</category>
+
+			<!-------------------------------- TOOLBOX MATH -------------------------------->
+			<category name="Matematik">
+				<block type="math_number"></block>
+				<block type="math_arithmetic"></block>
+				<block type="base_map">
+				<value name="DMAX">
+					<block type="math_number">
+					<field name="NUM">180</field>
+					</block>
+				</value>
+				</block>
+			</category>
+
+			<!-------------------------------- TOOLBOX TEXT -------------------------------->
+			<category name="Yazı">
+				<block type="text"></block>
+			</category>
+
+			<!-------------------------------- TOOLBOX VARIABLES -------------------------------->
+			<category name="Değişkenler" custom="VARIABLE"></category>
+
+			<!-------------------------------- TOOLBOX FUNCTIONS -------------------------------->
+			<category name="Fonksiyonlar" custom="PROCEDURE"></category>
+			<sep></sep>
+
+			<!-------------------------------- TOOLBOX IO -------------------------------->
+			<category name="Okuma / Yazma">
+			  <block type="inout_highlow"></block>
+			  <block type="inout_digital_write"></block>
+			  <block type="inout_digital_read"></block>
+			  <block type="inout_analog_write">
+				<value name="NUM">
+				  <block type="math_number">
+					<field name="NUM">0</field>
+				  </block>
+				</value>
+			  </block>
+			  <block type="inout_analog_read"></block>
+			  <block type="serial_print">
+				<value name="CONTENT">
+				  <block type="text">
+					<field name="TEXT"></field>
+				  </block>
+				</value>
+			  </block>
+			  <block type="inout_tone">
+				<value name="NUM">
+				  <block type="math_number">
+					<field name="NUM">440</field>
+				  </block>
+				</value>
+			  </block>
+			  <block type="inout_notone"></block>
+			  <block type="inout_buildin_led"></block>
+			</category>
+			<sep></sep>
+
+			<!-------------------------------- TOOLBOX YETENEK -------------------------------->
+			<category name="Ana Kart">
+				<!-- <block type="base_start"></block> -->
+				<block type="base_loop"></block>
+				<block type="variables_type"></block>
+				<block type="y12_init"></block>
+				<block type="y12_mb_buzzer"></block>
+				<block type="y12_mb_temperature"></block>
+				<block type="y12_mb_button"></block>
+				<block type="y12_mb_led"></block>
+				<block type="y12_mb_rgb_color"></block>
+				<block type="y12_mb_clear_screen"></block>
+				<block type="y12_mb_show_screen"></block>
+				<block type="y12_mb_screen_text"></block>
+				
+			</category>
+
+			<!-------------------------------- TOOLBOX IO BOARD -------------------------------->
+			<category name="IO Kartı">
+				<block type="y12_get_digital_io"></block>
+				<block type="y12_set_digital_io"></block>
+				<block type="y12_get_adc"></block>
+				<block type="y12_get_adc_voltage"></block>
+			</category>
+
+			<!-------------------------------- TOOLBOX AIR MIC SGP -------------------------------->
+			<category name="AIR MIC SGP">
+				<block type="y12_get_air_temperature"></block>
+				<block type="y12_get_air_humidity"></block>
+				<block type="y12_get_air_pressure"></block>
+				<block type="y12_get_altitude"></block>
+				
+				<block type="y12_get_mic_db"></block>
+				<block type="y12_get_mic_hz"></block>
+				<block type="y12_get_co2"></block>
+				<block type="y12_get_tvoc"></block>
+				<block type="y12_get_H2"></block>
+				<block type="y12_get_ethanol"></block>
+			</category>
+
+			 <!-------------------------------- TOOLBOX TOF RGB UV -------------------------------->
+			 <category name="TOF RGB UV">
+				<block type="y12_get_distance"></block>
+				<block type="y12_get_uva"></block>
+				<block type="y12_get_uvb"></block>
+				<block type="y12_get_uv_index"></block>
+				<block type="y12_get_color_red"></block>
+				<block type="y12_get_color_green"></block>
+				<block type="y12_get_color_blue"></block>
+				<block type="y12_get_color_temp"></block>
+				<block type="y12_get_color_lux"></block>
+				<block type="y12_get_ir"></block>
+			</category>
+
+			<!-- 
+				<category name="SensorKit Air"></category>
+			<category name="SensorKit Color"></category>
+			<category name="SensorKit Sound"></category>
+			<category name="SensorKit ToF"></category>
+			 -->
+
+			<!-- 
+				<category name="Servo">
+			  <block type="servo_move">
+				<value name="DEGREE">
+				  <block type="math_number">
+					<field name="NUM">0</field>
+				  </block>
+				</value>
+			  </block>
+			  <block type="servo_read_degrees"></block>
+			</category>
+		 -->
+		</xml>
+		
+		<div class="" style="height: 100vh;">
+			<div id="split-a" class="split" style="height: 300px">
+				<div id="split-0" style="position: relative;">
+					<div id="blocklyDiv_fade"></div>
+					<div id="blocklyDiv"></div>
+					<div id="mode-div">
+						<button id="btn-mode" class="bg-blue-800 hover:bg-green-600 text-white p-2 rounded-full shadow-md mode-text" onclick="toggleMode()"></button>
+						<!-- <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg> -->
+						<!-- &lt;&sol;&gt; Text Mode -->
+
+						<!-- [•] Visual Mode -->
+						<!-- <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg> -->
+					</div>
+				</div>
+				<div id="split-1" style="position: relative;">
+					<div id="codeDiv_fade" onclick="clickEditorFade()"></div>
+					<div id="codeDiv"><div id="editor"></div></div>
+				</div>
+			</div>
+
+			<div id="split-b" style="position: relative;">
+				<div id="serialDiv"></div>
+				<div id="serial-buttons-div">
+					<button id="btn-serial" class="bg-blue-800 hover:bg-blue-900 text-white p-2 rounded-full shadow-md mode-text" onclick="toggleSerial()">
+						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+					</button>
+
+					<button id="btn-lock" class="bg-green-600 hover:bg-green-800 text-white p-2 rounded-full shadow-md mode-text ml-2" onclick="toggleScrollLock()">
+						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+					</button>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<!-- --------------------------------------------------------------------------------------------------------------------- -->
+	<!-- SPLIT JS -->
+	<!-- --------------------------------------------------------------------------------------------------------------------- -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.2/split.min.js"></script>
+	<script>
+		Split(['#split-a', '#split-b'], {
+			direction: 'vertical',
+			minSize: 200,
+			// gutterSize: 15,
+			sizes: [70, 30],
+			onDrag: () => {
+				Blockly.svgResize(workspace);
+			}
+		})
+		Split(['#split-0', '#split-1'], {
+			minSize: 300,
+			// gutterSize: 15,
+			sizes: [70, 30],
+			onDrag: () => {
+				Blockly.svgResize(workspace);
+			}
+		})
+	</script>
+
+	<!-- --------------------------------------------------------------------------------------------------------------------- -->
+	<!-- Ace Editor -->
+	<!-- --------------------------------------------------------------------------------------------------------------------- -->
+	<script src="https://pagecdn.io/lib/ace/1.4.12/ace.min.js" crossorigin="anonymous" integrity="sha256-T5QdmsCQO5z8tBAXMrCZ4f3RX8wVdiA0Fu17FGnU1vU=" ></script>
+	<script>
+		ace.config.set("basePath", "https://pagecdn.io/lib/ace/1.4.12/");
+		window.editor = ace.edit("editor");
+		//editor.setTheme("ace/theme/monokai");
+		editor.session.setMode("ace/mode/c_cpp");
+
+		function clickEditorFade(){
+			console.log("click editor fade")
+			const ico = '<svg class="w-16 h-16 mr-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>'
+			Swal.fire({
+				html: `<div class="flex items-center">${ico} Kod yazma özelliğini aktifleştirmek için küp butonu kullanın.</div>`,
+				confirmButtonText: 'Tamam'
+			})
+		}
+
+		function toggleMode(){
+			const btnMode = document.getElementById('btn-mode')
+			const isTextMode = btnMode.classList.contains('mode-text') ? true : false;
+
+			// Text Mode --> Visual Mode
+			if(isTextMode){
+				console.log('Switching to Visual Mode.');
+				btnMode.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>'
+				btnMode.classList.remove('mode-text')
+				window.editor.setReadOnly(true)
+				document.getElementById('blocklyDiv_fade').style.display = 'none';
+				document.getElementById('codeDiv_fade').style.display = 'block';
+			}
+
+			// Visual Mode --> Text Mode
+			else{
+				console.log('Switching to Text Mode.');
+				btnMode.innerHTML = '<svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>'
+				btnMode.classList.add('mode-text')
+				window.editor.setReadOnly(false)
+				document.getElementById('blocklyDiv_fade').style.display = 'block';
+				document.getElementById('codeDiv_fade').style.display = 'none';
+			}
+		}
+
+		toggleMode();
+	</script>
+	
+	<!-- --------------------------------------------------------------------------------------------------------------------- -->
+	<!-- Sweet Alert -->
+	<!-- --------------------------------------------------------------------------------------------------------------------- -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+		// /blockly/core/blockly.js (362)
+		Blockly.prompt = function(message, defaultValue, callback){
+			// https://sweetalert2.github.io/recipe-gallery/login-form.html
+			Swal.fire({
+				title: message,
+				html: `<input type="text" id="variable-name-input" class="swal2-input" placeholder="Değişken İsmi" value="${defaultValue}">`,
+				confirmButtonText: 'OK',
+				cancelButtonText: 'Cancel',
+				focusConfirm: false,
+				preConfirm: () => {
+					const variableName = Swal.getPopup().querySelector('#variable-name-input').value
+					return variableName
+				}
+			})
+			.then((result) => {
+				console.log(result.value)
+				callback(result.value)
+			})
+		}
+
+		// https://sweetalert2.github.io/
+		function promptError(error, title = 'Error'){
+			Swal.fire({
+				icon: 'error',
+				title: title,
+				text: error,
+				// footer: '<a href="">Why do I have this issue?</a>'
+			})
+		}
+	</script>
+
+	<!-- --------------------------------------------------------------------------------------------------------------------- -->
+	<!-- Socket IO -->
+	<!-- --------------------------------------------------------------------------------------------------------------------- -->
+	<script src="https://cdn.socket.io/4.1.1/socket.io.min.js" integrity="sha384-cdrFIqe3RasCMNE0jeFG9xJHog/tgOVC1E9Lzve8LQN1g5WUHo0Kvk1mawWjxX7a" crossorigin="anonymous"></script>
+	<script>
+		const socket = io();
+		
+		socket.on('connect', () => {
+			console.log(`Socket Connected: ${socket.id}`);
+		});
+
+		socket.on('disconnect', () => {
+			console.log('Socket Disconnected.'); // TODO: Refresh Page?
+		});
+
+		socket.on('term', (msg, type) => {
+			console.log(msg)
+			if(type){
+				if(type === 'error'){
+					document.getElementById('serialDiv').innerHTML += `<span class="text-red-400">${msg}</span><br/>`
+				}
+			}
+			else{
+				document.getElementById('serialDiv').innerHTML += `${msg}<br/>`
+			}
+
+			if(scrollLock){
+				document.getElementById('serialDiv').scrollTop = Number.MAX_SAFE_INTEGER;
+			}
+		})
+
+		socket.on('change_project', (data) => {
+			if(data.status === 'ok'){
+				window.location.replace(window.location.origin + "/editor.html");
+			}
+
+			else if(data.error){
+				promptError(data.error, 'Load Project Error')
+			}
+		})
+
+		function upload(){
+			const portEl = document.getElementById('upload-port')
+			const port = portEl.options[portEl.selectedIndex].value
+			// const code = Blockly.Arduino.workspaceToCode(workspace)
+			const code = window.editor.getValue()
+
+			if(!serialActive){
+				toggleSerial();
+			}
+
+			socket.emit('upload', {
+				port, code
+			})
+		}
+
+		function compile(){
+			const code = window.editor.getValue()
+
+			if(!serialActive){
+				toggleSerial();
+			}
+
+			socket.emit('compile', {
+				code
+			})
+		}
+
+		function loadProject(){
+			socket.emit('change_project')
+		}
+
+		function newProject(){
+			window.location.replace(window.location.origin + "/create.html");
+		}
+
+		// ports
+		document.addEventListener("DOMContentLoaded", () => {
+			document.getElementById('upload-port').addEventListener('click', () => {
+				socket.emit('ports')
+			})
+		})
+
+		socket.on('ports', (data) => {
+			const portSelectEl = document.getElementById('upload-port')
+			portSelectEl.classList.add('bg-green-800')
+			const selectedPort = portSelectEl.options[portSelectEl.selectedIndex].value
+			portSelectEl.innerHTML = ''
+			const options = []
+			
+			const autoPortEl = document.createElement('option')
+			autoPortEl.innerHTML = 'Otomatik'
+			autoPortEl.value = 'auto'
+			autoPortEl.classList.add('text-xl')
+			if(selectedPort == autoPortEl.value) autoPortEl.selected = 'selected'
+			options.push(autoPortEl)
+
+			for(const port of data.ports){
+				const portEl = document.createElement('option')
+				portEl.innerHTML = port.path
+				portEl.value = port.path
+				portEl.classList.add('text-xl')
+				if(selectedPort == portEl.value) portEl.selected = 'selected'
+				options.push(portEl)
+			}
+
+			for(const el of options){
+				portSelectEl.appendChild(el)
+			}
+		})
+
+		// init
+		socket.on('init', (data) => {
+			console.log('init: ', data)
+			document.title = "YETENEK IDE - " + data.projectName
+
+			importWorkspace(data.xml, workspace);
+
+			// window.editor.setValue('\n\n' + data.code);
+			// window.editor.gotoLine(999);
+		})
+		socket.emit('init')
+	</script>
+
+	<!-- --------------------------------------------------------------------------------------------------------------------- -->
+	<!-- APP -->
+	<!-- --------------------------------------------------------------------------------------------------------------------- -->
+	<script>
+
+		// Blockly Types
+		// Number, String
+		
+		// Arduino Types
+		// int, float, String
+
+		// INIT WORKSPACE
+		let workspaceDirty = false;
+		let scrollLock = true;
+		let serialActive = false;
+		const workspace = Blockly.inject('blocklyDiv', {
+			toolbox: document.getElementById('toolbox'),
+			collapse: false,
+			zoom: {
+				controls: true,
+				// wheel: true,
+				startScale: 1.0,
+				maxScale: 3,
+				minScale: 0.3,
+				scaleSpeed: 1.2,
+				pinch: true
+			},
+			trashcan: true,
+			scrollbars: true,
+			grid: { spacing: 20, length: 3, colour: '#ccc', snap: true }
+		});
+
+		function importWorkspace(txt, workspace){
+			const workspaceDom = Blockly.Xml.textToDom(txt)
+			Blockly.Xml.domToWorkspace(workspaceDom, workspace)
+			updateCodeView();
+		}
+
+		function exportWorkspace(workspace){
+			const workspaceDom = Blockly.Xml.workspaceToDom(workspace)
+			const workspaceTxt = Blockly.Xml.domToPrettyText(workspaceDom)
+			return workspaceTxt
+		}
+
+		setInterval(() => {
+			if(document.getElementById('autosave').checked && workspaceDirty){
+				workspaceDirty = false;
+				saveProject();
+			}
+		}, 5000)
+
+		function saveProject(){
+			console.log('Saving Project...')
+			socket.emit('save', {
+				// code: Blockly.Arduino.workspaceToCode(workspace),
+				code: window.editor.getValue(),
+				xml: exportWorkspace(workspace)
+			})
+
+			const btnSave = document.getElementById('btn-save')
+			btnSave.classList.add('bg-blue-800', 'hover:bg-blue-900')
+			btnSave.classList.remove('bg-green-600', 'hover:bg-green-600')
+		}
+
+		// const rootBlock = '<xml><block type="base_start" deletable="false" movable="false"></block></xml>';
+		// Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(rootBlock), workspace);
+		workspace.addChangeListener(Blockly.Events.disableOrphans);
+
+		// UPDATE EDITOR
+		function updateCodeView(){
+			workspaceDirty = true;
+			window.editor.setValue(Blockly.Arduino.workspaceToCode(workspace));
+			window.editor.gotoLine(999);
+
+			if(!document.getElementById('autosave').checked){
+				const btnSave = document.getElementById('btn-save')
+				btnSave.classList.remove('bg-blue-800', 'hover:bg-blue-900')
+				btnSave.classList.add('bg-green-600', 'hover:bg-green-600')
+			}
+		}
+
+		updateCodeView();
+		workspace.addChangeListener(updateCodeView);
+
+		// SCROLL LOCK
+		function toggleScrollLock(){
+			const btnLock = document.getElementById('btn-lock')
+
+			// Disable scroll lock
+			if(scrollLock){
+				btnLock.classList.remove('bg-green-600', 'hover:bg-green-800')
+				btnLock.classList.add('bg-blue-800', 'hover:bg-blue-900')
+			}
+
+			// Enable scroll lock
+			else{
+				btnLock.classList.remove('bg-blue-800', 'hover:bg-blue-900')
+				btnLock.classList.add('bg-green-600', 'hover:bg-green-800')
+			}
+
+			scrollLock = !scrollLock;
+		}
+
+		// SERIAL TOGGLE
+		function toggleSerial(){
+			const btnSerial = document.getElementById('btn-serial')
+
+			// Disable serial
+			if(serialActive){
+				btnSerial.classList.remove('bg-green-600', 'hover:bg-green-800')
+				btnSerial.classList.add('bg-blue-800', 'hover:bg-blue-900')
+
+				socket.emit('serial_status', {enable: false})
+			}
+
+			// Enable serial
+			else{
+				btnSerial.classList.remove('bg-blue-800', 'hover:bg-blue-900')
+				btnSerial.classList.add('bg-green-600', 'hover:bg-green-800')
+
+				const portEl = document.getElementById('upload-port')
+				const port = portEl.options[portEl.selectedIndex].value
+
+				const baudEl = document.getElementById('baud-rate')
+				const baud = baudEl.options[baudEl.selectedIndex].value
+
+				socket.emit('serial_status', {enable: true, port, baud})
+			}
+
+			serialActive = !serialActive
+		}
+	</script>
 </body>
 </html>
