@@ -130,6 +130,11 @@ function runPIO(socket, cmdArr, onClose, onStart){
         // if(onClose) onClose(error)
     });
     pio.on('close', code => {
+        // https://stackoverflow.com/questions/18694684/spawn-and-kill-a-process-in-node-js
+        pio.stdout.destroy();
+        pio.stderr.destroy();
+        pio.kill('SIGINT');
+
         const msg = `child process exited with code ${code}`
         console.log(msg);
         socket.emit('term', msg, 'close')
@@ -212,7 +217,7 @@ function runMonitor2(socket, port, baud){
             socket.emit('term', msg);
         })
         monitor.on('readable', () => {
-            const data = monitor.read()
+            const data = monitor.read().toString('utf8')
             console.log('Data: ', data)
             socket.emit('term', data)
         })
@@ -424,15 +429,11 @@ io.on("connection", (socket) => {
                 if(err){
                     console.error('CREATE Project Error: ', err)
                     socket.emit('create_project', {
-                        error: 'Create project failed.\n' + err.toString() + err.stack
+                        // error: 'Create project failed.\n' + err.toString() + err.stack
+                        error: 'Proje olusturulamadi.'
                     })
                     return;
                 }
-                else{
-                    console.log('NO ERROR')
-                }
-
-                console.log('WTF')
 
                 // --------------------------------------------------------------------------
                 // https://stackoverflow.com/questions/13786160/copy-folder-recursively-in-node-js
@@ -450,12 +451,22 @@ io.on("connection", (socket) => {
                 // Configure platformio.ini
                 const pioIniPath = path.join(projectPath, '/platformio.ini')
                 let pioIni = fs.readFileSync(pioIniPath, 'utf8')
-                pioIni += '\n'
-                pioIni += '[env:esp-wrover-kit]\n'
-                pioIni += 'platform = espressif32\n'
-                pioIni += 'board = esp-wrover-kit\n'
-                pioIni += 'framework = arduino\n'
-                pioIni += '\n'
+                if(global.TARGET_ARDUINO){
+                    pioIni += '\n'
+                    pioIni += '[env:uno]\n'
+                    pioIni += 'platform = atmelavr\n'
+                    pioIni += 'board = uno\n'
+                    pioIni += 'framework = arduino\n'
+                    pioIni += '\n'
+                }
+                else{
+                    pioIni += '\n'
+                    pioIni += '[env:esp-wrover-kit]\n'
+                    pioIni += 'platform = espressif32\n'
+                    pioIni += 'board = esp-wrover-kit\n'
+                    pioIni += 'framework = arduino\n'
+                    pioIni += '\n'
+                }
                 fs.writeFileSync(path.join(pioIniPath), pioIni)
 
                 // Create main.cpp

@@ -5,6 +5,7 @@
     "private": true,
     "scripts": {
         "start": "electron ./main.js",
+        "start:arduino": "electron ./main.js --arduino",
         "rebuild-app": "./node_modules/.bin/electron-rebuild",
         "build-app": "electron-builder",
         "init-submodules": "git submodule init",
@@ -43,6 +44,9 @@
                 ]
             }
         ],
+        "win": {
+            "requestedExecutionLevel": "requireAdministrator"
+        },
         "nsis": {
             "allowToChangeInstallationDirectory": true,
             "oneClick": false
