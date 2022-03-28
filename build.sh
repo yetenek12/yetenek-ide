@@ -9,5 +9,5 @@ echo "Building.."
 rm -rf build
 export CSC_IDENTITY_AUTO_DISCOVERY=false
 npm run rebuild-app
-npm run build-app
+#npm run build-app
 echo "Done"

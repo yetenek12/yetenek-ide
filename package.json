@@ -5,6 +5,7 @@
     "private": true,
     "scripts": {
         "start": "electron ./main.js",
+        "start:arduino": "electron ./main.js --arduino",
         "rebuild-app": "./node_modules/.bin/electron-rebuild",
         "build-app": "electron-builder",
         "init-submodules": "git submodule init",
@@ -23,7 +24,7 @@
     "devDependencies": {
         "@tailwindcss/custom-forms": "^0.2.1",
         "electron": "^12.0.0",
-        "electron-builder": "^22.14.13",
+        "electron-builder": "^23.0.2",
         "electron-rebuild": "^3.2.7"
     },
     "build": {
@@ -43,6 +44,9 @@
                 ]
             }
         ],
+        "win": {
+            "requestedExecutionLevel": "requireAdministrator"
+        },
         "nsis": {
             "allowToChangeInstallationDirectory": true,
             "oneClick": false

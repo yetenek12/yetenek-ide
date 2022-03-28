@@ -5,6 +5,12 @@ const server = require('./server')
 
 function createWindow() {
 
+    // Parse Args
+    if(process.argv.includes('--arduino')){
+        global.TARGET_ARDUINO = true
+        console.log("TARGET: ARDUINO")
+    }
+
     // https://serialport.io/docs/guide-installation/
     global.win = new BrowserWindow({
         width: 800,
