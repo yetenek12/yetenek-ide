@@ -81,5 +81,7 @@ Ex:
 
 ## Known Issues
 
+- In order to upload code in Windows, you need admin priviliges.
+
 - Because of Python, there should be no spaces in the location where the program is installed. (Only for Mac)
 To fix: https://stackoverflow.com/questions/20095351/shebang-use-interpreter-relative-to-the-script-path/33225909#33225909
