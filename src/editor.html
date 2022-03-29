@@ -145,7 +145,7 @@
 			<sep></sep>
 
 			<!-------------------------------- TOOLBOX IO -------------------------------->
-			<category name="Okuma / Yazma">
+			<!-- <category name="Okuma / Yazma">
 			  <block type="inout_highlow"></block>
 			  <block type="inout_digital_write"></block>
 			  <block type="inout_digital_read"></block>
@@ -157,13 +157,6 @@
 				</value>
 			  </block>
 			  <block type="inout_analog_read"></block>
-			  <block type="serial_print">
-				<value name="CONTENT">
-				  <block type="text">
-					<field name="TEXT"></field>
-				  </block>
-				</value>
-			  </block>
 			  <block type="inout_tone">
 				<value name="NUM">
 				  <block type="math_number">
@@ -174,7 +167,7 @@
 			  <block type="inout_notone"></block>
 			  <block type="inout_buildin_led"></block>
 			</category>
-			<sep></sep>
+			<sep></sep> -->
 
 			<!-------------------------------- TOOLBOX YETENEK -------------------------------->
 			<category name="Ana Kart">
@@ -182,6 +175,13 @@
 				<block type="base_loop"></block>
 				<block type="variables_type"></block>
 				<block type="y12_init"></block>
+				<block type="serial_print">
+					<value name="CONTENT">
+						<block type="text">
+						<field name="TEXT"></field>
+						</block>
+					</value>
+				</block>
 				<block type="y12_mb_buzzer"></block>
 				<block type="y12_mb_temperature"></block>
 				<block type="y12_mb_button"></block>
@@ -199,25 +199,27 @@
 				<block type="y12_set_digital_io"></block>
 				<block type="y12_get_adc"></block>
 				<block type="y12_get_adc_voltage"></block>
+				<block type="y12_io_addr_change"></block>
 			</category>
 
 			<!-------------------------------- TOOLBOX AIR MIC SGP -------------------------------->
-			<category name="AIR MIC SGP">
+			<category name="Çevresel Ölçüm Sensörü">
 				<block type="y12_get_air_temperature"></block>
 				<block type="y12_get_air_humidity"></block>
 				<block type="y12_get_air_pressure"></block>
+				<block type="y12_set_sea_level"></block>
 				<block type="y12_get_altitude"></block>
-				
 				<block type="y12_get_mic_db"></block>
 				<block type="y12_get_mic_hz"></block>
 				<block type="y12_get_co2"></block>
 				<block type="y12_get_tvoc"></block>
 				<block type="y12_get_H2"></block>
 				<block type="y12_get_ethanol"></block>
+				<block type="y12_air_addr_change"></block>
 			</category>
 
 			 <!-------------------------------- TOOLBOX TOF RGB UV -------------------------------->
-			 <category name="TOF RGB UV">
+			 <category name="Optik Sensör">
 				<block type="y12_get_distance"></block>
 				<block type="y12_get_uva"></block>
 				<block type="y12_get_uvb"></block>
@@ -227,7 +229,19 @@
 				<block type="y12_get_color_blue"></block>
 				<block type="y12_get_color_temp"></block>
 				<block type="y12_get_color_lux"></block>
-				<block type="y12_get_ir"></block>
+				<block type="y12_optic_addr_change"></block>
+			</category>
+			
+			<category name="İvme Sensörü">
+				<block type="y12_imu_accel"></block>
+				<block type="y12_imu_gyro"></block>
+				<block type="y12_imu_mag"></block>
+				<block type="y12_imu_addr_change"></block>
+			</category>
+
+			<category name="Sıcaklık Probu">
+				<block type="y12_temp_temp"></block>
+				<block type="y12_temp_addr_change"></block>
 			</category>
 
 			<!-- 
