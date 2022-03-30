@@ -25,11 +25,12 @@
 </head>
 <body>
 	<nav class="flex items-center h-16 bg-blue-600 border-b-4 border-blue-800">
-		<!-- <a href="#" class="brand-logo">
-			<i class="material-icons">integration_instructions</i>
-			YETENEK IDE
-		</a> -->
-		<h1 class="text-2xl text-white ml-4 mr-8">YETENEK IDE</h1>
+		<a href="javascript:void();" class="brand-logo">
+			<!-- <i class="material-icons">integration_instructions</i> -->
+			<!-- YETENEK IDE -->
+            <img src="header.png" class="h-10 mr-6" style="min-width: 120px;" alt="YETENEK IDE LOGO">
+		</a>
+		<!-- <h1 class="text-2xl text-white ml-4 mr-8">YETENEK IDE</h1> -->
 
 		<button class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="newProject()">Yeni</button>
 		<button class="h-10 bg-blue-800 hover:bg-blue-900 text-white text-lg pl-4 pr-4 mr-4 rounded-md shadow-md border-2 border-gray-100" onclick="loadProject()">Aç</button>
@@ -43,7 +44,7 @@
 
 		<!-- <label for="upload-port" class="h-full bg-blue-600 text-white p-4">Upload Port:</label> -->
 		<span class="text-white font-bold bg-blue-800 h-10 pt-2 pr-2 pl-2 border-2 border-r-0 rounded-md" style="border-top-right-radius: 0px; border-bottom-right-radius: 0px;">BAUD</span>
-		<select id="baud-rate" value="9600" class="h-10 bg-blue-800 text-white pl-2 pr-2 mr-8 rounded-md shadow-md border-2 border-gray-100" style="min-width: 4rem;">
+		<select id="baud-rate" value="9600" class="h-10 bg-blue-800 text-white pl-2 pr-2 mr-8 rounded-md shadow-md border-2 border-l-0 border-gray-100" style="min-width: 4rem; border-top-left-radius: 0px; border-bottom-left-radius: 0px;">
 			<option selected value="auto">Otomatik</option>
 			<option value="300">300</option>
 			<option value="600">600</option>
@@ -145,7 +146,7 @@
 			<sep></sep>
 
 			<!-------------------------------- TOOLBOX IO -------------------------------->
-			<category name="Okuma / Yazma">
+			<!-- <category name="Okuma / Yazma">
 			  <block type="inout_highlow"></block>
 			  <block type="inout_digital_write"></block>
 			  <block type="inout_digital_read"></block>
@@ -157,13 +158,6 @@
 				</value>
 			  </block>
 			  <block type="inout_analog_read"></block>
-			  <block type="serial_print">
-				<value name="CONTENT">
-				  <block type="text">
-					<field name="TEXT"></field>
-				  </block>
-				</value>
-			  </block>
 			  <block type="inout_tone">
 				<value name="NUM">
 				  <block type="math_number">
@@ -174,7 +168,7 @@
 			  <block type="inout_notone"></block>
 			  <block type="inout_buildin_led"></block>
 			</category>
-			<sep></sep>
+			<sep></sep> -->
 
 			<!-------------------------------- TOOLBOX YETENEK -------------------------------->
 			<category name="Ana Kart">
@@ -182,6 +176,13 @@
 				<block type="base_loop"></block>
 				<block type="variables_type"></block>
 				<block type="y12_init"></block>
+				<block type="serial_print">
+					<value name="CONTENT">
+						<block type="text">
+						<field name="TEXT"></field>
+						</block>
+					</value>
+				</block>
 				<block type="y12_mb_buzzer"></block>
 				<block type="y12_mb_temperature"></block>
 				<block type="y12_mb_button"></block>
@@ -199,25 +200,27 @@
 				<block type="y12_set_digital_io"></block>
 				<block type="y12_get_adc"></block>
 				<block type="y12_get_adc_voltage"></block>
+				<block type="y12_io_addr_change"></block>
 			</category>
 
 			<!-------------------------------- TOOLBOX AIR MIC SGP -------------------------------->
-			<category name="AIR MIC SGP">
+			<category name="Çevresel Ölçüm Sensörü">
 				<block type="y12_get_air_temperature"></block>
 				<block type="y12_get_air_humidity"></block>
 				<block type="y12_get_air_pressure"></block>
+				<block type="y12_set_sea_level"></block>
 				<block type="y12_get_altitude"></block>
-				
 				<block type="y12_get_mic_db"></block>
 				<block type="y12_get_mic_hz"></block>
 				<block type="y12_get_co2"></block>
 				<block type="y12_get_tvoc"></block>
 				<block type="y12_get_H2"></block>
 				<block type="y12_get_ethanol"></block>
+				<block type="y12_air_addr_change"></block>
 			</category>
 
 			 <!-------------------------------- TOOLBOX TOF RGB UV -------------------------------->
-			 <category name="TOF RGB UV">
+			 <category name="Optik Sensör">
 				<block type="y12_get_distance"></block>
 				<block type="y12_get_uva"></block>
 				<block type="y12_get_uvb"></block>
@@ -227,7 +230,19 @@
 				<block type="y12_get_color_blue"></block>
 				<block type="y12_get_color_temp"></block>
 				<block type="y12_get_color_lux"></block>
-				<block type="y12_get_ir"></block>
+				<block type="y12_optic_addr_change"></block>
+			</category>
+			
+			<category name="İvme Sensörü">
+				<block type="y12_imu_accel"></block>
+				<block type="y12_imu_gyro"></block>
+				<block type="y12_imu_mag"></block>
+				<block type="y12_imu_addr_change"></block>
+			</category>
+
+			<category name="Sıcaklık Probu">
+				<block type="y12_temp_temp"></block>
+				<block type="y12_temp_addr_change"></block>
 			</category>
 
 			<!-- 
@@ -434,15 +449,31 @@
 			}
 		})
 
+        socket.on('serial_status', (enabled) => {
+            console.log('serial_status:', enabled)
+            const btnSerial = document.getElementById('btn-serial')
+            btnSerial.classList.remove('bg-green-600', 'hover:bg-green-800')
+            btnSerial.classList.remove('bg-blue-800', 'hover:bg-blue-900')
+
+            if(enabled){
+				btnSerial.classList.add('bg-green-600', 'hover:bg-green-800')
+                serialActive = true
+            }
+            else{
+				btnSerial.classList.add('bg-blue-800', 'hover:bg-blue-900')
+                serialActive = false
+            }
+        })
+
 		function upload(){
 			const portEl = document.getElementById('upload-port')
 			const port = portEl.options[portEl.selectedIndex].value
 			// const code = Blockly.Arduino.workspaceToCode(workspace)
 			const code = window.editor.getValue()
 
-			if(!serialActive){
-				toggleSerial();
-			}
+			// if(!serialActive){
+			// 	toggleSerial();
+			// }
 
 			socket.emit('upload', {
 				port, code
@@ -452,9 +483,9 @@
 		function compile(){
 			const code = window.editor.getValue()
 
-			if(!serialActive){
-				toggleSerial();
-			}
+			// if(!serialActive){
+			// 	toggleSerial();
+			// }
 
 			socket.emit('compile', {
 				code
