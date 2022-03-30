@@ -1,0 +1,12 @@
+<xml xmlns="https://developers.google.com/blockly/xml">
+  <block type="base_start" id="76/y}S6xs-/JSqyVFg,}" deletable="false" movable="false" x="10" y="10">
+    <next>
+      <block type="y12_init" id="?T,*:l.~0`bu_pR./4u7">
+        <field name="COMM">I2C</field>
+        <next>
+          <block type="base_loop" id="$+Grm.u_(c0VQ,BR5Uk7"></block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>
