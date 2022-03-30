@@ -13,9 +13,6 @@
 
 ## Setup
 
-⚠️ Dont forget to include `.platformio` and `yetenek12-library` in `/extra_resources` (If you dont, IDE will crash when creating or loading projects. 💣)  
-> On Windows, you can run `build.bat` after first download.
-
 ```bash
     git clone --recursive git@github.com:yetenek12/yetenek-ide.git
     npm install --also=dev
@@ -23,6 +20,9 @@
 ```
 
 ## Run
+
+⚠️ Dont forget to include `.platformio` and `yetenek12-library` in `/extra_resources` (If you dont, IDE will crash when creating or loading projects. 💣)  
+> On Windows, you can run `build.bat` after first download.
 
 ```bash
     npm run start

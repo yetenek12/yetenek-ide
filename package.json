@@ -33,6 +33,7 @@
         "buildDependenciesFromSource": true,
         "npmRebuild": false,
         "directories": {
+            "buildResources": "resources",
             "output": "build"
         },
         "extraResources": [
