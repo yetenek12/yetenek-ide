@@ -17,6 +17,9 @@
     git clone --recursive git@github.com:yetenek12/yetenek-ide.git
     npm install --also=dev
     npm run rebuild-app
+
+    # Update submodules / refs
+    git submodule update --init --recursive
 ```
 
 ## Run

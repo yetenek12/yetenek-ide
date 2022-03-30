@@ -449,15 +449,26 @@
 			}
 		})
 
+        socket.on('serial_status', (enable) => {
+            if(enabled){
+				btnSerial.classList.add('bg-green-600', 'hover:bg-green-800')
+                serialActive = true
+            }
+            else{
+				btnSerial.classList.add('bg-blue-800', 'hover:bg-blue-900')
+                serialActive = false
+            }
+        })
+
 		function upload(){
 			const portEl = document.getElementById('upload-port')
 			const port = portEl.options[portEl.selectedIndex].value
 			// const code = Blockly.Arduino.workspaceToCode(workspace)
 			const code = window.editor.getValue()
 
-			if(!serialActive){
-				toggleSerial();
-			}
+			// if(!serialActive){
+			// 	toggleSerial();
+			// }
 
 			socket.emit('upload', {
 				port, code
@@ -467,9 +478,9 @@
 		function compile(){
 			const code = window.editor.getValue()
 
-			if(!serialActive){
-				toggleSerial();
-			}
+			// if(!serialActive){
+			// 	toggleSerial();
+			// }
 
 			socket.emit('compile', {
 				code

@@ -11,7 +11,8 @@ const path = require('path')
 const _ = require('lodash')
 const { SerialPort } = require('serialport')
 const Shell = require('node-powershell')
-const { app: electronApp } = require('electron')
+const { app: electronApp } = require('electron');
+const { reject } = require('lodash');
 
 // GLOBAL CONSTANTS
 global.PROJECT_SETTINGS = '/yetenekide.projectsettings'
@@ -166,81 +167,94 @@ function runPIO(socket, cmdArr, onClose, onStart){
 //     vendorId: '1A86',
 //     productId: '7523'
 // }
-function runMonitor2(socket, port, baud){
+async function runMonitor2(socket, port, baud){
     // Kill existing
-    killMonitor2(socket);
+    await killMonitor2(socket);
 
-    const msg = '-------- Starting Serial Monitor --------'
-    socket.emit('term', msg);
-    console.log(msg)
-
-    SerialPort.list()
-    .then(serials=> serials.length > 0 ? serials[0].path : null)
-    .then(defaultPort => {
-        if(!port || port === 'auto'){
-            port = defaultPort;
-        }
-        if(!baud || baud === 'auto'){
-            baud = 9600
-        }
-        else {
-            baud = parseInt(baud, 10)
-        }
-
-        if(!port){
-            const msg = `Serial monitor not found. Please connect the device.`
-            console.error(msg)
-            socket.emit('term', msg, 'error');
-            console.error(msg)
-            return
-        }
-
-        const monitor = new SerialPort({ path: port, baudRate: baud })
-        global.monitor = monitor
-
-        monitor.on('error', (e) => {
-            const msg = `Serial Monitor Error: ${e}`
-            console.error(msg)
-            socket.emit('term', msg, 'error');
-
-            console.error('Serial Monitor Error: ', e)
-        })
-        monitor.on('open', () => {
-            const msg = `Serial Monitor is now open. (${port}) (Baud: ${baud})`
-            console.log(msg)
-            socket.emit('term', msg);
-            // monitor.close()
-        })
-        monitor.on('close', () => {
-            const msg = `Serial Monitor closed: ${port}`
-            console.log(msg)
-            socket.emit('term', msg);
-        })
-        monitor.on('readable', () => {
-            const data = monitor.read().toString('utf8')
-            console.log('Data: ', data)
-            socket.emit('term', data)
-        })
-
-        // console.log(monitor)
-        // monitor.close()
-    })
-    .catch(err => console.error(err))
-    // const monitor = new SerialPort({ path: '/dev/port', baudRate: 9600 })
-}
-
-function killMonitor2(socket){
-    if(global.monitor){
-        const msg = '-------- Closing Serial Monitor --------'
+    return new Promise((resolve, reject) => {
+        const msg = '-------- Starting Serial Monitor --------'
         socket.emit('term', msg);
         console.log(msg)
 
-        global.monitor.close((err) => {
-            if(err) console.error('Serialport close error: ', err)
-            else console.log('Serialport closed.')
+        SerialPort.list()
+        .then(serials=> serials.length > 0 ? serials[0].path : null)
+        .then(defaultPort => {
+            if(!port || port === 'auto'){
+                port = defaultPort;
+            }
+            if(!baud || baud === 'auto'){
+                baud = 9600
+            }
+            else {
+                baud = parseInt(baud, 10)
+            }
+
+            if(!port){
+                const msg = `Serial monitor not found. Please connect the device.`
+                console.error(msg)
+                socket.emit('term', msg, 'error');
+                socket.emit('serial_status', false)
+                return reject(msg)
+            }
+
+            const monitor = new SerialPort({ path: port, baudRate: baud })
+            global.monitor = monitor
+
+            monitor.on('error', (e) => {
+                const msg = `Serial Monitor Error: ${e}`
+                console.error(msg)
+                socket.emit('term', msg, 'error');
+                console.error('Serial Monitor Error: ', e)
+            })
+            monitor.on('open', () => {
+                const msg = `Serial Monitor is now open. (${port}) (Baud: ${baud})`
+                console.log(msg)
+                socket.emit('term', msg);
+                // monitor.close()
+                socket.emit('serial_status', true)
+                return resolve()
+            })
+            monitor.on('close', () => {
+                const msg = `Serial Monitor closed: ${port}`
+                console.log(msg)
+                socket.emit('term', msg);
+            })
+            monitor.on('readable', () => {
+                const data = monitor.read().toString('utf8')
+                console.log('Data: ', data)
+                socket.emit('term', data)
+            })
+
+            // console.log(monitor)
+            // monitor.close()
         })
-        global.monitor = null;
-    }
+        .catch(err => {
+            console.error(err)
+            return reject(err)
+        })
+        // const monitor = new SerialPort({ path: '/dev/port', baudRate: 9600 })
+    })
+}
+
+async function killMonitor2(socket){
+    return new Promise((resolve, reject) => {
+        if(global.monitor){
+            const msg = '-------- Closing Serial Monitor --------'
+            socket.emit('term', msg);
+            console.log(msg)
+            socket.emit('serial_status', false)
+    
+            global.monitor.close((err) => {
+                // if(err) console.error('Serialport close error: ', err)
+                // else console.log('Serialport closed.')
+                global.monitor = null;
+    
+                if(err) return reject(err)
+                else return resolve()
+            })
+        }
+        else return resolve()
+    })
 }
 
 function runMonitor(socket, port, baud){
@@ -630,9 +644,9 @@ io.on("connection", (socket) => {
 
         // --------
         if(global.uploading){
-            console.log('Upload in progres. Please wait...')
+            console.log('Upload/Compile in progres. Please wait...')
             socket.emit('term', '')
-            socket.emit('term', 'Upload in progres. Please wait...')
+            socket.emit('term', 'Upload/Compile in progres. Please wait...')
             socket.emit('term', '')
             return
         }
@@ -640,30 +654,32 @@ io.on("connection", (socket) => {
         // Disable monitor
         // killMonitor(socket)
         killMonitor2(socket)
+        .then(() => {
+            // --------
+            console.log()
+            console.log('---------------- UPLOAD ----------------')
+            console.log('PORT: ' + data.port)
+            console.log()
+            console.log(data.code)
+            console.log('----------------------------------------')
+            console.log()
 
-        // --------
-        console.log()
-        console.log('---------------- UPLOAD ----------------')
-        console.log('PORT: ' + data.port)
-        console.log()
-        console.log(data.code)
-        console.log('----------------------------------------')
-        console.log()
+            // --------
+            const cmd = ['run', '--target', 'upload']
+            if(data.port !== 'auto'){
+                cmd.push('--upload-port')
+                cmd.push(data.port)
+            }
+            cmd.push('--project-dir')
+            cmd.push(global.projectPath)
 
-        // --------
-        const cmd = ['run', '--target', 'upload']
-        if(data.port !== 'auto'){
-            cmd.push('--upload-port')
-            cmd.push(data.port)
-        }
-        cmd.push('--project-dir')
-        cmd.push(global.projectPath)
-
-        // --------
-        global.uploading = true
-        runPIO(socket, cmd, () => {
-            global.uploading = false
+            // --------
+            global.uploading = true
+            runPIO(socket, cmd, () => {
+                global.uploading = false
+            })
         })
+        .catch((err) => console.error('killMonitor2() ERR'))
     })
 
     // Compile Code
@@ -671,9 +687,9 @@ io.on("connection", (socket) => {
 
         // --------
         if(global.uploading){
-            console.log('Compile in progres. Please wait...')
+            console.log('Upload/Compile in progres. Please wait...')
             socket.emit('term', '')
-            socket.emit('term', 'Compile in progres. Please wait...')
+            socket.emit('term', 'Upload/Compile in progres. Please wait...')
             socket.emit('term', '')
             return
         }
@@ -721,13 +737,25 @@ io.on("connection", (socket) => {
 
     // Serial Status
     socket.on('serial_status', (data) => {
+        if(global.uploading){
+            console.log('Upload/Compile in progres. Please wait...')
+            socket.emit('term', '')
+            socket.emit('term', 'Upload/Compile in progres. Please wait...')
+            socket.emit('term', '')
+            return
+        }
+
         if(data.enable){
             // runMonitor(socket, data.port, data.baud);
-            runMonitor2(socket, data.port, data.baud);
+            runMonitor2(socket, data.port, data.baud)
+            .then(()=> console.log('runMonitor2() OK.'))
+            .catch((err) => console.error('runMonitor2() ERR'))
         }
         else{
             // killMonitor(socket);
-            killMonitor2(socket);
+            killMonitor2(socket)
+            .then(()=> console.log('killMonitor2() OK.'))
+            .catch((err) => console.error('killMonitor2() ERR'))
         }
     })
 });
