@@ -13,6 +13,7 @@ const { SerialPort } = require('serialport')
 const Shell = require('node-powershell')
 const { app: electronApp } = require('electron');
 const { reject } = require('lodash');
+const lnk = require('lnk');
 
 // GLOBAL CONSTANTS
 global.PROJECT_SETTINGS = '/yetenekide.projectsettings'
@@ -75,6 +76,8 @@ function createSymlink(){
                     console.log(err);
                     reject()
                 });
+
+                // lnk
             }
         }
         else{
@@ -183,7 +186,7 @@ async function runMonitor2(socket, port, baud){
                 port = defaultPort;
             }
             if(!baud || baud === 'auto'){
-                baud = 9600
+                baud = 115200
             }
             else {
                 baud = parseInt(baud, 10)
@@ -742,6 +745,7 @@ io.on("connection", (socket) => {
             socket.emit('term', '')
             socket.emit('term', 'Upload/Compile in progres. Please wait...')
             socket.emit('term', '')
+            socket.emit('serial_status', false)
             return
         }
 
