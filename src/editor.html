@@ -449,7 +449,12 @@
 			}
 		})
 
-        socket.on('serial_status', (enable) => {
+        socket.on('serial_status', (enabled) => {
+            console.log('serial_status:', enabled)
+            const btnSerial = document.getElementById('btn-serial')
+            btnSerial.classList.remove('bg-green-600', 'hover:bg-green-800')
+            btnSerial.classList.remove('bg-blue-800', 'hover:bg-blue-900')
+
             if(enabled){
 				btnSerial.classList.add('bg-green-600', 'hover:bg-green-800')
                 serialActive = true
