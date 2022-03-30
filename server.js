@@ -63,7 +63,7 @@ function createSymlink(){
                 return resolve()
             }
             catch(err){
-                console.log("Creating symlink for C:\\.platformio")
+                // console.log("Creating symlink for C:\\.platformio")
                 // const cmd = `Start-Process -WindowStyle hidden cmd -Verb RunAs -ArgumentList '/c mklink /d "C:\\.platformio" "${path.join(getAppPath(), '/extra_resources/.platformio')}"'`
                 // console.log(cmd)
                 // ps.addCommand(cmd);
@@ -77,15 +77,20 @@ function createSymlink(){
                 //     reject()
                 // });
 
-                lnk('C:\\.platformio', path.join(getAppPath(), '/extra_resources/.platformio'))
-                .then(output => {
-                    console.log(output);
+                const srcPath = path.join(getAppPath(), '/extra_resources/.platformio')
+                const destPath = 'C:\\.platformio'
+                console.log(`Copying .platformio from "${srcPath}" to "${destPath}" ...`)
+
+                fse.copy(srcPath, destPath)
+                .then(() => {
+                    console.log('.platformio copied.')
                     resolve()
                 })
-                .catch(err => {
-                    console.log(err);
-                    reject()
-                });
+                .catch((err) => {
+                    console.error('.platformio copy failed.')
+                    console.error(err)
+                    reject(err)
+                })
             }
         }
         else{
@@ -513,7 +518,26 @@ io.on("connection", (socket) => {
                 fs.writeFileSync(projectSettingsPath, projectSettingsStr)
 
                 // Create XML
-                const workspaceStr = '<xml xmlns="https://developers.google.com/blockly/xml"><block type="base_start" deletable="false" movable="false"></block></xml>'
+                let workspaceStr = ''
+                try{
+                    workspaceStr = fs.readFileSync('./src/workspace.xml', 'utf8')
+                }
+                catch(err){
+                    console.warn('workspace.xml not found on "./src/workspace.xml"')
+                    let workspaceTemplatePath = path.join(getAppPath(), '/extra_resources/.platformio/workspace.xml')
+
+                    try{
+                        workspaceStr = fs.readFileSync(workspaceTemplatePath, 'utf8')
+                    }
+                    catch(err){
+                        console.warn(`workspace.xml not found on "${workspaceTemplatePath}"`)
+                        console.error('Using default template for workspace.xml')
+                        workspaceStr = '<xml xmlns="https://developers.google.com/blockly/xml"><block type="base_start" deletable="false" movable="false"></block></xml>'
+                    }
+                }
+                
+                path.join(getAppPath(), '/extra_resources/.platformio')
+                // const workspaceStr = '<xml xmlns="https://developers.google.com/blockly/xml"><block type="base_start" deletable="false" movable="false"></block></xml>'
                 const workspacePath = path.join(projectPath, global.WORKSPACE_XML)
                 fs.writeFileSync(workspacePath, workspaceStr)
 
@@ -532,7 +556,8 @@ io.on("connection", (socket) => {
         .catch(() => {
             console.error('Elevation Error!')
             socket.emit('create_project', {
-                error: 'İşlem Reddedildi.'
+                // error: 'İşlem Reddedildi.'
+                error: 'Erisim Reddedildi. Programi yonetici olarak calistirin.'
             })
         })
     })
