@@ -64,10 +64,20 @@ function createSymlink(){
             }
             catch(err){
                 console.log("Creating symlink for C:\\.platformio")
-                const cmd = `Start-Process -WindowStyle hidden cmd -Verb RunAs -ArgumentList '/c mklink /d "C:\\.platformio" "${path.join(getAppPath(), '/extra_resources/.platformio')}"'`
-                console.log(cmd)
-                ps.addCommand(cmd);
-                ps.invoke()
+                // const cmd = `Start-Process -WindowStyle hidden cmd -Verb RunAs -ArgumentList '/c mklink /d "C:\\.platformio" "${path.join(getAppPath(), '/extra_resources/.platformio')}"'`
+                // console.log(cmd)
+                // ps.addCommand(cmd);
+                // ps.invoke()
+                // .then(output => {
+                //     console.log(output);
+                //     resolve()
+                // })
+                // .catch(err => {
+                //     console.log(err);
+                //     reject()
+                // });
+
+                lnk('C:\\.platformio', path.join(getAppPath(), '/extra_resources/.platformio'))
                 .then(output => {
                     console.log(output);
                     resolve()
@@ -76,8 +86,6 @@ function createSymlink(){
                     console.log(err);
                     reject()
                 });
-
-                // lnk
             }
         }
         else{
