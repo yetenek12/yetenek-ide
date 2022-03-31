@@ -41,6 +41,7 @@ jobs:
         
       - name: Build App
         run: |
+          export GH_TOKEN=${{ secrets.github_token }}
           export CSC_IDENTITY_AUTO_DISCOVERY=false
           npm run build-app
         shell: bash
@@ -49,4 +50,5 @@ jobs:
         uses: softprops/action-gh-release@v1
 #         if: startsWith(github.ref, 'refs/tags/')
         with:
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           files: build/**.dmg
