@@ -1,4 +1,4 @@
-name: YETENEK_CI
+name: CI
 
 on:
   push:
@@ -35,13 +35,18 @@ jobs:
           rsync -a ./src/workspace.xml extra_resources/workspace.xml
         shell: bash
 
-      - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
+      - name: Rebuild App
+        run: npm run rebuild-app
+        shell: bash
+        
+      - name: Build App
+        run: |
+          export CSC_IDENTITY_AUTO_DISCOVERY=false
+          npm run build-app
+        shell: bash
+        
+      - name: Release App
+        uses: softprops/action-gh-release@v1
+#         if: startsWith(github.ref, 'refs/tags/')
         with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token }}
-
-          # If the commit is tagged with a version (e.g. "v1.0.0"),
-          # release the app after building
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+          files: build/**.dmg
