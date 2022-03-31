@@ -524,7 +524,7 @@ io.on("connection", (socket) => {
                 }
                 catch(err){
                     console.warn('workspace.xml not found on "./src/workspace.xml"')
-                    let workspaceTemplatePath = path.join(getAppPath(), '/extra_resources/.platformio/workspace.xml')
+                    let workspaceTemplatePath = path.join(getAppPath(), '/extra_resources/workspace.xml')
 
                     try{
                         workspaceStr = fs.readFileSync(workspaceTemplatePath, 'utf8')

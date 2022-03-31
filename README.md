@@ -24,7 +24,7 @@
 
 ## Run
 
-⚠️ Dont forget to include `.platformio` and `yetenek12-library` in `/extra_resources` (If you dont, IDE will crash when creating or loading projects. 💣)
+⚠️ Dont forget to include `.platformio` and `yetenek12-library` in `/extra_resources` (If you dont, IDE will crash when creating or loading projects. 💣)  
 ⚠️ Dont forget to include `src/workspace.xml` in `/extra_resources` (If you dont, default workspace template will not be found.)
 > On Windows, you can run `build.bat` after first download.
 
