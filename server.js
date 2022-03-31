@@ -455,7 +455,6 @@ io.on("connection", (socket) => {
             // Create pio project
             const cmd = ['project', 'init', '--project-dir', projectPath]
             runPIO(socket, cmd, (err) => {
-                console.log(err)
                 if(err){
                     console.error('CREATE Project Error: ', err)
                     socket.emit('create_project', {
