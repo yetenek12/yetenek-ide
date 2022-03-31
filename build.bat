@@ -18,11 +18,10 @@ echo Copying yetenek-ide-pio-windows into extra_resources directory...
 xcopy ".\yetenek-ide-pio-windows\" ".\extra_resources\.platformio\" /e /i /y /c /q
 
 echo Copying yetenek-ide-library into extra_resources directory...
-xcopy ".\yetenek12-library\" ".\extra_resources\yetenek12-library\" /e /i /y /c /q
+xcopy ".\src\yetenek12-library\" ".\extra_resources\yetenek12-library\" /e /i /y /c /q
 
 echo Copying src/workspace.xml into extra_resources directory...
-xcopy ".\workspace.xml" ".\extra_resources\workspace.xml" /e /i /y /c /q
-
+copy ".\workspace.xml" ".\extra_resources\workspace.xml"
 echo Clearing build directory...
 del /s /f /q build\*.*
 for /f %%f in ('dir /ad /b build\') do rd /s /q build\%%f
