@@ -16,17 +16,17 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v3
         with:
-          submodule: recursive
-
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v1
+          submodules: recursive
+      
+      - name: Install Node
+        uses: actions/setup-node@v2
         with:
-          node-version: 16
-          
+          node-version: '16'
+
       - name: Install Dependencies
         run: npm install --also=dev
         
-      - name: Clear Extra Resources
+      - name: Setup Extra Resources
         run: |
           mkdir -p extra_resources/.platformio/
           mkdir -p extra_resources/yetenek12-library/
@@ -34,28 +34,6 @@ jobs:
           rsync -a yetenek12-library/* extra_resources/yetenek12-library/
           rsync -a ./src/workspace.xml extra_resources/workspace.xml
         shell: bash
-
-      - name: Build/release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          # GitHub token, automatically provided to the action
-          # (No need to define this secret in the repo settings)
-          github_token: ${{ secrets.github_token }}
-
-          # If the commit is tagged with a version (e.g. "v1.0.0"),
-          # release the app after building
-          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-
-  release-windows:
-      runs-on: windows-latest
-      steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v1
-
-      - name: Install Node.js, NPM and Yarn
-        uses: actions/setup-node@v1
-        with:
-          node-version: 16
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
