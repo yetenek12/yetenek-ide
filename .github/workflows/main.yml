@@ -24,7 +24,7 @@ jobs:
           node-version: '16'
 
       - name: Install Dependencies
-        run: npm install --also=dev
+        run: npm ci
         
       - name: Setup Extra Resources
         run: |
