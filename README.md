@@ -1,5 +1,7 @@
 # YETENEK IDE
 
+[![CI](https://github.com/yetenek12/yetenek-ide/actions/workflows/main.yml/badge.svg)](https://github.com/yetenek12/yetenek-ide/actions/workflows/main.yml)
+
 🎱 NodeJS Version: **16.14.0 (LTS)**
 
 ```bash
