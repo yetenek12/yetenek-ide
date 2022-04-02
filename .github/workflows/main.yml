@@ -86,7 +86,7 @@ jobs:
         
       - name: Rebuild App
         run: npm run rebuild-app
-        shel: cmd
+        shell: cmd
         
       - name: Build App
         run: npm run build-app
