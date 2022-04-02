@@ -87,6 +87,10 @@ jobs:
         shell: cmd
         
       - name: Rebuild App
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.x' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+          architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
         run: cmd.exe /c npm run rebuild-app >NUL 2>&1
         shell: cmd
         
