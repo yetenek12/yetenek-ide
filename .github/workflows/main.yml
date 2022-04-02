@@ -79,12 +79,12 @@ jobs:
         shell: cmd
         
       - name: Rebuild App
-        run: npm run rebuild-app
-        shell: bash
+        run: cmd.exe /c npm run rebuild-app >NUL 2>&1
+        shell: cmd
         
       - name: Build App
         run: npm run build-app
-        shell: bash
+        shell: cmd
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
           GH_TOKEN: ${{ secrets.github_token }}
