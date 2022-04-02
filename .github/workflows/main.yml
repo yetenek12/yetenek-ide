@@ -69,14 +69,14 @@ jobs:
           python-version: '2.7'
           architecture: 'x64'
           
-      - name: Install Tools
-        run: npm install -g windows-build-tools
-        shell: cmd
-          
       - name: Install Node
         uses: actions/setup-node@v2
         with:
           node-version: '16'
+          
+      - name: Install Tools
+        run: npm install -g windows-build-tools
+        shell: cmd
 
       - name: Install Dependencies
         run: npm ci
