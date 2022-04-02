@@ -70,21 +70,18 @@ jobs:
       - name: Install Dependencies
         run: npm ci
         
-      - name: Setup Extra Resources 1
-        run: mkdir .\extra_resources\
+      - name: Setup Extra Resources
+        run: |
+          mkdir .\extra_resources\
+          xcopy ".\yetenek-ide-pio-windows\" ".\extra_resources\.platformio\" /e /i /y /c /q
+          xcopy ".\yetenek12-library\" ".\extra_resources\yetenek12-library\" /e /i /y /c /q
+          copy ".\src\workspace.xml" ".\extra_resources\workspace.xml"
         shell: cmd
-        
-      - name: Setup Extra Resources 2
-        run: xcopy ".\yetenek-ide-pio-windows\" ".\extra_resources\.platformio\" /e /i /y /c /q
-        shell: cmd
-        
-      - name: Setup Extra Resources 3
-        run: xcopy ".\yetenek12-library\" ".\extra_resources\yetenek12-library\" /e /i /y /c /q
-        shell: cmd
-        
-      - name: Setup Extra Resources 4
-        run: copy ".\src\workspace.xml" ".\extra_resources\workspace.xml"
-        shell: cmd
+
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.x'
+          architecture: 'x64'
         
       - name: Rebuild App
         run: cmd.exe /c npm run rebuild-app >NUL 2>&1
