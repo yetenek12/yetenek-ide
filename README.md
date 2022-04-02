@@ -36,7 +36,7 @@
 
 ## Contribute
 
-Create a new branch from `dev`, make changes and then, create a [Pull Request.](https://github.com/yetenek12/yetenek-ide/pulls)  
+Create a new branch from `development`, make changes and then, create a [Pull Request.](https://github.com/yetenek12/yetenek-ide/pulls)  
 Ex:  
 ```bash
     git switch dev
