@@ -79,7 +79,7 @@ jobs:
         shell: cmd
         
       - name: Setup Extra Resources 3
-        run: xcopy ".\src\yetenek12-library\" ".\extra_resources\yetenek12-library\" /e /i /y /c /q
+        run: xcopy ".\yetenek12-library\" ".\extra_resources\yetenek12-library\" /e /i /y /c /q
         shell: cmd
         
       - name: Setup Extra Resources 4
