@@ -85,7 +85,7 @@ jobs:
           copy ".\src\workspace.xml" ".\extra_resources\workspace.xml"
         
       - name: Rebuild App
-        run: npm run rebuild-app
+        run: .\node_modules\.bin\electron-rebuild.cmd
         shell: cmd
         
       - name: Build App
