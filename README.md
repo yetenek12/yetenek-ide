@@ -36,7 +36,7 @@
 
 ## Contribute
 
-Create a new branch from `dev`, make changes and then, create a [Pull Request.](https://github.com/yetenek12/yetenek-ide/pulls)  
+Create a new branch from `development`, make changes and then, create a [Pull Request.](https://github.com/yetenek12/yetenek-ide/pulls)  
 Ex:  
 ```bash
     git switch dev
@@ -56,6 +56,19 @@ Ex:
     # https://stackoverflow.com/questions/10906554/how-do-i-revert-my-changes-to-a-git-submodule
     # RESET SUBMODULE CHANGES
     git restore . --recurse-submodules
+```
+
+## CI
+
+```bash
+    # List tags
+    git tag
+
+    # Add new tag
+    git tag vX.Y.Z
+
+    # Push new tag
+    git push origin vX.Y.Z
 ```
 
 ## Building Blockly (ONLY IF YOU MADE CHANGES INSIDE `/blockly`! ⚠️)
