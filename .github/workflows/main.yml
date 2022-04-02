@@ -69,6 +69,10 @@ jobs:
           python-version: '2.7'
           architecture: 'x64'
           
+      - name: Install Tools
+        run: npm install -g windows-build-tools
+        shell: cmd
+          
       - name: Install Node
         uses: actions/setup-node@v2
         with:
@@ -83,17 +87,13 @@ jobs:
           xcopy ".\yetenek-ide-pio-windows\" ".\extra_resources\.platformio\" /e /i /y /c /q
           xcopy ".\yetenek12-library\" ".\extra_resources\yetenek12-library\" /e /i /y /c /q
           copy ".\src\workspace.xml" ".\extra_resources\workspace.xml"
-        shell: cmd
         
       - name: Rebuild App
         run: cmd.exe /c npm run rebuild-app >NUL 2>&1
-        shell: cmd
         
       - name: Build App
         run: npm run build-app
-        shell: cmd
         env:
-          CSC_IDENTITY_AUTO_DISCOVERY: false
           GH_TOKEN: ${{ secrets.github_token }}
         
       - name: Release App
