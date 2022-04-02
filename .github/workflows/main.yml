@@ -54,7 +54,7 @@ jobs:
   #         files: build/**.dmg
 
   release-win:
-    runs-on: windows-lastest
+    runs-on: windows-latest
     steps:
     
       - name: Check out Git repository
