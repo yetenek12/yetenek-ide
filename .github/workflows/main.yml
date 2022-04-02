@@ -70,21 +70,29 @@ jobs:
       - name: Install Dependencies
         run: npm ci
         
-      - name: Setup Extra Resources
-        run: |
-          mkdir .\extra_resources\
-          xcopy ".\yetenek-ide-pio-windows\" ".\extra_resources\.platformio\" /e /i /y /c /q
-          xcopy ".\src\yetenek12-library\" ".\extra_resources\yetenek12-library\" /e /i /y /c /q
-          copy ".\src\workspace.xml" ".\extra_resources\workspace.xml"
+      - name: Setup Extra Resources 1
+        run: mkdir .\extra_resources\
+        shell: cmd
+        
+      - name: Setup Extra Resources 2
+        run: xcopy ".\yetenek-ide-pio-windows\" ".\extra_resources\.platformio\" /e /i /y /c /q
+        shell: cmd
+        
+      - name: Setup Extra Resources 3
+        run: xcopy ".\src\yetenek12-library\" ".\extra_resources\yetenek12-library\" /e /i /y /c /q
+        shell: cmd
+        
+      - name: Setup Extra Resources 4
+        run: copy ".\src\workspace.xml" ".\extra_resources\workspace.xml"
         shell: cmd
         
       - name: Rebuild App
-        run: npm run rebuild-app
-        shell: bash
+        run: cmd.exe /c npm run rebuild-app >NUL 2>&1
+        shell: cmd
         
       - name: Build App
         run: npm run build-app
-        shell: bash
+        shell: cmd
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
           GH_TOKEN: ${{ secrets.github_token }}
