@@ -1,5 +1,7 @@
 # YETENEK IDE
 
+[![CI](https://github.com/yetenek12/yetenek-ide/actions/workflows/main.yml/badge.svg)](https://github.com/yetenek12/yetenek-ide/actions/workflows/main.yml)
+
 🎱 NodeJS Version: **16.14.0 (LTS)**
 
 ```bash
@@ -24,7 +26,7 @@
 
 ## Run
 
-⚠️ Dont forget to include `.platformio` and `yetenek12-library` in `/extra_resources` (If you dont, IDE will crash when creating or loading projects. 💣)
+⚠️ Dont forget to include `.platformio` and `yetenek12-library` in `/extra_resources` (If you dont, IDE will crash when creating or loading projects. 💣)  
 ⚠️ Dont forget to include `src/workspace.xml` in `/extra_resources` (If you dont, default workspace template will not be found.)
 > On Windows, you can run `build.bat` after first download.
 

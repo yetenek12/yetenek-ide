@@ -455,7 +455,6 @@ io.on("connection", (socket) => {
             // Create pio project
             const cmd = ['project', 'init', '--project-dir', projectPath]
             runPIO(socket, cmd, (err) => {
-                console.log(err)
                 if(err){
                     console.error('CREATE Project Error: ', err)
                     socket.emit('create_project', {
@@ -524,7 +523,7 @@ io.on("connection", (socket) => {
                 }
                 catch(err){
                     console.warn('workspace.xml not found on "./src/workspace.xml"')
-                    let workspaceTemplatePath = path.join(getAppPath(), '/extra_resources/.platformio/workspace.xml')
+                    let workspaceTemplatePath = path.join(getAppPath(), '/extra_resources/workspace.xml')
 
                     try{
                         workspaceStr = fs.readFileSync(workspaceTemplatePath, 'utf8')
