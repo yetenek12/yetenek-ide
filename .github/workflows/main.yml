@@ -75,7 +75,7 @@ jobs:
           node-version: '16'
           
       - name: Set Python Version
-        run: npm config set python python2.7
+        run: npm config set python $env:pythonLocation
 
       - name: Install Dependencies
         run: npm ci
