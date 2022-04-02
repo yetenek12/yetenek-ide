@@ -58,6 +58,19 @@ Ex:
     git restore . --recurse-submodules
 ```
 
+## CI
+
+```bash
+    # List tags
+    git tag
+
+    # Add new tag
+    git tag vX.Y.Z
+
+    # Push new tag
+    git push origin vX.Y.Z
+```
+
 ## Building Blockly (ONLY IF YOU MADE CHANGES INSIDE `/blockly`! ⚠️)
 
 - Don't forget to commit submodule if you make any changes.

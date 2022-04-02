@@ -72,7 +72,7 @@ jobs:
         
       - name: Setup Extra Resources
         run: |
-          mkdir .\extra_resources\
+          mkdir ".\extra_resources\"
           xcopy ".\yetenek-ide-pio-windows\" ".\extra_resources\.platformio\" /e /i /y /c /q
           xcopy ".\src\yetenek12-library\" ".\extra_resources\yetenek12-library\" /e /i /y /c /q
           copy ".\src\workspace.xml" ".\extra_resources\workspace.xml"
