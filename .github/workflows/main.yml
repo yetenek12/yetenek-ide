@@ -64,6 +64,11 @@ jobs:
         with:
           submodules: recursive
       
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '2.7'
+          architecture: 'x64'
+          
       - name: Install Node
         uses: actions/setup-node@v2
         with:
@@ -79,11 +84,6 @@ jobs:
           xcopy ".\yetenek12-library\" ".\extra_resources\yetenek12-library\" /e /i /y /c /q
           copy ".\src\workspace.xml" ".\extra_resources\workspace.xml"
         shell: cmd
-
-      - uses: actions/setup-python@v3
-        with:
-          python-version: '3.x'
-          architecture: 'x64'
         
       - name: Rebuild App
         run: cmd.exe /c npm run rebuild-app >NUL 2>&1
