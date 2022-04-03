@@ -2,6 +2,7 @@ node_modules
 npm-debug.log
 build-debug.log
 .DS_Store
+.vscode/
 
 /extra_resources/*
 /build/*
