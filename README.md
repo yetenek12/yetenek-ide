@@ -20,15 +20,21 @@
     npm install --also=dev
     npm run rebuild-app
 
+    # INIT Project (On Windows)
+    .\init.bat
+
+    # INIT Project (On Mac OS)
+    ./init.sh
+
     # Update submodules / refs
-    git submodule update --init --recursive
+    # git submodule update --init --recursive
+
+    # https://stackoverflow.com/questions/10906554/how-do-i-revert-my-changes-to-a-git-submodule
+    # RESET SUBMODULE CHANGES
+    # git restore . --recurse-submodules
 ```
 
 ## Run
-
-⚠️ Dont forget to include `.platformio` and `yetenek12-library` in `/extra_resources` (If you dont, IDE will crash when creating or loading projects. 💣)  
-⚠️ Dont forget to include `src/workspace.xml` in `/extra_resources` (If you dont, default workspace template will not be found.)
-> On Windows, you can run `build.bat` after first download.
 
 ```bash
     npm run start
@@ -52,10 +58,6 @@ Ex:
     # --------
     # LIST BRANCHES
     git branch -vav
-
-    # https://stackoverflow.com/questions/10906554/how-do-i-revert-my-changes-to-a-git-submodule
-    # RESET SUBMODULE CHANGES
-    git restore . --recurse-submodules
 ```
 
 ## CI
