@@ -45,12 +45,12 @@
 Create a new branch from `development`, make changes and then, create a [Pull Request.](https://github.com/yetenek12/yetenek-ide/pulls)  
 Ex:  
 ```bash
-    git switch dev
+    git switch development
     git pull
-    git switch -c dev-myname-my-feature
+    git switch -c feature
     # COMMIT CHANGES
     # ...
-    git push --set-upstream origin dev-myname-my-feature
+    git push --set-upstream origin feature
     # COMMIT MORE CHANGES
     #...
     git push
