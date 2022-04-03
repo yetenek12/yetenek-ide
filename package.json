@@ -1,7 +1,7 @@
 {
     "name": "yetenek-ide",
     "main": "main.js",
-    "version": "2.1.0",
+    "version": "1.5.2",
     "private": true,
     "scripts": {
         "start": "electron ./main.js",
@@ -20,11 +20,11 @@
         "morgan": "^1.10.0",
         "node-powershell": "^4.0.0",
         "serialport": "^10.4.0",
-        "socket.io": "^4.1.2"
+        "socket.io": "^4.4.1"
     },
     "devDependencies": {
         "@tailwindcss/custom-forms": "^0.2.1",
-        "electron": "^12.0.0",
+        "electron": "^13.6.6",
         "electron-builder": "^23.0.2",
         "electron-rebuild": "^3.2.7"
     },
