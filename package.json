@@ -20,7 +20,7 @@
         "morgan": "^1.10.0",
         "node-powershell": "^4.0.0",
         "serialport": "^10.4.0",
-        "socket.io": "^4.1.2"
+        "socket.io": "^4.4.1"
     },
     "devDependencies": {
         "@tailwindcss/custom-forms": "^0.2.1",
