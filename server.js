@@ -490,9 +490,9 @@ io.on("connection", (socket) => {
                 }
                 else{
                     pioIni += '\n'
-                    pioIni += '[env:esp-wrover-kit]\n'
+                    pioIni += '[env:pico32]\n'
                     pioIni += 'platform = espressif32\n'
-                    pioIni += 'board = esp-wrover-kit\n'
+                    pioIni += 'board = pico32\n'
                     pioIni += 'framework = arduino\n'
                     pioIni += '\n'
                 }
