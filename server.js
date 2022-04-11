@@ -491,7 +491,8 @@ io.on("connection", (socket) => {
                 else{
                     pioIni += '\n'
                     pioIni += '[env:pico32]\n'
-                    pioIni += 'platform = espressif32\n'
+                    pioIni += 'platform = https://github.com/platformio/platform-espressif32.git#feature/arduino-upstream\n'
+                    pioIni += 'platform_packages = platformio/framework-arduinoespressif32 @ https://github.com/espressif/arduino-esp32.git#2.0.1\n'
                     pioIni += 'board = pico32\n'
                     pioIni += 'framework = arduino\n'
                     pioIni += '\n'
