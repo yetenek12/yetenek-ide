@@ -50,6 +50,8 @@ function build(platform, arch, target) {
     }
 
     console.log('cwd:', process.cwd());
+    console.log('env:', ops.env);
+
     console.log('Rebuild App...');
     exec(rebuildAppCmd, ops, (err, stdout, stderr) => {
         if (err) {
