@@ -35,7 +35,7 @@ jobs:
               run: npm install --production=false
 
             - name: Build App
-              run: npm run build
+              run: npm run buildx
 
             - name: Release App
               uses: softprops/action-gh-release@v1

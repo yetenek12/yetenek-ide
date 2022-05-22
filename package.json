@@ -6,7 +6,7 @@
     "scripts": {
         "start": "electron main.js",
         "init": "node build.mjs --init",
-        "build": "node build.mjs",
+        "buildx": "node build.mjs",
         "rebuild-app": "node_modules/.bin/electron-rebuild",
         "rebuild-app:win32": "node_modules\\.bin\\electron-rebuild",
         "build-app": "electron-builder",
