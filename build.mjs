@@ -34,11 +34,17 @@ function build(platform, arch, target){
     fs.removeSync('./build')
     fs.ensureDirSync('./build')
 
-    const env = process.env
-    if(platform === 'darwin') env['CSC_IDENTITY_AUTO_DISCOVERY'] = 'false'
-
+    const ops = { env: process.env }
+    if(platform === 'darwin') {
+        ops.env['CSC_IDENTITY_AUTO_DISCOVERY'] = 'false'
+    }
+    if(platform === 'win32') {
+        ops.shell = 'cmd.exe'
+        ops.windowsHide = true
+    }
+     
     console.log('EXEC npm run rebuild-app ...')
-    exec('npm run rebuild-app', {env}, (err, stdout, stderr) => {
+    exec('npm run rebuild-app', ops, (err, stdout, stderr) => {
         if(err) {
             console.error(err)
             process.exit(1)
@@ -46,7 +52,7 @@ function build(platform, arch, target){
         console.log(stdout)
 
         console.log('EXEC npm run build-app ...')
-        exec('npm run build-app', {env}, (err, stdout, stderr) => {
+        exec('npm run build-app', ops, (err, stdout, stderr) => {
             if(err) {
                 console.error(err)
                 process.exit(1)
