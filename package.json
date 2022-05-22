@@ -4,13 +4,13 @@
     "version": "3.0.0",
     "private": true,
     "scripts": {
-        "start": "electron ./main.js",
+        "start": "electron main.js",
         "init": "node build.mjs --init",
         "build": "node build.mjs",
-        "start:arduino": "electron ./main.js --arduino",
-        "rebuild-app": "./node_modules/.bin/electron-rebuild",
+        "start:arduino": "electron main.js --arduino",
+        "rebuild-app": "node_modules/.bin/electron-rebuild",
         "build-app": "electron-builder",
-        "build-tailwinds": "npx tailwindcss-cli@latest build -o ./src/tailwind.css"
+        "build-tailwinds": "npx tailwindcss-cli@latest build -o src/tailwind.css"
     },
     "dependencies": {
         "express": "^4.17.1",

@@ -7,20 +7,20 @@ function init(platform, arch, target){
     console.log('Initializing...')
 
     console.log('Clearing Extra Resources...')
-    fs.removeSync('./extra_resources')
-    fs.ensureDirSync('./extra_resources')
+    fs.removeSync('extra_resources')
+    fs.ensureDirSync('extra_resources')
 
     console.log('Copying .platformio...')
-    if(target === 'win32 (x64)') fs.copySync('./yetenek-ide-pio-windows', './extra_resources/.platformio')
-    else if(target === 'darwin (x64)') fs.copySync('./yetenek-ide-pio-mac', './extra_resources/.platformio')
-    else if(target === 'darwin (arm64)') fs.copySync('./yetenek-ide-pio-mac-arm', './extra_resources/.platformio')
+    if(target === 'win32 (x64)') fs.copySync('yetenek-ide-pio-windows', 'extra_resources/.platformio')
+    else if(target === 'darwin (x64)') fs.copySync('yetenek-ide-pio-mac', 'extra_resources/.platformio')
+    else if(target === 'darwin (arm64)') fs.copySync('yetenek-ide-pio-mac-arm', 'extra_resources/.platformio')
     else assert(false, `${target} is not supported`)
 
     console.log('Copying yetenek12 library...')
-    fs.copySync('./yetenek12-library', './extra_resources/yetenek12-library')
+    fs.copySync('yetenek12-library', 'extra_resources/yetenek12-library')
 
     console.log('Copying workspace.xml...')
-    fs.copyFileSync('./src/workspace.xml', './extra_resources/workspace.xml')
+    fs.copyFileSync('src/workspace.xml', 'extra_resources/workspace.xml')
 
     console.log('Initialization completed\n')
 }
@@ -31,8 +31,8 @@ function build(platform, arch, target){
     console.log('Building...')
 
     console.log('Clearing build directory...')
-    fs.removeSync('./build')
-    fs.ensureDirSync('./build')
+    fs.removeSync('build')
+    fs.ensureDirSync('build')
 
     const ops = { env: process.env }
     if(platform === 'darwin') {
