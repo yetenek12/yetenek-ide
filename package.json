@@ -26,7 +26,7 @@
     "devDependencies": {
         "@tailwindcss/custom-forms": "^0.2.1",
         "electron": "^13.6.6",
-        "electron-builder": "^23.0.3",
+        "electron-builder": "^22.14.13",
         "electron-rebuild": "^3.2.7"
     },
     "build": {
