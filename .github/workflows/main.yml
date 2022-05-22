@@ -15,9 +15,8 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest]
     steps:
-    
-      - name: Check out Git repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        name: Check out Git repository
         with:
           submodules: recursive
 
