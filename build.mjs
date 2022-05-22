@@ -47,20 +47,22 @@ function build(platform, arch, target) {
         ops.windowsHide = true;
     }
 
-    console.log('EXEC npm run rebuild-app ...');
+    console.log('Rebuild App...');
     exec(rebuildAppCmd, ops, (err, stdout, stderr) => {
         if (err) {
             console.error(err);
             process.exit(1);
         }
+        if (stderr) console.error(stderr);
         console.log(stdout);
 
-        console.log('EXEC npm run build-app ...');
+        console.log('Build App...');
         exec(buildAppCmd, ops, (err, stdout, stderr) => {
             if (err) {
                 console.error(err);
                 process.exit(1);
             }
+            if (stderr) console.error(stderr);
             console.log(stdout);
 
             console.log('Build completed');
