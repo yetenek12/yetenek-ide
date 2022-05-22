@@ -10,7 +10,7 @@
         "rebuild-app": "node_modules/.bin/electron-rebuild",
         "rebuild-app:win32": "node_modules\\.bin\\electron-rebuild",
         "build-app": "electron-builder",
-        "build-app:win32": "node_modules\\.bin\\electron-builder",
+        "build-app:win32": "node_modules\\.bin\\electron-builder -w --config",
         "build-tailwinds": "npx tailwindcss-cli@latest build -o src/tailwind.css"
     },
     "dependencies": {

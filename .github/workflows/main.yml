@@ -42,4 +42,4 @@ jobs:
               if: startsWith(github.ref, 'refs/tags/v')
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  files: build/**.(exe|dmg)
+                  files: build/**@(.exe|.dmg)
