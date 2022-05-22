@@ -37,6 +37,8 @@ function build(platform, arch, target) {
     let rebuildAppCmd = 'npm run rebuild-app';
     let buildAppCmd = 'npm run build-app';
     const ops = { env: process.env };
+    ops.env['DEBUG'] = 'electron-builder';
+
     if (platform === 'darwin') {
         ops.env['CSC_IDENTITY_AUTO_DISCOVERY'] = 'false';
     }
@@ -61,7 +63,7 @@ function build(platform, arch, target) {
         exec(buildAppCmd, ops, (err, stdout, stderr) => {
             if (err) {
                 console.error(err);
-                process.exit(1);
+                // process.exit(1);
             }
             if (stderr) console.error(stderr);
             console.log(stdout);
