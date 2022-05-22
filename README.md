@@ -67,6 +67,10 @@ Ex:
 
     # Push new tag
     git push origin vX.Y.Z
+
+    # https://stackoverflow.com/questions/1841341/remove-local-git-tags-that-are-no-longer-on-the-remote-repository
+    # git tag -l | xargs git tag -d
+    # git fetch --tags
 ```
 
 ## Building Blockly (ONLY IF YOU MADE CHANGES INSIDE `/blockly`! ⚠️)
