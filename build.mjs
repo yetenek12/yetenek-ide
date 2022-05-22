@@ -44,7 +44,7 @@ function build(platform, arch, target) {
     }
     if (platform === 'win32') {
         rebuildAppCmd = 'npm run rebuild-app:win32';
-        buildAppCmd = 'node_modules\\.bin\\electron-builder';
+        buildAppCmd = 'npm run build-app:win32';
         ops.shell = 'cmd.exe';
         ops.windowsHide = true;
     }
