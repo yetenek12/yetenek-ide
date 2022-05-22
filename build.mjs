@@ -35,12 +35,14 @@ function build(platform, arch, target) {
     fs.ensureDirSync('build');
 
     let rebuildAppCmd = 'npm run rebuild-app';
+    let buildAppCmd = 'npm run build-app';
     const ops = { env: process.env };
     if (platform === 'darwin') {
         ops.env['CSC_IDENTITY_AUTO_DISCOVERY'] = 'false';
     }
     if (platform === 'win32') {
         rebuildAppCmd = 'npm run rebuild-app:win32';
+        buildAppCmd = 'npm run build-app:win32';
         ops.shell = 'cmd.exe';
         ops.windowsHide = true;
     }
@@ -54,7 +56,7 @@ function build(platform, arch, target) {
         console.log(stdout);
 
         console.log('EXEC npm run build-app ...');
-        exec('npm run build-app', ops, (err, stdout, stderr) => {
+        exec(buildAppCmd, ops, (err, stdout, stderr) => {
             if (err) {
                 console.error(err);
                 process.exit(1);
