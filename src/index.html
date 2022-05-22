@@ -1,98 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YETENEK IDE</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>YETENEK IDE</title>
 
-    <!-- Materialize -->
-    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
-    <!-- <link rel="preconnect" href="https://fonts.gstatic.com"> -->
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"> -->
+        <!-- Materialize -->
+        <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
+        <!-- <link rel="preconnect" href="https://fonts.gstatic.com"> -->
+        <!-- <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"> -->
 
-    <!-- APP -->
-    <link rel="stylesheet" href="/tailwind.css">
-    <link rel="stylesheet" href="/index.css">
-</head>
-<body>
-    <nav class="flex items-center h-16 bg-blue-600 border-b-4 border-blue-800">
-        <!-- <h1 class="text-2xl text-white ml-4 mr-8">YETENEK IDE</h1> -->
-        <a href="javascript:void();" class="brand-logo">
-			<!-- <i class="material-icons">integration_instructions</i> -->
-			<!-- YETENEK IDE -->
-            <img src="header.png" class="h-10 mr-6" style="min-width: 120px;" alt="YETENEK IDE LOGO">
-		</a>
-    </nav>
+        <!-- APP -->
+        <link rel="stylesheet" href="/tailwind.css" />
+        <link rel="stylesheet" href="/index.css" />
+    </head>
+    <body>
+        <nav class="flex items-center h-16 bg-blue-600 border-b-4 border-blue-800">
+            <!-- <h1 class="text-2xl text-white ml-4 mr-8">YETENEK IDE</h1> -->
+            <a href="javascript:void();" class="brand-logo">
+                <!-- <i class="material-icons">integration_instructions</i> -->
+                <!-- YETENEK IDE -->
+                <img src="header.png" class="h-10 mr-6" style="min-width: 120px" alt="YETENEK IDE LOGO" />
+            </a>
+        </nav>
 
-    <div class="flex justify-center items-center h-screen bg-gray-50" style="background-image: url('texture_01.png'); background-repeat: repeat; background-size: 10vw, 10vw;">
-        <div class="flex justify-center items-center w-72 h-72 m-8 rounded-lg bg-gray-200 border-blue-800 border-8 border-dashed cursor-pointer hover:bg-blue-200 hover:text-blue-800 font-bold" onclick="createProject();">
-            <p class="text-6xl m-8">YENİ PROJE</p>
+        <div
+            class="flex justify-center items-center h-screen bg-gray-50"
+            style="background-image: url('texture_01.png'); background-repeat: repeat; background-size: 10vw, 10vw"
+        >
+            <div
+                class="flex justify-center items-center w-72 h-72 m-8 rounded-lg bg-gray-200 border-blue-800 border-8 border-dashed cursor-pointer hover:bg-blue-200 hover:text-blue-800 font-bold"
+                onclick="createProject();"
+            >
+                <p class="text-6xl m-8">YENİ PROJE</p>
+            </div>
+            <div
+                class="flex justify-center items-center w-72 h-72 m-8 rounded-lg bg-gray-200 border-gray-800 border-8 border-dashed cursor-pointer hover:bg-blue-200"
+                onclick="loadProject();"
+            >
+                <p class="text-5xl m-8">PROJE AÇ</p>
+            </div>
         </div>
-        <div class="flex justify-center items-center w-72 h-72 m-8 rounded-lg bg-gray-200 border-gray-800 border-8 border-dashed cursor-pointer hover:bg-blue-200" onclick="loadProject();">
-            <p class="text-5xl m-8">PROJE AÇ</p>
+
+        <div style="position: absolute; right: 16px; bottom: 16px">
+            <img src="/logo_built_on_dark_with_bg.png" alt="Built with Blockly" style="max-height: 3rem" />
         </div>
-    </div>
 
-    <div style="position: absolute; right: 16px; bottom: 16px;">
-        <img src="/logo_built_on_dark_with_bg.png" alt="Built with Blockly" style="max-height: 3rem;">
-    </div>
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <!-- Sweet Alert -->
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            // https://sweetalert2.github.io/
+            function promptError(error, title = 'Error') {
+                Swal.fire({
+                    icon: 'error',
+                    title: title,
+                    text: error,
+                    // footer: '<a href="">Why do I have this issue?</a>'
+                });
+            }
+        </script>
 
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <!-- Sweet Alert -->
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        // https://sweetalert2.github.io/
-        function promptError(error, title = 'Error'){
-            Swal.fire({
-                icon: 'error',
-                title: title,
-                text: error,
-                // footer: '<a href="">Why do I have this issue?</a>'
-            })
-        }
-    </script>
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <!-- Socket IO -->
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <script
+            src="https://cdn.socket.io/4.1.1/socket.io.min.js"
+            integrity="sha384-cdrFIqe3RasCMNE0jeFG9xJHog/tgOVC1E9Lzve8LQN1g5WUHo0Kvk1mawWjxX7a"
+            crossorigin="anonymous"
+        ></script>
+        <script>
+            const socket = io();
 
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <!-- Socket IO -->
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <script src="https://cdn.socket.io/4.1.1/socket.io.min.js" integrity="sha384-cdrFIqe3RasCMNE0jeFG9xJHog/tgOVC1E9Lzve8LQN1g5WUHo0Kvk1mawWjxX7a" crossorigin="anonymous"></script>
-    <script>
-        const socket = io();
-        
-        socket.on('connect', () => {
-            console.log(`Socket Connected: ${socket.id}`);
-        });
+            socket.on('connect', () => {
+                console.log(`Socket Connected: ${socket.id}`);
+            });
 
-        socket.on('disconnect', () => {
-            console.log('Socket Disconnected.'); // TODO: Refresh Page?
-        });
+            socket.on('disconnect', () => {
+                console.log('Socket Disconnected.'); // TODO: Refresh Page?
+            });
 
-        socket.on('change_project', (data) => {
-            if(data.status === 'ok'){
-                window.location.replace(window.location.origin + "/editor.html");
+            socket.on('change_project', (data) => {
+                if (data.status === 'ok') {
+                    window.location.replace(window.location.origin + '/editor.html');
+                } else if (data.error) {
+                    promptError(data.error, 'Projeyi açarken hata oluştu.');
+                }
+            });
+        </script>
+
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <!-- APP -->
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <script>
+            function createProject() {
+                window.location.replace(window.location.origin + '/create.html');
             }
 
-            else if(data.error){
-                promptError(data.error, 'Projeyi açarken hata oluştu.')
+            function loadProject() {
+                // window.location.replace(window.location.origin + "/editor.html");
+                socket.emit('change_project');
             }
-        })
-    </script>
-
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <!-- APP -->
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <script>
-        function createProject(){
-            window.location.replace(window.location.origin + "/create.html");
-        }
-
-        function loadProject(){
-            // window.location.replace(window.location.origin + "/editor.html");
-            socket.emit('change_project')
-        }
-    </script>
-</body>
+        </script>
+    </body>
 </html>

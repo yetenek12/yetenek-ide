@@ -1,178 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YETENEK IDE</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>YETENEK IDE</title>
 
-    <!-- Materialize -->
-    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
-    <!-- <link rel="preconnect" href="https://fonts.gstatic.com"> -->
-    <!-- <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"> -->
+        <!-- Materialize -->
+        <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
+        <!-- <link rel="preconnect" href="https://fonts.gstatic.com"> -->
+        <!-- <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"> -->
 
-    <!-- APP -->
-    <link rel="stylesheet" href="/tailwind.css">
-    <link rel="stylesheet" href="/index.css">
-</head>
-<body>
-    <nav class="flex items-center h-16 bg-blue-600 border-b-4 border-blue-800">
-        <!-- <h1 class="text-2xl text-white ml-4 mr-8">YETENEK IDE</h1> -->
-        <a href="javascript:void();" class="brand-logo">
-			<!-- <i class="material-icons">integration_instructions</i> -->
-			<!-- YETENEK IDE -->
-            <img src="header.png" class="h-10 mr-6" style="min-width: 120px;" alt="YETENEK IDE LOGO">
-		</a>
-    </nav>
-    
+        <!-- APP -->
+        <link rel="stylesheet" href="/tailwind.css" />
+        <link rel="stylesheet" href="/index.css" />
+    </head>
+    <body>
+        <nav class="flex items-center h-16 bg-blue-600 border-b-4 border-blue-800">
+            <!-- <h1 class="text-2xl text-white ml-4 mr-8">YETENEK IDE</h1> -->
+            <a href="javascript:void();" class="brand-logo">
+                <!-- <i class="material-icons">integration_instructions</i> -->
+                <!-- YETENEK IDE -->
+                <img src="header.png" class="h-10 mr-6" style="min-width: 120px" alt="YETENEK IDE LOGO" />
+            </a>
+        </nav>
 
-    <div class="flex justify-center items-center h-screen bg-gray-50" style="background-image: url('texture_01.png'); background-repeat: repeat; background-size: 10vw, 10vw;">
-        <!-- <div class="flex justify-center items-center w-72 h-72 m-8 rounded-lg bg-gray-200 border-blue-800 border-8 border-dashed cursor-pointer hover:bg-blue-200 hover:text-blue-800 font-bold" onclick="navigate();">
+        <div
+            class="flex justify-center items-center h-screen bg-gray-50"
+            style="background-image: url('texture_01.png'); background-repeat: repeat; background-size: 10vw, 10vw"
+        >
+            <!-- <div class="flex justify-center items-center w-72 h-72 m-8 rounded-lg bg-gray-200 border-blue-800 border-8 border-dashed cursor-pointer hover:bg-blue-200 hover:text-blue-800 font-bold" onclick="navigate();">
             <p class="text-6xl m-8">NEW PROJECT</p>
         </div>
         <div class="flex justify-center items-center w-72 h-72 m-8 rounded-lg bg-gray-200 border-gray-800 border-8 border-dashed cursor-pointer hover:bg-blue-200" onclick="navigate();">
             <p class="text-5xl m-8">LOAD PROJECT</p>
         </div> -->
 
-        <div class="bg-gray-50 w-3/5 rounded-lg shadow-lg">
-            <div class="flex">
-                <h1 class="font-bold text-2xl m-4">+ Yeni Proje Oluştur</h1>
-                <span class="flex-grow"></span>
-                <button class="mr-6 text-gray-800 text-lg" onclick="back()">&lt; Geri</button>
-            </div>
-            <hr>
+            <div class="bg-gray-50 w-3/5 rounded-lg shadow-lg">
+                <div class="flex">
+                    <h1 class="font-bold text-2xl m-4">+ Yeni Proje Oluştur</h1>
+                    <span class="flex-grow"></span>
+                    <button class="mr-6 text-gray-800 text-lg" onclick="back()">&lt; Geri</button>
+                </div>
+                <hr />
 
-            <div class="m-2 ml-4 mr-4 mt-8 flex items-center text-4xl">
-                <input id="project-name" type="text" placeholder="Project Name" class="border-4 rounded-md w-full">
-            </div>
+                <div class="m-2 ml-4 mr-4 mt-8 flex items-center text-4xl">
+                    <input
+                        id="project-name"
+                        type="text"
+                        placeholder="Project Name"
+                        class="border-4 rounded-md w-full"
+                    />
+                </div>
 
-            <div class="m-2 ml-4 mr-4 flex items-center">
-                <p id="project-path" class="w-full text-lg"></p>
-                <button id="select-btn" class="bg-gray-600 hover:bg-gray-800 p-2 m-2 text-white rounded-md shadow-md text-2xl">Seç</button>
-            </div>
+                <div class="m-2 ml-4 mr-4 flex items-center">
+                    <p id="project-path" class="w-full text-lg"></p>
+                    <button
+                        id="select-btn"
+                        class="bg-gray-600 hover:bg-gray-800 p-2 m-2 text-white rounded-md shadow-md text-2xl"
+                    >
+                        Seç
+                    </button>
+                </div>
 
-            <div>
-                <p id="message" class="m-4 text-blue-800 font-bold text-2xl"></p>
-                <div id="loading" style="display: none; float: left; margin-left: 8px;" class="lds-ring"><div></div><div></div><div></div><div></div></div>    
+                <div>
+                    <p id="message" class="m-4 text-blue-800 font-bold text-2xl"></p>
+                    <div id="loading" style="display: none; float: left; margin-left: 8px" class="lds-ring">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+                <button
+                    id="create-btn"
+                    class="bg-blue-600 hover:bg-blue-800 p-2 m-4 text-white rounded-md shadow-md text-2xl"
+                >
+                    Proje Oluştur
+                </button>
             </div>
-            <button id="create-btn" class="bg-blue-600 hover:bg-blue-800 p-2 m-4 text-white rounded-md shadow-md text-2xl">Proje Oluştur</button>
         </div>
-    </div>
 
-    <!-- <div style="position: absolute; right: 16px; bottom: 16px;">
+        <!-- <div style="position: absolute; right: 16px; bottom: 16px;">
         <img src="/logo_built_on_dark_with_bg.png" alt="Built with Blockly" style="max-height: 4rem;">
     </div> -->
 
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <!-- Socket IO -->
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <script src="https://cdn.socket.io/4.1.1/socket.io.min.js" integrity="sha384-cdrFIqe3RasCMNE0jeFG9xJHog/tgOVC1E9Lzve8LQN1g5WUHo0Kvk1mawWjxX7a" crossorigin="anonymous"></script>
-    <script>
-        const socket = io();
-        
-        socket.on('connect', () => {
-            console.log(`Socket Connected: ${socket.id}`);
-        });
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <!-- Socket IO -->
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <script
+            src="https://cdn.socket.io/4.1.1/socket.io.min.js"
+            integrity="sha384-cdrFIqe3RasCMNE0jeFG9xJHog/tgOVC1E9Lzve8LQN1g5WUHo0Kvk1mawWjxX7a"
+            crossorigin="anonymous"
+        ></script>
+        <script>
+            const socket = io();
 
-        socket.on('disconnect', () => {
-            console.log('Socket Disconnected.'); // TODO: Refresh Page?
-        });
+            socket.on('connect', () => {
+                console.log(`Socket Connected: ${socket.id}`);
+            });
 
-        socket.on('create_form_update', (data) => {
-            // console.log(data)
-            // document.getElementById('project-name').value = data.projectName
-            document.getElementById('project-path').innerHTML = data.projectPath
-        })
+            socket.on('disconnect', () => {
+                console.log('Socket Disconnected.'); // TODO: Refresh Page?
+            });
 
-        socket.on('create_project', (data) => {
-            if(data.error){
-                const msgEl = document.getElementById('message')
-                msgEl.classList.add('text-red-800')
-                msgEl.classList.remove('text-blue-800')
-                msgEl.innerHTML = data.error
+            socket.on('create_form_update', (data) => {
+                // console.log(data)
+                // document.getElementById('project-name').value = data.projectName
+                document.getElementById('project-path').innerHTML = data.projectPath;
+            });
 
-                const loadingEl = document.getElementById('loading')
-                loadingEl.style.display = 'none'
-                const createBtn = document.getElementById('create-btn')
-                createBtn.style.display = 'inline'
+            socket.on('create_project', (data) => {
+                if (data.error) {
+                    const msgEl = document.getElementById('message');
+                    msgEl.classList.add('text-red-800');
+                    msgEl.classList.remove('text-blue-800');
+                    msgEl.innerHTML = data.error;
 
-                document.getElementById('project-name').disabled = false
-                document.getElementById('select-btn').disabled = false
-            }
+                    const loadingEl = document.getElementById('loading');
+                    loadingEl.style.display = 'none';
+                    const createBtn = document.getElementById('create-btn');
+                    createBtn.style.display = 'inline';
 
-            else if(data.status === 'ok'){
-                window.location.replace(window.location.origin + "/editor.html");
-            }
-        })
-    </script>
-
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <!-- APP -->
-    <!-- --------------------------------------------------------------------------------------------------------------------- -->
-    <script>
-        function back(){
-            window.location.replace(window.location.origin + "/index.html");
-        }
-
-        function getFormValues(){
-            const data = {}
-            data.projectName = document.getElementById('project-name').value
-            data.projectPath = document.getElementById('project-path').innerHTML
-            return data
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-
-            document.getElementById("project-name").focus()
-
-            // init
-            socket.emit('create_form_update', {
-                projectName: '',
-                projectPath: ''
-            })
-
-            // project name updated            
-            document.getElementById("project-name").addEventListener('input', (e) => {
-                socket.emit('create_form_update', getFormValues())
-            })
-            document.getElementById("project-name").addEventListener('keyup', (e) => {
-                if(e.code == 'Enter'){
-                    e.preventDefault()
-                    createProject()
+                    document.getElementById('project-name').disabled = false;
+                    document.getElementById('select-btn').disabled = false;
+                } else if (data.status === 'ok') {
+                    window.location.replace(window.location.origin + '/editor.html');
                 }
-            })
+            });
+        </script>
 
-            // click project path select btn
-            document.getElementById("select-btn").addEventListener('click', (e) => {
-                socket.emit('create_form_update', {
-                    ...getFormValues(),
-                    showDialog: true
-                })
-            })
-
-            // click create button
-            document.getElementById("create-btn").addEventListener('click', (e) => {
-                createProject()
-            })
-
-            function createProject(){
-                document.getElementById('project-name').disabled = true
-                document.getElementById('select-btn').disabled = true
-
-                const msgEl = document.getElementById('message')
-                msgEl.classList.remove('text-red-800')
-                msgEl.classList.add('text-blue-800')
-                msgEl.innerHTML = "Yeni Proje Oluşturuluyor..."
-
-                const loadingEl = document.getElementById('loading')
-                loadingEl.style.display = 'inline'
-                const createBtn = document.getElementById('create-btn')
-                createBtn.style.display = 'none'
-
-                socket.emit('create_project', getFormValues())
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <!-- APP -->
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <script>
+            function back() {
+                window.location.replace(window.location.origin + '/index.html');
             }
-        })
-    </script>
-</body>
+
+            function getFormValues() {
+                const data = {};
+                data.projectName = document.getElementById('project-name').value;
+                data.projectPath = document.getElementById('project-path').innerHTML;
+                return data;
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('project-name').focus();
+
+                // init
+                socket.emit('create_form_update', {
+                    projectName: '',
+                    projectPath: '',
+                });
+
+                // project name updated
+                document.getElementById('project-name').addEventListener('input', (e) => {
+                    socket.emit('create_form_update', getFormValues());
+                });
+                document.getElementById('project-name').addEventListener('keyup', (e) => {
+                    if (e.code == 'Enter') {
+                        e.preventDefault();
+                        createProject();
+                    }
+                });
+
+                // click project path select btn
+                document.getElementById('select-btn').addEventListener('click', (e) => {
+                    socket.emit('create_form_update', {
+                        ...getFormValues(),
+                        showDialog: true,
+                    });
+                });
+
+                // click create button
+                document.getElementById('create-btn').addEventListener('click', (e) => {
+                    createProject();
+                });
+
+                function createProject() {
+                    document.getElementById('project-name').disabled = true;
+                    document.getElementById('select-btn').disabled = true;
+
+                    const msgEl = document.getElementById('message');
+                    msgEl.classList.remove('text-red-800');
+                    msgEl.classList.add('text-blue-800');
+                    msgEl.innerHTML = 'Yeni Proje Oluşturuluyor...';
+
+                    const loadingEl = document.getElementById('loading');
+                    loadingEl.style.display = 'inline';
+                    const createBtn = document.getElementById('create-btn');
+                    createBtn.style.display = 'none';
+
+                    socket.emit('create_project', getFormValues());
+                }
+            });
+        </script>
+    </body>
 </html>

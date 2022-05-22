@@ -7,8 +7,8 @@
         "start": "electron main.js",
         "init": "node build.mjs --init",
         "build": "node build.mjs",
-        "start:arduino": "electron main.js --arduino",
         "rebuild-app": "node_modules/.bin/electron-rebuild",
+        "rebuild-app:win32": "node_modules\\.bin\\electron-rebuild",
         "build-app": "electron-builder",
         "build-tailwinds": "npx tailwindcss-cli@latest build -o src/tailwind.css"
     },
