@@ -5,11 +5,11 @@
     "private": true,
     "scripts": {
         "start": "electron ./main.js",
+        "init": "node build.mjs --init",
+        "build": "node build.mjs",
         "start:arduino": "electron ./main.js --arduino",
         "rebuild-app": "./node_modules/.bin/electron-rebuild",
         "build-app": "electron-builder",
-        "init-submodules": "git submodule init",
-        "update-submodules": "git submodule update --init --recursive",
         "build-tailwinds": "npx tailwindcss-cli@latest build -o ./src/tailwind.css"
     },
     "dependencies": {

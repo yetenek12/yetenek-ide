@@ -17,21 +17,8 @@
 
 ```bash
     git clone --recursive git@github.com:yetenek12/yetenek-ide.git
-    npm install --also=dev
-    npm run rebuild-app
-
-    # INIT Project (On Windows)
-    .\init.bat
-
-    # INIT Project (On Mac OS)
-    ./init.sh
-
-    # Update submodules / refs
-    # git submodule update --init --recursive
-
-    # https://stackoverflow.com/questions/10906554/how-do-i-revert-my-changes-to-a-git-submodule
-    # RESET SUBMODULE CHANGES
-    # git restore . --recurse-submodules
+    npm install --production=false
+    npm run init
 ```
 
 ## Run
@@ -58,6 +45,15 @@ Ex:
     # --------
     # LIST BRANCHES
     git branch -vav
+
+    # --------
+    # Update submodules / refs
+    # git submodule update --init --recursive
+
+    # https://stackoverflow.com/questions/10906554/how-do-i-revert-my-changes-to-a-git-submodule
+    # RESET SUBMODULE CHANGES
+    # git restore . --recurse-submodules
+
 ```
 
 ## CI
@@ -94,14 +90,14 @@ Ex:
 ```bash
     # Use a Windows machine
     # Default Install Location: "C:\Users\__USERNAME__\AppData\Local\Programs\YETENEK IDE"
-    .\build.bat
+    npm run build
 ```
 
 ## Building for Mac
 
 ```bash
     # Use a Mac OS machine
-    ./build.sh
+    npm run build
 ```
 
 ## Known Issues
