@@ -35,15 +35,7 @@ jobs:
               run: npm install --production=false
 
             - name: Build App
-              run: |
-                  if [ "$RUNNER_OS" == "Windows" ]; then
-                        cmd /c "npm run buildx"
-                  elif [ "$RUNNER_OS" == "macOS" ]; then
-                        npm run buildx
-                  else
-                        echo "$RUNNER_OS not supported"
-                        exit 1
-                  fi
+              run: npm run buildx
               shell: bash
 
             - name: Release App
