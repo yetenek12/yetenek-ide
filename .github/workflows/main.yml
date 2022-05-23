@@ -44,6 +44,7 @@ jobs:
                         echo "$RUNNER_OS not supported"
                         exit 1
                   fi
+              shell: bash
 
             - name: Release App
               uses: softprops/action-gh-release@v1
