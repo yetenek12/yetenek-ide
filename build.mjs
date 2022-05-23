@@ -36,13 +36,16 @@ function build(platform, arch, target) {
 
     let rebuildAppCmd = 'npm run rebuild-app';
     let buildAppCmd = 'npm run build-app';
-    const ops = { env: process.env };
-    ops.env['DEBUG'] = 'electron-builder';
+    let ops = {};
 
     if (platform === 'darwin') {
+        ops.env = process.env;
+        ops.env['DEBUG'] = 'electron-builder';
         ops.env['CSC_IDENTITY_AUTO_DISCOVERY'] = 'false';
     }
     if (platform === 'win32') {
+        ops.env = {};
+        ops.env['DEBUG'] = 'electron-builder';
         rebuildAppCmd = 'npm run rebuild-app:win32';
         buildAppCmd = 'npm run build-app:win32';
         ops.shell = 'cmd.exe';
