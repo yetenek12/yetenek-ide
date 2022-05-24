@@ -13,18 +13,12 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                os: [windows-latest]
+                os: ['windows-latest', 'macos-latest']
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v3
               with:
                   submodules: recursive
-
-            - name: Setup Python
-              uses: actions/setup-python@v3
-              with:
-                  python-version: '3.x'
-                  architecture: 'x64'
 
             - name: Install Node
               uses: actions/setup-node@v2
@@ -41,6 +35,7 @@ jobs:
             - name: run on windows
               if: matrix.os == 'windows-latest'
               run: npm run build-app:win32
+              shell: cmd
 
             - name: run on mac
               if: matrix.os == 'macos-latest'

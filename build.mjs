@@ -16,6 +16,8 @@ function init(platform, arch, target) {
     else if (target === 'darwin (arm64)') fs.copySync('yetenek-ide-pio-mac-arm', 'extra_resources/.platformio');
     else assert(false, `${target} is not supported`);
 
+    console.log('Target', target);
+
     console.log('Copying yetenek12 library...');
     fs.copySync('yetenek12-library', 'extra_resources/yetenek12-library');
 
