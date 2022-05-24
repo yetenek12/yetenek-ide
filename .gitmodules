@@ -10,6 +10,3 @@
 [submodule "blockly"]
 	path = blockly
 	url = git@github.com:yetenek12/blockly.git
-[submodule "yetenek-ide-pio-mac-arm"]
-	path = yetenek-ide-pio-mac-arm
-	url = https://github.com/yetenek12/yetenek-ide-pio-mac-arm.git
