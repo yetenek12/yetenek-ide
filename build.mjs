@@ -49,8 +49,8 @@ function build(platform, arch, target) {
     if (platform === 'win32') {
         ops.env = {};
         ops.env['DEBUG'] = 'electron-builder';
-        rebuildAppCmd = 'npm run rebuild-app:win32';
-        buildAppCmd = 'npm run build-app:win32';
+        // rebuildAppCmd = 'npm run rebuild-app:win32';
+        // buildAppCmd = 'npm run build-app:win32';
         ops.shell = 'cmd.exe';
         ops.windowsHide = true;
     }
@@ -67,18 +67,18 @@ function build(platform, arch, target) {
         if (stderr) console.error(stderr);
         console.log(stdout);
 
-        // console.log('Build App...');
-        // exec(buildAppCmd, ops, (err, stdout, stderr) => {
-        //     if (err) {
-        //         console.error(err);
-        //         // process.exit(1);
-        //     }
-        //     if (stderr) console.error(stderr);
-        //     // console.log(stdout);
+        console.log('Build App...');
+        exec(buildAppCmd, ops, (err, stdout, stderr) => {
+            if (err) {
+                console.error(err);
+                process.exit(1);
+            }
+            if (stderr) console.error(stderr);
+            // console.log(stdout);
 
-        //     console.log('Build completed');
-        //     process.exit(0);
-        // });
+            console.log('Build completed');
+            process.exit(0);
+        });
     });
 }
 
