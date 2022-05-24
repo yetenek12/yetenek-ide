@@ -29,10 +29,10 @@ jobs:
               run: npm run build
               shell: bash
             
-            - name: run on windows
-              # if: matrix.os == 'windows-latest'
+            - name: Build App
               run: npm run build-app:win32
-              shell: cmd
+              env:
+                GH_TOKEN: ${{ secrets.github_token }}
 
             - name: run on mac
               if: matrix.os == 'macos-latest'
