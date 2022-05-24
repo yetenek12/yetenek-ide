@@ -37,6 +37,7 @@ function build(platform, arch, target) {
     let rebuildAppCmd = 'npm run rebuild-app';
     let buildAppCmd = 'npm run build-app';
     let ops = {};
+    ops.maxBuffer = 1024 * 1024 * 1024;
 
     if (platform === 'darwin') {
         ops.env = process.env;
@@ -68,10 +69,10 @@ function build(platform, arch, target) {
         exec(buildAppCmd, ops, (err, stdout, stderr) => {
             if (err) {
                 console.error(err);
-                // process.exit(1);
+                process.exit(1);
             }
             if (stderr) console.error(stderr);
-            console.log(stdout);
+            // console.log(stdout);
 
             console.log('Build completed');
             process.exit(0);

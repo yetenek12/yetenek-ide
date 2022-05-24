@@ -32,10 +32,10 @@ jobs:
                   node-version: '16'
 
             - name: Install Dependencies
-              run: npm install --production=false
+              run: npm ci
 
             - name: Build App
-              run: npm run buildx
+              run: npm run build
               shell: bash
 
             - name: Release App
