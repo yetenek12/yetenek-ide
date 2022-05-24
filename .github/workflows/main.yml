@@ -13,7 +13,7 @@ jobs:
         runs-on: ${{ matrix.os }}
         strategy:
             matrix:
-                os: [windows-latest, macos-latest]
+                os: [windows-latest]
         steps:
             - name: Check out Git repository
               uses: actions/checkout@v3
@@ -37,6 +37,14 @@ jobs:
             - name: Build App
               run: npm run build
               shell: bash
+            
+            - name: run on windows
+              if: matrix.os == 'windows-latest'
+              run: npm run build-app:win32
+
+            - name: run on mac
+              if: matrix.os == 'macos-latest'
+              run: npm run build-app
 
             - name: Release App
               uses: softprops/action-gh-release@v1
