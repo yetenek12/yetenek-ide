@@ -32,6 +32,10 @@ jobs:
               run: npm run build
               shell: bash
 
+            - name: Build App Mac
+              run: npm run build-app
+              shell: bash
+
             - name: Release App
               uses: softprops/action-gh-release@v1
               if: startsWith(github.ref, 'refs/tags/v')
