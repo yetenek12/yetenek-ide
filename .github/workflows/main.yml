@@ -30,7 +30,7 @@ jobs:
               shell: bash
             
             - name: run on windows
-              if: matrix.os == 'windows-latest'
+              # if: matrix.os == 'windows-latest'
               run: npm run build-app:win32
               shell: cmd
 
