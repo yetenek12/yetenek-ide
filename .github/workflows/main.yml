@@ -27,8 +27,6 @@ jobs:
 
             - name: Install Dependencies
               run: npm ci
-              env:
-                GH_TOKEN: ${{ secrets.github_token }}
 
             - name: Build App
               run: npm run build
@@ -37,6 +35,8 @@ jobs:
             - name: Build App Mac
               run: npm run build-app
               shell: bash
+              env:
+                GH_TOKEN: ${{ secrets.github_token }}
 
             - name: Release App
               uses: softprops/action-gh-release@v1
