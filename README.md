@@ -2,6 +2,11 @@
 
 [![CI](https://github.com/yetenek12/yetenek-ide/actions/workflows/main.yml/badge.svg)](https://github.com/yetenek12/yetenek-ide/actions/workflows/main.yml)
 
+Every new release should bump the minor version!  
+Update the `package.json` before tagging a new release!
+
+---
+
 🎱 NodeJS Version: **16.14.0 (LTS)**
 
 ```bash
@@ -30,14 +35,17 @@
 ## Contribute
 
 Create a new branch from `development`, make changes and then, create a [Pull Request.](https://github.com/yetenek12/yetenek-ide/pulls)  
-Ex:  
+Ex:
+
 ```bash
     git switch development
     git pull
     git switch -c feature
+
     # COMMIT CHANGES
     # ...
     git push --set-upstream origin feature
+
     # COMMIT MORE CHANGES
     #...
     git push
@@ -51,12 +59,10 @@ Ex:
     # git submodule update --init --recursive
 
     # https://stackoverflow.com/questions/10906554/how-do-i-revert-my-changes-to-a-git-submodule
-    # RESET SUBMODULE CHANGES
     # git restore . --recurse-submodules
-
 ```
 
-## CI
+## CI Action
 
 ```bash
     # List tags
@@ -68,17 +74,38 @@ Ex:
     # Push new tag
     git push origin vX.Y.Z
 
+    # https://stackoverflow.com/questions/44702757/how-to-remove-all-git-origin-and-local-tags
     # https://stackoverflow.com/questions/1841341/remove-local-git-tags-that-are-no-longer-on-the-remote-repository
     # git tag -l | xargs git tag -d
     # git fetch --tags
 ```
 
+## Building for Windows
+
+```bash
+    # Use a Windows machine
+    # Output: "build\YETENEK Setup 3.0.0.exe"
+    # Default Install Location: "C:\Users\__USERNAME__\AppData\Local\Programs\YETENEK IDE"
+    npm run init
+    npm run rebuild
+    npm run build
+```
+
+## Building for Mac (x64 or arm64)
+
+```bash
+    # Use a Mac OS machine
+    npm run init
+    npm run rebuild
+    npm run build
+```
+
 ## Building Blockly (ONLY IF YOU MADE CHANGES INSIDE `/blockly`! ⚠️)
 
-- Don't forget to commit submodule if you make any changes.
-- Arduino Blocks: **/blockly/blocks**
-- Arduino Generator: **/blockly/generators/arduino**
-- Arduino Generator Build Command: **/blockly/scripts/gulpfiles/build_tasks.js** | Line: 339
+-   Don't forget to commit submodule if you make any changes.
+-   Arduino Blocks: **/blockly/blocks**
+-   Arduino Generator: **/blockly/generators/arduino**
+-   Arduino Generator Build Command: **/blockly/scripts/gulpfiles/build_tasks.js** | Line: 339
 
 ```bash
     # You must have Python 3 installed and added to your path!
@@ -88,25 +115,3 @@ Ex:
     npm install --also=dev
     npm run build
 ```
-
-## Building for Windows
-
-```bash
-    # Use a Windows machine
-    # Default Install Location: "C:\Users\__USERNAME__\AppData\Local\Programs\YETENEK IDE"
-    npm run build
-```
-
-## Building for Mac
-
-```bash
-    # Use a Mac OS machine
-    npm run build
-```
-
-## Known Issues
-
-- In order to upload code in Windows, you need admin priviliges.
-
-- Because of Python, there should be no spaces in the location where the program is installed. (Only for Mac)
-To fix: https://stackoverflow.com/questions/20095351/shebang-use-interpreter-relative-to-the-script-path/33225909#33225909

@@ -15,7 +15,7 @@ jobs:
             matrix:
                 os: [windows-latest, macos-latest]
         steps:
-            - name: Check out Git repository
+            - name: Clone Repository
               uses: actions/checkout@v3
               with:
                   submodules: recursive
@@ -26,19 +26,31 @@ jobs:
                   python-version: '3.x'
                   architecture: 'x64'
 
-            - name: Install Node
+            - name: Setup Node.js
               uses: actions/setup-node@v2
               with:
                   node-version: '16'
 
             - name: Install Dependencies
               run: npm install --production=false
-
-            - name: Build App
-              run: npm run buildx
               shell: bash
 
-            - name: Release App
+            - name: Init
+              run: npm run init
+              shell: bash
+
+            - name: Rebuild
+              run: npm run rebuild
+              shell: bash
+
+            - name: Build
+              run: npm run build
+              shell: bash
+              env:
+                  CSC_IDENTITY_AUTO_DISCOVERY: false
+                  GH_TOKEN: ${{ secrets.github_token }}
+
+            - name: Release
               uses: softprops/action-gh-release@v1
               if: startsWith(github.ref, 'refs/tags/v')
               with:

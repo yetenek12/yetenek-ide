@@ -1,16 +1,13 @@
 {
     "name": "yetenek-ide",
     "main": "main.js",
-    "version": "3.0.0",
+    "version": "1.0.0",
     "private": true,
     "scripts": {
         "start": "electron main.js",
-        "init": "node build.mjs --init",
-        "buildx": "node build.mjs",
-        "rebuild-app": "node_modules/.bin/electron-rebuild",
-        "rebuild-app:win32": "node_modules\\.bin\\electron-rebuild",
-        "build-app": "electron-builder",
-        "build-app:win32": "node_modules\\.bin\\electron-builder -w --config",
+        "init": "node init.mjs",
+        "rebuild": "electron-rebuild",
+        "build": "electron-builder",
         "build-tailwinds": "npx tailwindcss-cli@latest build -o src/tailwind.css"
     },
     "dependencies": {
