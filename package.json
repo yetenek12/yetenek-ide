@@ -11,6 +11,7 @@
         "build-tailwinds": "npx tailwindcss-cli@latest build -o src/tailwind.css"
     },
     "dependencies": {
+        "cli-truncate": "^3.1.0",
         "express": "^4.17.1",
         "fs-extra": "^10.0.1",
         "lnk": "^1.1.0",
