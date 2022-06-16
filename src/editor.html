@@ -6,12 +6,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>YETENEK IDE</title>
 
-        <!-- Materialize -->
-        <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
-        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"> -->
-        <!-- <link rel="preconnect" href="https://fonts.gstatic.com"> -->
-        <!-- <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet"> -->
-
         <!-- APP -->
         <link rel="stylesheet" href="/tailwind.css" />
         <link rel="stylesheet" href="/index.css" />
@@ -372,7 +366,7 @@
         <!-- --------------------------------------------------------------------------------------------------------------------- -->
         <!-- SPLIT JS -->
         <!-- --------------------------------------------------------------------------------------------------------------------- -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.2/split.min.js"></script>
+        <script src="/lib/split@1.6.2.min.js"></script>
         <script>
             Split(['#split-a', '#split-b'], {
                 direction: 'vertical',
@@ -396,11 +390,7 @@
         <!-- --------------------------------------------------------------------------------------------------------------------- -->
         <!-- Ace Editor -->
         <!-- --------------------------------------------------------------------------------------------------------------------- -->
-        <script
-            src="https://pagecdn.io/lib/ace/1.4.12/ace.min.js"
-            crossorigin="anonymous"
-            integrity="sha256-T5QdmsCQO5z8tBAXMrCZ4f3RX8wVdiA0Fu17FGnU1vU="
-        ></script>
+        <script src="/lib/ace@1.4.12.min.js"></script>
         <script>
             ace.config.set('basePath', 'https://pagecdn.io/lib/ace/1.4.12/');
             window.editor = ace.edit('editor');
@@ -450,7 +440,7 @@
         <!-- --------------------------------------------------------------------------------------------------------------------- -->
         <!-- Sweet Alert -->
         <!-- --------------------------------------------------------------------------------------------------------------------- -->
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="/lib/sweetalert2@11.min.js"></script>
         <script>
             // /blockly/core/blockly.js (362)
             Blockly.prompt = function (message, defaultValue, callback) {
@@ -485,11 +475,7 @@
         <!-- --------------------------------------------------------------------------------------------------------------------- -->
         <!-- Socket IO -->
         <!-- --------------------------------------------------------------------------------------------------------------------- -->
-        <script
-            src="https://cdn.socket.io/4.1.1/socket.io.min.js"
-            integrity="sha384-cdrFIqe3RasCMNE0jeFG9xJHog/tgOVC1E9Lzve8LQN1g5WUHo0Kvk1mawWjxX7a"
-            crossorigin="anonymous"
-        ></script>
+        <script src="/lib/socket.io@4.1.1.min.js"></script>
         <script>
             const socket = io();
 
