@@ -110,12 +110,13 @@ function getAppPath() {
 }
 
 function runPIO(socket, cmdArr, onClose, onStart) {
-    let pioLocation = null;
-    if (process.platform === 'win32') {
-        pioLocation = path.join(getAppPath(), '/extra_resources/.platformio/penv/Scripts/pio.exe');
-    } else if (process.platform === 'darwin') {
-        pioLocation = path.join(getAppPath(), '/extra_resources/.platformio/penv/bin/pio');
-    }
+    // let pioLocation = null;
+    // if (process.platform === 'win32') {
+    //     pioLocation = path.join(getAppPath(), '/extra_resources/.platformio/penv/Scripts/pio.exe');
+    // } else if (process.platform === 'darwin') {
+    //     pioLocation = path.join(getAppPath(), '/extra_resources/.platformio/penv/bin/pio');
+    // }
+    const pioLocation = pioState.platformio_exe;
 
     const msg = `${pioLocation} ${cmdArr.join(' ')}`;
     console.log(msg);
@@ -414,6 +415,19 @@ io.on('connection', (socket) => {
                     console.log(pioState);
                     socket.emit('welcome', { python: true, pythonVersion, pio: true, installingPio: false, pioState });
 
+                    // {
+                    //     core_version: '6.0.2',
+                    //     python_version: '3.8.2',
+                    //     core_dir: 'C:\\Users\\Emre Onrat\\.platformio',
+                    //     cache_dir: 'C:\\Users\\Emre Onrat\\.platformio\\.cache',
+                    //     penv_dir: 'C:\\Users\\Emre Onrat\\.platformio\\penv',
+                    //     penv_bin_dir: 'C:\\Users\\Emre Onrat\\.platformio\\penv\\Scripts',
+                    //     platformio_exe: 'C:\\Users\\Emre Onrat\\.platformio\\penv\\Scripts\\platformio.exe',
+                    //     installer_version: '1.1.1',
+                    //     python_exe: 'C:\\Users\\Emre Onrat\\.platformio\\penv\\Scripts\\python.exe',
+                    //     system: 'windows_amd64',
+                    //     is_develop_core: false
+                    // }
                     global.pioState = pioState;
                 });
             } else {
@@ -501,200 +515,204 @@ io.on('connection', (socket) => {
         }
 
         // create symlink (Elevate Privileges) (windows)
-        createSymlink()
-            .then(() => {
-                // Create directory
-                // https://joshtronic.com/2021/01/17/recursively-create-directories-with-nodejs/
-                fs.mkdirSync(projectPath, { recursive: true });
+        // createSymlink()
+        //     .then(() => {
+        //         // ...
+        //     })
+        //     .catch(() => {
+        //         console.error('Elevation Error!');
+        //         socket.emit('create_project', {
+        //             // error: 'İşlem Reddedildi.'
+        //             error: 'Erisim Reddedildi. Programi yonetici olarak calistirin.',
+        //         });
+        //     });
 
-                // Create pio project
-                const cmd = ['project', 'init', '--project-dir', projectPath];
-                runPIO(socket, cmd, (err) => {
-                    if (err) {
-                        console.error('CREATE Project Error: ', err);
-                        socket.emit('create_project', {
-                            // error: 'Create project failed.\n' + err.toString() + err.stack
-                            error: 'Proje olusturulamadi.',
-                        });
-                        return;
-                    }
+        // Create directory
+        // https://joshtronic.com/2021/01/17/recursively-create-directories-with-nodejs/
+        fs.mkdirSync(projectPath, { recursive: true });
 
-                    // --------------------------------------------------------------------------
-                    // https://stackoverflow.com/questions/13786160/copy-folder-recursively-in-node-js
-                    // https://www.npmjs.com/package/fs-extra
-                    // Copy yetenek12-library to the project
-                    try {
-                        fse.copySync(
-                            path.join(getAppPath(), '/extra_resources/yetenek12-library'),
-                            path.join(projectPath, '/lib/yetenek12-library')
-                        );
-                        console.log('yetenek12-library copied.');
-                    } catch (err) {
-                        console.error('Copy yetenek12-library error: ' + err);
-                    }
-
-                    // --------------------------------------------------------------------------
-                    // Configure platformio.ini
-                    const pioIniPath = path.join(projectPath, '/platformio.ini');
-                    let pioIni = fs.readFileSync(pioIniPath, 'utf8');
-                    if (global.TARGET_ARDUINO) {
-                        pioIni += '\n';
-                        pioIni += '[env:uno]\n';
-                        pioIni += 'platform = atmelavr\n';
-                        pioIni += 'board = uno\n';
-                        pioIni += 'framework = arduino\n';
-                        pioIni += '\n';
-                    } else {
-                        pioIni += '\n';
-                        pioIni += '[env:pico32]\n';
-                        pioIni +=
-                            'platform = https://github.com/platformio/platform-espressif32.git#feature/arduino-upstream\n';
-                        pioIni +=
-                            'platform_packages = platformio/framework-arduinoespressif32 @ https://github.com/espressif/arduino-esp32.git#2.0.1\n';
-                        pioIni += 'board = pico32\n';
-                        pioIni += 'framework = arduino\n';
-                        pioIni += '\n';
-                    }
-                    fs.writeFileSync(path.join(pioIniPath), pioIni);
-
-                    // Create main.cpp
-                    const maincppPath = path.join(projectPath, global.MAIN_CPP);
-                    let maincpp = '';
-                    maincpp += '#include <Arduino.h>\n\n';
-                    maincpp += 'void setup(){\n\n';
-                    maincpp += '}\n\n';
-                    maincpp += 'void loop(){\n\n';
-                    maincpp += '}\n\n';
-                    fs.writeFileSync(maincppPath, maincpp);
-
-                    // Create Project Settings
-                    const projectSettings = {};
-                    projectSettings.projectName = projectName;
-
-                    const projectSettingsPath = path.join(projectPath, global.PROJECT_SETTINGS);
-                    const projectSettingsStr = JSON.stringify(projectSettings);
-                    fs.writeFileSync(projectSettingsPath, projectSettingsStr);
-
-                    // Create XML
-                    let workspaceStr = '';
-                    try {
-                        workspaceStr = fs.readFileSync('./src/workspace.xml', 'utf8');
-                    } catch (err) {
-                        console.warn('workspace.xml not found on "./src/workspace.xml"');
-                        let workspaceTemplatePath = path.join(getAppPath(), '/extra_resources/workspace.xml');
-
-                        try {
-                            workspaceStr = fs.readFileSync(workspaceTemplatePath, 'utf8');
-                        } catch (err) {
-                            console.warn(`workspace.xml not found on "${workspaceTemplatePath}"`);
-                            console.error('Using default template for workspace.xml');
-                            workspaceStr =
-                                '<xml xmlns="https://developers.google.com/blockly/xml"><block type="base_start" deletable="false" movable="false"></block></xml>';
-                        }
-                    }
-
-                    path.join(getAppPath(), '/extra_resources/.platformio');
-                    // const workspaceStr = '<xml xmlns="https://developers.google.com/blockly/xml"><block type="base_start" deletable="false" movable="false"></block></xml>'
-                    const workspacePath = path.join(projectPath, global.WORKSPACE_XML);
-                    fs.writeFileSync(workspacePath, workspaceStr);
-
-                    // PROJECT CREATED!
-                    global.projectLoaded = true;
-                    global.projectName = projectName;
-                    global.projectPath = projectPath;
-                    global.xml = workspaceStr;
-                    global.code = maincpp;
-
-                    socket.emit('create_project', {
-                        status: 'ok',
-                    });
-                });
-            })
-            .catch(() => {
-                console.error('Elevation Error!');
+        // Create pio project
+        const cmd = ['project', 'init', '--project-dir', projectPath];
+        runPIO(socket, cmd, (err) => {
+            if (err) {
+                console.error('CREATE Project Error: ', err);
                 socket.emit('create_project', {
-                    // error: 'İşlem Reddedildi.'
-                    error: 'Erisim Reddedildi. Programi yonetici olarak calistirin.',
+                    // error: 'Create project failed.\n' + err.toString() + err.stack
+                    error: 'Proje olusturulamadi.',
                 });
+                return;
+            }
+
+            // --------------------------------------------------------------------------
+            // https://stackoverflow.com/questions/13786160/copy-folder-recursively-in-node-js
+            // https://www.npmjs.com/package/fs-extra
+            // Copy yetenek12-library to the project
+            try {
+                fse.copySync(
+                    path.join(getAppPath(), '/extra_resources/yetenek12-library'),
+                    path.join(projectPath, '/lib/yetenek12-library')
+                );
+                console.log('yetenek12-library copied.');
+            } catch (err) {
+                console.error('Copy yetenek12-library error: ' + err);
+            }
+
+            // --------------------------------------------------------------------------
+            // Configure platformio.ini
+            const pioIniPath = path.join(projectPath, '/platformio.ini');
+            let pioIni = fs.readFileSync(pioIniPath, 'utf8');
+            if (global.TARGET_ARDUINO) {
+                pioIni += '\n';
+                pioIni += '[env:uno]\n';
+                pioIni += 'platform = atmelavr\n';
+                pioIni += 'board = uno\n';
+                pioIni += 'framework = arduino\n';
+                pioIni += '\n';
+            } else {
+                pioIni += '\n';
+                pioIni += '[env:pico32]\n';
+                pioIni +=
+                    'platform = https://github.com/platformio/platform-espressif32.git#feature/arduino-upstream\n';
+                pioIni +=
+                    'platform_packages = platformio/framework-arduinoespressif32 @ https://github.com/espressif/arduino-esp32.git#2.0.1\n';
+                pioIni += 'board = pico32\n';
+                pioIni += 'framework = arduino\n';
+                pioIni += '\n';
+            }
+            fs.writeFileSync(path.join(pioIniPath), pioIni);
+
+            // Create main.cpp
+            const maincppPath = path.join(projectPath, global.MAIN_CPP);
+            let maincpp = '';
+            maincpp += '#include <Arduino.h>\n\n';
+            maincpp += 'void setup(){\n\n';
+            maincpp += '}\n\n';
+            maincpp += 'void loop(){\n\n';
+            maincpp += '}\n\n';
+            fs.writeFileSync(maincppPath, maincpp);
+
+            // Create Project Settings
+            const projectSettings = {};
+            projectSettings.projectName = projectName;
+
+            const projectSettingsPath = path.join(projectPath, global.PROJECT_SETTINGS);
+            const projectSettingsStr = JSON.stringify(projectSettings);
+            fs.writeFileSync(projectSettingsPath, projectSettingsStr);
+
+            // Create XML
+            let workspaceStr = '';
+            try {
+                workspaceStr = fs.readFileSync('./src/workspace.xml', 'utf8');
+            } catch (err) {
+                console.warn('workspace.xml not found on "./src/workspace.xml"');
+                let workspaceTemplatePath = path.join(getAppPath(), '/extra_resources/workspace.xml');
+
+                try {
+                    workspaceStr = fs.readFileSync(workspaceTemplatePath, 'utf8');
+                } catch (err) {
+                    console.warn(`workspace.xml not found on "${workspaceTemplatePath}"`);
+                    console.error('Using default template for workspace.xml');
+                    workspaceStr =
+                        '<xml xmlns="https://developers.google.com/blockly/xml"><block type="base_start" deletable="false" movable="false"></block></xml>';
+                }
+            }
+
+            path.join(getAppPath(), '/extra_resources/.platformio');
+            // const workspaceStr = '<xml xmlns="https://developers.google.com/blockly/xml"><block type="base_start" deletable="false" movable="false"></block></xml>'
+            const workspacePath = path.join(projectPath, global.WORKSPACE_XML);
+            fs.writeFileSync(workspacePath, workspaceStr);
+
+            // PROJECT CREATED!
+            global.projectLoaded = true;
+            global.projectName = projectName;
+            global.projectPath = projectPath;
+            global.xml = workspaceStr;
+            global.code = maincpp;
+
+            socket.emit('create_project', {
+                status: 'ok',
             });
+        });
     });
 
     // Change Project
     socket.on('change_project', () => {
         // create symlink (Elevate Privileges) (windows)
-        createSymlink()
-            .then(() => {
-                const f = dialog.showOpenDialogSync(global.win, {
-                    properties: ['openDirectory'],
-                    message: 'Projeyi Aç',
-                    buttonLabel: 'Aç',
-                });
+        // createSymlink()
+        //     .then(() => {
+        //         // ...
+        //     })
+        //     .catch(() => {
+        //         console.error('Elevation Error!');
+        //     });
 
-                if (f && f[0]) {
-                    // https://coderrocketfuel.com/article/check-if-a-directory-exists-in-node-js
+        const f = dialog.showOpenDialogSync(global.win, {
+            properties: ['openDirectory'],
+            message: 'Projeyi Aç',
+            buttonLabel: 'Aç',
+        });
+
+        if (f && f[0]) {
+            // https://coderrocketfuel.com/article/check-if-a-directory-exists-in-node-js
+            try {
+                fs.accessSync(f[0]);
+
+                const projectSettingsFilePath = path.join(f[0], global.PROJECT_SETTINGS);
+                const pioIniFilePath = path.join(f[0], '/platformio.ini');
+
+                const validProject = fs.existsSync(projectSettingsFilePath) && fs.existsSync(pioIniFilePath);
+                if (validProject) {
+                    console.log(`\nLoading Project: ${f[0]}\n`);
+
+                    // Read Project Settings
+                    let projectSettings = {};
                     try {
-                        fs.accessSync(f[0]);
-
-                        const projectSettingsFilePath = path.join(f[0], global.PROJECT_SETTINGS);
-                        const pioIniFilePath = path.join(f[0], '/platformio.ini');
-
-                        const validProject = fs.existsSync(projectSettingsFilePath) && fs.existsSync(pioIniFilePath);
-                        if (validProject) {
-                            console.log(`\nLoading Project: ${f[0]}\n`);
-
-                            // Read Project Settings
-                            let projectSettings = {};
-                            try {
-                                projectSettings = JSON.parse(fs.readFileSync(projectSettingsFilePath, 'utf8'));
-                            } catch (err) {
-                                socket.emit('change_project', {
-                                    error: 'Invalid Project File',
-                                });
-                                return;
-                            }
-
-                            global.projectLoaded = true;
-                            global.projectName = projectSettings.projectName + '';
-                            global.projectPath = f[0] + path.sep;
-
-                            // Read XML
-                            try {
-                                global.xml = fs.readFileSync(path.join(f[0], global.WORKSPACE_XML), 'utf8');
-                            } catch (err) {
-                                socket.emit('change_project', {
-                                    error: 'Invalid Project File',
-                                });
-                                return;
-                            }
-
-                            // Read Code
-                            try {
-                                global.code = fs.readFileSync(path.join(f[0], global.MAIN_CPP), 'utf8');
-                            } catch (err) {
-                                socket.emit('change_project', {
-                                    error: 'Invalid Project File',
-                                });
-                                return;
-                            }
-
-                            // OK
-                            socket.emit('change_project', {
-                                status: 'ok',
-                            });
-                        } else {
-                            console.log(`${f[0]} is not a YETENEK IDE Project Folder.`);
-                            socket.emit('change_project', {
-                                error: `${f[0]} YETENEK IDE Proje Klasörü değil.`,
-                            });
-                        }
+                        projectSettings = JSON.parse(fs.readFileSync(projectSettingsFilePath, 'utf8'));
                     } catch (err) {
-                        console.log('Directory does not exist.');
+                        socket.emit('change_project', {
+                            error: 'Invalid Project File',
+                        });
+                        return;
                     }
+
+                    global.projectLoaded = true;
+                    global.projectName = projectSettings.projectName + '';
+                    global.projectPath = f[0] + path.sep;
+
+                    // Read XML
+                    try {
+                        global.xml = fs.readFileSync(path.join(f[0], global.WORKSPACE_XML), 'utf8');
+                    } catch (err) {
+                        socket.emit('change_project', {
+                            error: 'Invalid Project File',
+                        });
+                        return;
+                    }
+
+                    // Read Code
+                    try {
+                        global.code = fs.readFileSync(path.join(f[0], global.MAIN_CPP), 'utf8');
+                    } catch (err) {
+                        socket.emit('change_project', {
+                            error: 'Invalid Project File',
+                        });
+                        return;
+                    }
+
+                    // OK
+                    socket.emit('change_project', {
+                        status: 'ok',
+                    });
+                } else {
+                    console.log(`${f[0]} is not a YETENEK IDE Project Folder.`);
+                    socket.emit('change_project', {
+                        error: `${f[0]} YETENEK IDE Proje Klasörü değil.`,
+                    });
                 }
-            })
-            .catch(() => {
-                console.error('Elevation Error!');
-            });
+            } catch (err) {
+                console.log('Directory does not exist.');
+            }
+        }
     });
 
     // Port List
