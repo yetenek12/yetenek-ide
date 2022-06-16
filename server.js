@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const socketIO = require('socket.io');
 const morgan = require('morgan');
-const { spawn } = require('child_process');
+const { spawn, exec } = require('child_process');
 const fs = require('fs');
 const fse = require('fs-extra');
 const path = require('path');
@@ -14,6 +14,7 @@ const Shell = require('node-powershell');
 const { app: electronApp } = require('electron');
 const { reject } = require('lodash');
 const lnk = require('lnk');
+const os = require('os');
 
 // GLOBAL CONSTANTS
 global.PROJECT_SETTINGS = '/yetenekide.projectsettings';
@@ -27,6 +28,7 @@ global.projectPath = '';
 global.xml = '';
 global.code = '';
 global.monitor = null;
+global.pioState = null;
 
 // ----------------------------------------------------------------------------
 // Startup Check (Windows)
@@ -329,10 +331,8 @@ if (app.get('env') !== 'production') {
 // Serve Static Files
 // ----------------------------------------------------------------------------
 
-// app.use('/', express.static(__dirname, {index: 'index.html'}))
-app.use('/', express.static(`${__dirname}/src`));
+app.use('/', express.static(`${__dirname}/src`, { extensions: ['html'] }));
 app.use('/blockly', express.static(`${__dirname}/blockly`));
-app.use('/vanilla-terminal', express.static(`${__dirname}/vanilla-terminal`));
 
 // ----------------------------------------------------------------------------
 // HTTP SERVER
@@ -353,6 +353,72 @@ io.on('connection', (socket) => {
             projectPath: global.projectPath,
             xml: global.xml,
             code: global.code,
+        });
+    });
+
+    // welcome (check python & pio)
+    socket.on('welcome', () => {
+        let cmd = 'python --version';
+        exec(cmd, (err, stdout, stderr) => {
+            if (err) {
+                socket.emit('welcome', { python: false });
+                return console.error(err);
+            }
+            console.log(cmd);
+            process.stdout.write(stdout);
+            process.stderr.write(stderr);
+            const pythonVersion = stdout;
+
+            if (pythonVersion.startsWith('Python 3')) {
+                const getPioPath = path.join(getAppPath(), '/extra_resources/getpio.py');
+                const pioStatePath = path.join(os.tmpdir(), `piostate.json`);
+                cmd = `python "${getPioPath}" check core --dump-state ${pioStatePath}`;
+                exec(cmd, (err, stdout, stderr) => {
+                    if (err) {
+                        // console.error(err);
+                        console.log('installing pio ...');
+                        socket.emit('welcome', { python: true, pythonVersion, pio: false, installingPio: true });
+
+                        cmd = `python "${getPioPath}"`;
+                        exec(cmd, (err, stdout, stderr) => {
+                            if (err) {
+                                socket.emit('welcome', {
+                                    python: true,
+                                    pythonVersion,
+                                    pio: false,
+                                    installingPio: false,
+                                    pioError: true,
+                                });
+                                return console.error(err);
+                            }
+                            console.log(cmd);
+                            process.stdout.write(stdout);
+                            process.stderr.write(stderr);
+                            console.log('installing pio done.');
+                            socket.emit('welcome', {
+                                python: true,
+                                pythonVersion,
+                                pio: true,
+                                installingPio: false,
+                                refresh: true,
+                            });
+                        });
+                        return;
+                    }
+                    console.log(cmd);
+                    process.stdout.write(stdout);
+                    process.stderr.write(stderr);
+
+                    const pioStateStr = fs.readFileSync(pioStatePath);
+                    const pioState = JSON.parse(pioStateStr);
+                    console.log(pioState);
+                    socket.emit('welcome', { python: true, pythonVersion, pio: true, installingPio: false, pioState });
+
+                    global.pioState = pioState;
+                });
+            } else {
+                socket.emit('welcome', { python: false, pio: false });
+            }
         });
     });
 

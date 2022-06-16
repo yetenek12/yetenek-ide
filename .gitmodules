@@ -1,12 +1,6 @@
 [submodule "yetenek12-library"]
 	path = yetenek12-library
 	url = git@github.com:yetenek12/yetenek12-library.git
-[submodule "yetenek-ide-pio-windows"]
-	path = yetenek-ide-pio-windows
-	url = git@github.com:yetenek12/yetenek-ide-pio-windows.git
-[submodule "yetenek-ide-pio-mac"]
-	path = yetenek-ide-pio-mac
-	url = git@github.com:yetenek12/yetenek-ide-pio-mac.git
 [submodule "blockly"]
 	path = blockly
 	url = git@github.com:yetenek12/blockly.git

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>YETENEK IDE</title>
+
+        <!-- APP -->
+        <link rel="stylesheet" href="/tailwind.css" />
+        <link rel="stylesheet" href="/index.css" />
+    </head>
+    <body>
+        <nav class="flex items-center h-16 bg-blue-600 border-b-4 border-blue-800">
+            <!-- <h1 class="text-2xl text-white ml-4 mr-8">YETENEK IDE</h1> -->
+            <a href="javascript:void();" class="brand-logo">
+                <!-- <i class="material-icons">integration_instructions</i> -->
+                <!-- YETENEK IDE -->
+                <img src="header.png" class="h-10 mr-6" style="min-width: 120px" alt="YETENEK IDE LOGO" />
+            </a>
+        </nav>
+
+        <div
+            class="flex flex-col justify-center items-center h-screen bg-gray-50"
+            style="background-image: url('texture_01.png'); background-repeat: repeat; background-size: 10vw, 10vw"
+        >
+            <div
+                id="python-container"
+                class="bg-blue-600 text-white border-4 border-blue-800 rounded-lg m-4 p-4"
+                style="width: 80%; height: 15vh"
+            >
+                <div class="flex ml-2" style="height: 100%">
+                    <img src="/python.png" style="max-height: 100%" />
+                    <div class="ml-6">
+                        <h1 class="text-xl font-bold mb-2">
+                            <span id="python-ok"></span> <span id="python-version">Python 3</span>
+                        </h1>
+                        <div id="python-msg" style="display: none">
+                            <p>YETENEK IDE'yi kullanabilmeniz için bilgisayarınızda <b>Python 3</b> yüklü olmalıdır.</p>
+                            <p>Kurulum aşamasında <i>"Add Python to PATH"</i> seçeneğini işaretlemeyi unutmayın!</p>
+                            <br />
+                            <p>
+                                <a
+                                    href="https://www.python.org/downloads/"
+                                    target="_blank"
+                                    class="p-3 bg-blue-800 border-2 border-white rounded-lg"
+                                    >📦 PYTHON 3 İNDİR</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                id="pio-container"
+                class="bg-blue-600 text-white border-4 border-blue-800 rounded-lg m-4 p-2"
+                style="width: 80%; height: 15vh"
+            >
+                <div class="flex ml-2" style="height: 100%">
+                    <img src="/platformio.png" style="max-height: 100%" />
+                    <div class="ml-6">
+                        <h1 class="text-xl font-bold mb-2">
+                            <span id="pio-ok"></span> <span id="pio-version">Platform IO</span>
+                        </h1>
+                        <div id="pio-msg-loading" style="display: none">Platform IO Yükleniyor...</div>
+                        <div id="pio-msg-error" style="display: none">
+                            <p>Platform IO Yüklenemedi!</p>
+                            <p>Lütfen internet bağlantınızı kontrol edin ve tekrar deneyin.</p>
+                        </div>
+                    </div>
+                    <span class="flex-auto"></span>
+                    <div id="pio-loading" style="display: none; float: left; margin-right: 16px" class="lds-ring">
+                        <div style="border-color: white"></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex" style="width: 80%">
+                <span class="flex-auto"></span>
+                <button
+                    id="btn-next"
+                    class="bg-blue-800 text-white border-2 border-white rounded-lg p-3 pl-4 pr-4 m-4"
+                    style="display: none"
+                >
+                    Devam Et
+                </button>
+            </div>
+        </div>
+
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <!-- Sweet Alert -->
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <script src="/lib/sweetalert2@11.min.js"></script>
+        <script>
+            // https://sweetalert2.github.io/
+            function promptError(error, title = 'Error') {
+                Swal.fire({
+                    icon: 'error',
+                    title: title,
+                    text: error,
+                    // footer: '<a href="">Why do I have this issue?</a>'
+                });
+            }
+        </script>
+
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <!-- Socket IO -->
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <script src="/lib/socket.io@4.1.1.min.js"></script>
+        <script>
+            const socket = io();
+
+            socket.on('connect', () => {
+                console.log(`Socket Connected: ${socket.id}`);
+                socket.emit('welcome');
+            });
+
+            socket.on('disconnect', () => {
+                console.log('Socket Disconnected.');
+            });
+
+            socket.on('welcome', (data) => {
+                console.log(data);
+
+                if (data.python) {
+                    document.getElementById('python-ok').innerText = '✔️';
+                    document.getElementById('python-version').innerText = data.pythonVersion;
+                    document.getElementById('python-msg').style.display = 'none';
+                    document.getElementById('python-container').style.minHeight = 'auto';
+                } else {
+                    document.getElementById('python-ok').innerText = '⚠️';
+                    document.getElementById('python-version').innerText = 'Python 3';
+                    document.getElementById('python-msg').style.display = 'block';
+                    document.getElementById('python-container').style.minHeight = '180px';
+                }
+
+                if (data.pio) {
+                    document.getElementById('pio-ok').innerText = '✔️';
+                    document.getElementById('pio-version').innerText = `Platform IO ${
+                        data.pioState?.core_version ?? ''
+                    }`;
+                    document.getElementById('pio-msg-loading').style.display = 'none';
+                    document.getElementById('pio-msg-error').style.display = 'none';
+                    document.getElementById('pio-container').style.minHeight = 'auto';
+                } else {
+                    document.getElementById('pio-ok').innerText = '⚠️';
+                    document.getElementById('pio-version').innerText = 'Platform IO';
+                    document.getElementById('pio-container').style.minHeight = 'auto';
+
+                    if (data.pioError) {
+                        document.getElementById('pio-msg-loading').style.display = 'none';
+                        document.getElementById('pio-msg-error').style.display = 'block';
+                        document.getElementById('pio-container').style.minHeight = '120px';
+                    } else {
+                        if (data.python) {
+                            document.getElementById('pio-msg-loading').style.display = 'block';
+                            document.getElementById('pio-msg-error').style.display = 'none';
+                        }
+                    }
+                }
+
+                if (data.installingPio) {
+                    document.getElementById('pio-loading').style.display = 'inline';
+                } else {
+                    document.getElementById('pio-loading').style.display = 'none';
+                }
+
+                if (data.refresh) {
+                    socket.emit('welcome');
+                }
+
+                if (data.pio && data.python && !data.refresh) {
+                    document.getElementById('btn-next').style.display = 'block';
+                } else {
+                    document.getElementById('btn-next').style.display = 'none';
+                }
+            });
+        </script>
+
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <!-- APP -->
+        <!-- --------------------------------------------------------------------------------------------------------------------- -->
+        <script>
+            document.getElementById('btn-next').addEventListener('click', () => {
+                window.location.replace(window.location.origin + '/');
+            });
+        </script>
+    </body>
+</html>
