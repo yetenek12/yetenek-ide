@@ -15,6 +15,7 @@ const { app: electronApp } = require('electron');
 const { reject } = require('lodash');
 const lnk = require('lnk');
 const os = require('os');
+const fixPath = require('fix-path');
 
 // GLOBAL CONSTANTS
 global.PROJECT_SETTINGS = '/yetenekide.projectsettings';
@@ -358,8 +359,10 @@ io.on('connection', (socket) => {
     });
 
     // welcome (check python & pio)
-    socket.on('welcome', () => {
-        let cmd = 'python --version';
+    socket.on('welcome', async() => {
+        fixPath()
+        let env_variables = 'PATH=' + process.env.PATH;
+        let cmd = env_variables + ' python --version';
         exec(cmd, (err, stdout, stderr) => {
             if (err) {
                 socket.emit('welcome', { python: false });
