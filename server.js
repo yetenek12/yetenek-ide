@@ -358,88 +358,120 @@ io.on('connection', (socket) => {
         });
     });
 
-    // welcome (check python & pio)
+    // welcome (check git & python & pio)
     socket.on('welcome', async () => {
-        cmd = 'python --version';
-        if (process.platform === 'darwin') {
-            fixPath();
-            let env_variables = 'PATH=' + process.env.PATH;
-            cmd = env_variables + ' python --version';
-        }
-
+        // ---- CHECK GIT ----
+        cmd = 'git --version';
         exec(cmd, (err, stdout, stderr) => {
             if (err) {
-                socket.emit('welcome', { python: false });
+                socket.emit('welcome', { git: false });
                 return console.error(err);
             }
+
             console.log(cmd);
             process.stdout.write(stdout);
             process.stderr.write(stderr);
-            const pythonVersion = stdout;
+            const gitVersion = stdout;
 
-            if (pythonVersion.startsWith('Python 3')) {
-                const getPioPath = path.join(getAppPath(), '/extra_resources/getpio.py');
-                const pioStatePath = path.join(os.tmpdir(), `piostate.json`);
-                cmd = `python "${getPioPath}" check core --dump-state ${pioStatePath}`;
-                exec(cmd, (err, stdout, stderr) => {
-                    if (err) {
-                        // console.error(err);
-                        console.log('installing pio ...');
-                        socket.emit('welcome', { python: true, pythonVersion, pio: false, installingPio: true });
+            // ---- CHECK PYTHON ----
+            cmd = 'python --version';
+            if (process.platform === 'darwin') {
+                fixPath();
+                let env_variables = 'PATH=' + process.env.PATH;
+                cmd = env_variables + ' python --version';
+            }
 
-                        cmd = `python "${getPioPath}"`;
-                        exec(cmd, (err, stdout, stderr) => {
-                            if (err) {
-                                socket.emit('welcome', {
-                                    python: true,
-                                    pythonVersion,
-                                    pio: false,
-                                    installingPio: false,
-                                    pioError: true,
-                                });
-                                return console.error(err);
-                            }
-                            console.log(cmd);
-                            process.stdout.write(stdout);
-                            process.stderr.write(stderr);
-                            console.log('installing pio done.');
+            exec(cmd, (err, stdout, stderr) => {
+                if (err) {
+                    socket.emit('welcome', { git: true, gitVersion, python: false });
+                    return console.error(err);
+                }
+                console.log(cmd);
+                process.stdout.write(stdout);
+                process.stderr.write(stderr);
+                const pythonVersion = stdout;
+
+                if (pythonVersion.startsWith('Python 3')) {
+                    const getPioPath = path.join(getAppPath(), '/extra_resources/getpio.py');
+                    const pioStatePath = path.join(os.tmpdir(), `piostate.json`);
+                    cmd = `python "${getPioPath}" check core --dump-state ${pioStatePath}`;
+                    exec(cmd, (err, stdout, stderr) => {
+                        if (err) {
+                            // console.error(err);
+                            console.log('installing pio ...');
                             socket.emit('welcome', {
+                                git: true,
+                                gitVersion,
                                 python: true,
                                 pythonVersion,
-                                pio: true,
-                                installingPio: false,
-                                refresh: true,
+                                pio: false,
+                                installingPio: true,
                             });
+
+                            cmd = `python "${getPioPath}"`;
+                            exec(cmd, (err, stdout, stderr) => {
+                                if (err) {
+                                    socket.emit('welcome', {
+                                        python: true,
+                                        pythonVersion,
+                                        pio: false,
+                                        installingPio: false,
+                                        pioError: true,
+                                    });
+                                    return console.error(err);
+                                }
+                                console.log(cmd);
+                                process.stdout.write(stdout);
+                                process.stderr.write(stderr);
+                                console.log('installing pio done.');
+                                socket.emit('welcome', {
+                                    git: true,
+                                    gitVersion,
+                                    python: true,
+                                    pythonVersion,
+                                    pio: true,
+                                    installingPio: false,
+                                    refresh: true,
+                                });
+                            });
+                            return;
+                        }
+                        console.log(cmd);
+                        process.stdout.write(stdout);
+                        process.stderr.write(stderr);
+
+                        const pioStateStr = fs.readFileSync(pioStatePath);
+                        const pioState = JSON.parse(pioStateStr);
+                        console.log(pioState);
+                        socket.emit('welcome', {
+                            git: true,
+                            gitVersion,
+                            python: true,
+                            pythonVersion,
+                            pio: true,
+                            installingPio: false,
+                            pioState,
                         });
-                        return;
-                    }
-                    console.log(cmd);
-                    process.stdout.write(stdout);
-                    process.stderr.write(stderr);
 
-                    const pioStateStr = fs.readFileSync(pioStatePath);
-                    const pioState = JSON.parse(pioStateStr);
-                    console.log(pioState);
-                    socket.emit('welcome', { python: true, pythonVersion, pio: true, installingPio: false, pioState });
-
-                    // {
-                    //     core_version: '6.0.2',
-                    //     python_version: '3.8.2',
-                    //     core_dir: 'C:\\Users\\Emre Onrat\\.platformio',
-                    //     cache_dir: 'C:\\Users\\Emre Onrat\\.platformio\\.cache',
-                    //     penv_dir: 'C:\\Users\\Emre Onrat\\.platformio\\penv',
-                    //     penv_bin_dir: 'C:\\Users\\Emre Onrat\\.platformio\\penv\\Scripts',
-                    //     platformio_exe: 'C:\\Users\\Emre Onrat\\.platformio\\penv\\Scripts\\platformio.exe',
-                    //     installer_version: '1.1.1',
-                    //     python_exe: 'C:\\Users\\Emre Onrat\\.platformio\\penv\\Scripts\\python.exe',
-                    //     system: 'windows_amd64',
-                    //     is_develop_core: false
-                    // }
-                    global.pioState = pioState;
-                });
-            } else {
-                socket.emit('welcome', { python: false, pio: false });
-            }
+                        // {
+                        //     core_version: '6.0.2',
+                        //     python_version: '3.8.2',
+                        //     core_dir: 'C:\\Users\\Emre Onrat\\.platformio',
+                        //     cache_dir: 'C:\\Users\\Emre Onrat\\.platformio\\.cache',
+                        //     penv_dir: 'C:\\Users\\Emre Onrat\\.platformio\\penv',
+                        //     penv_bin_dir: 'C:\\Users\\Emre Onrat\\.platformio\\penv\\Scripts',
+                        //     platformio_exe: 'C:\\Users\\Emre Onrat\\.platformio\\penv\\Scripts\\platformio.exe',
+                        //     installer_version: '1.1.1',
+                        //     python_exe: 'C:\\Users\\Emre Onrat\\.platformio\\penv\\Scripts\\python.exe',
+                        //     system: 'windows_amd64',
+                        //     is_develop_core: false
+                        // }
+                        global.pioState = pioState;
+                    });
+                } else {
+                    socket.emit('welcome', { git: true, gitVersion, python: false, pio: false });
+                }
+            });
         });
     });
 

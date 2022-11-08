@@ -25,6 +25,33 @@
             style="background-image: url('texture_01.png'); background-repeat: repeat; background-size: 10vw, 10vw"
         >
             <div
+                id="git-container"
+                class="bg-blue-600 text-white border-4 border-blue-800 rounded-lg m-4 p-4"
+                style="width: 80%; height: 15vh"
+            >
+                <div class="flex ml-2" style="height: 100%">
+                    <img src="/git.png" style="max-height: 100%" />
+                    <div class="ml-6">
+                        <h1 class="text-xl font-bold mb-2">
+                            <span id="git-ok"></span> <span id="git-version">Git</span>
+                        </h1>
+                        <div id="git-msg" style="display: none">
+                            <p>YETENEK IDE'yi kullanabilmeniz için bilgisayarınızda <b>git</b> yüklü olmalıdır.</p>
+                            <!-- <p>Kurulum aşamasında <i>"Add Python to PATH"</i> seçeneğini işaretlemeyi unutmayın!</p> -->
+                            <br />
+                            <p>
+                                <a
+                                    href="https://git-scm.com/downloads"
+                                    target="_blank"
+                                    class="p-3 bg-blue-800 border-2 border-white rounded-lg"
+                                    >📦 git İNDİR</a
+                                >
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
                 id="python-container"
                 class="bg-blue-600 text-white border-4 border-blue-800 rounded-lg m-4 p-4"
                 style="width: 80%; height: 15vh"
@@ -37,7 +64,7 @@
                         </h1>
                         <div id="python-msg" style="display: none">
                             <p>YETENEK IDE'yi kullanabilmeniz için bilgisayarınızda <b>Python 3</b> yüklü olmalıdır.</p>
-                            <p>Kurulum aşamasında <i>"Add Python to PATH"</i> seçeneğini işaretlemeyi unutmayın!</p>
+                            <!-- <p>Kurulum aşamasında <i>"Add Python to PATH"</i> seçeneğini işaretlemeyi unutmayın!</p> -->
                             <br />
                             <p>
                                 <a
@@ -125,12 +152,24 @@
             socket.on('welcome', (data) => {
                 console.log(data);
 
+                if (data.git) {
+                    document.getElementById('git-ok').innerText = '✔️';
+                    document.getElementById('git-version').innerText = data.gitVersion;
+                    document.getElementById('git-msg').style.display = 'none';
+                    document.getElementById('git-container').style.minHeight = 'auto';
+                } else {
+                    document.getElementById('git-ok').innerText = '⚠️';
+                    document.getElementById('git-version').innerText = 'Git';
+                    document.getElementById('git-msg').style.display = 'block';
+                    document.getElementById('git-container').style.minHeight = '180px';
+                }
+
                 if (data.python) {
                     document.getElementById('python-ok').innerText = '✔️';
                     document.getElementById('python-version').innerText = data.pythonVersion;
                     document.getElementById('python-msg').style.display = 'none';
                     document.getElementById('python-container').style.minHeight = 'auto';
-                } else {
+                } else if (data.python === false) {
                     document.getElementById('python-ok').innerText = '⚠️';
                     document.getElementById('python-version').innerText = 'Python 3';
                     document.getElementById('python-msg').style.display = 'block';
@@ -145,7 +184,7 @@
                     document.getElementById('pio-msg-loading').style.display = 'none';
                     document.getElementById('pio-msg-error').style.display = 'none';
                     document.getElementById('pio-container').style.minHeight = 'auto';
-                } else {
+                } else if (data.pio === false) {
                     document.getElementById('pio-ok').innerText = '⚠️';
                     document.getElementById('pio-version').innerText = 'Platform IO';
                     document.getElementById('pio-container').style.minHeight = 'auto';
