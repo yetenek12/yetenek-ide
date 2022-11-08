@@ -359,10 +359,14 @@ io.on('connection', (socket) => {
     });
 
     // welcome (check python & pio)
-    socket.on('welcome', async() => {
-        fixPath()
-        let env_variables = 'PATH=' + process.env.PATH;
-        let cmd = env_variables + ' python --version';
+    socket.on('welcome', async () => {
+        cmd = 'python --version';
+        if (process.platform === 'darwin') {
+            fixPath();
+            let env_variables = 'PATH=' + process.env.PATH;
+            cmd = env_variables + ' python --version';
+        }
+
         exec(cmd, (err, stdout, stderr) => {
             if (err) {
                 socket.emit('welcome', { python: false });
