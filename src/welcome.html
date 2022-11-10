@@ -68,8 +68,18 @@
                             <br />
                             <p>
                                 <a
+                                    id="p3-win"
                                     href="https://apps.microsoft.com/store/detail/python-310/9PJPW5LDXLZ5"
                                     target="_blank"
+                                    style="display: none"
+                                    class="p-3 bg-blue-800 border-2 border-white rounded-lg"
+                                    >📦 PYTHON 3 İNDİR</a
+                                >
+                                <a
+                                    id="p3-mac"
+                                    href="https://www.python.org/downloads/"
+                                    target="_blank"
+                                    style="display: none"
                                     class="p-3 bg-blue-800 border-2 border-white rounded-lg"
                                     >📦 PYTHON 3 İNDİR</a
                                 >
@@ -148,6 +158,8 @@
             socket.on('disconnect', () => {
                 console.log('Socket Disconnected.');
             });
+
+            socket.on('welcome', (data) => {});
 
             socket.on('welcome', (data) => {
                 console.log(data);

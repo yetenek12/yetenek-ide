@@ -360,6 +360,8 @@ io.on('connection', (socket) => {
 
     // welcome (check git & python & pio)
     socket.on('welcome', async () => {
+        socket.emit('os', process.platform);
+
         // ---- CHECK GIT ----
         cmd = 'git --version';
         exec(cmd, (err, stdout, stderr) => {
@@ -374,11 +376,11 @@ io.on('connection', (socket) => {
             const gitVersion = stdout;
 
             // ---- CHECK PYTHON ----
-            cmd = 'python --version';
+            cmd = 'python3 --version';
             if (process.platform === 'darwin') {
                 fixPath();
                 let env_variables = 'PATH=' + process.env.PATH;
-                cmd = env_variables + ' python --version';
+                cmd = env_variables + ' python3 --version';
             }
 
             exec(cmd, (err, stdout, stderr) => {
@@ -394,7 +396,7 @@ io.on('connection', (socket) => {
                 if (pythonVersion.startsWith('Python 3')) {
                     const getPioPath = path.join(getAppPath(), '/extra_resources/getpio.py');
                     const pioStatePath = path.join(os.tmpdir(), `piostate.json`);
-                    cmd = `python "${getPioPath}" check core --dump-state ${pioStatePath}`;
+                    cmd = `python3 "${getPioPath}" check core --dump-state ${pioStatePath}`;
                     exec(cmd, (err, stdout, stderr) => {
                         if (err) {
                             // console.error(err);
@@ -408,7 +410,7 @@ io.on('connection', (socket) => {
                                 installingPio: true,
                             });
 
-                            cmd = `python "${getPioPath}"`;
+                            cmd = `python3 "${getPioPath}"`;
                             exec(cmd, (err, stdout, stderr) => {
                                 if (err) {
                                     socket.emit('welcome', {
